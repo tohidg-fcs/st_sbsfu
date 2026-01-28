@@ -1,0 +1,39 @@
+/*###ICF### Set of symbols used in SE and SB_SFU projects ****/
+
+/* Slots must be aligned on 4096 bytes (0x1000) */
+
+/* Temporary mapping provided as example, as no external flash available on this board
+   ===================================================================================
+   - Dwl slot should be mapped in external flash
+   - Backup slot should be mapped in external flash
+   - Active slot should be extended to all the internal flash free
+*/
+
+/* Active slot #1 (140 Kbytes) */
+define exported symbol  __ICFEDIT_SLOT_Active_1_start__ = 0x0805D000;
+define exported symbol  __ICFEDIT_SLOT_Active_1_end__   = 0x0807FFFF;
+define exported symbol  __ICFEDIT_SLOT_Active_1_header__= 0x08016000;
+
+/* Dwl slot #1 (140 KBytes) */
+define exported symbol  __ICFEDIT_SLOT_Dwl_1_start__= 0x08017000;
+define exported symbol  __ICFEDIT_SLOT_Dwl_1_end__  = 0x08039FFF;
+
+/* Backup (140 Kbytes) */
+define exported symbol  __ICFEDIT_BACKUP_start__  = 0x0803A000;
+define exported symbol  __ICFEDIT_BACKUP_end__    = 0x0805CFFF;
+
+/* Slots not configured */
+define exported symbol  __ICFEDIT_SLOT_Active_2_header__= 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Active_2_start__ = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Active_2_end__   = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Active_3_header__= 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Active_3_start__ = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Active_3_end__   = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Dwl_2_start__    = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Dwl_2_end__      = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Dwl_3_start__    = 0x00000000;
+define exported symbol  __ICFEDIT_SLOT_Dwl_3_end__      = 0x00000000;
+
+/* SWAP installation feature not allowed in this example in order to keep dwl slot encrypted */
+define exported symbol  __ICFEDIT_SWAP_start__          = 0x00000000;
+define exported symbol  __ICFEDIT_SWAP_end__            = 0x00000000;
