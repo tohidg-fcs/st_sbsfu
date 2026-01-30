@@ -1,0 +1,278 @@
+ARM GAS  /tmp/ccUTCTFI.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"se_user_application.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c"
+  18              		.section	.text.SE_APPLI_GetActiveFwInfo,"ax",%progbits
+  19              		.align	1
+  20              		.global	SE_APPLI_GetActiveFwInfo
+  21              		.syntax unified
+  22              		.code	16
+  23              		.thumb_func
+  25              	SE_APPLI_GetActiveFwInfo:
+  26              	.LVL0:
+  27              	.LFB180:
+   1:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /**
+   2:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   ******************************************************************************
+   3:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @file    se_user_application.c
+   4:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @author  MCD Application Team
+   5:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @brief   Secure Engine USER APPLICATION module.
+   6:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   *          This file is a placeholder for the code dedicated to the user application.
+   7:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   *          These services are used by the application.
+   8:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   ******************************************************************************
+   9:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @attention
+  10:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   *
+  11:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * Copyright (c) 2017 STMicroelectronics.
+  12:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * All rights reserved.
+  13:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   *
+  14:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * This software is licensed under terms that can be found in the LICENSE file in
+  15:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * the root directory of this software component.
+  16:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  17:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   *
+  18:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   ******************************************************************************
+  19:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   */
+  20:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  21:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /* Includes ------------------------------------------------------------------*/
+  22:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** #include "se_user_application.h"
+  23:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** #include "se_low_level.h"
+  24:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** #include "string.h"
+  25:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** #include "sfu_fwimg_regions.h"
+  26:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  27:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /** @addtogroup SE Secure Engine
+  28:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @{
+  29:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   */
+  30:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  31:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /** @addtogroup SE_CORE SE Core
+ARM GAS  /tmp/ccUTCTFI.s 			page 2
+
+
+  32:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @{
+  33:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   */
+  34:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  35:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /** @defgroup  SE_APPLI SE Code for Application
+  36:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @brief This file is a placeholder for the code dedicated to the user application.
+  37:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * It contains the code written by the end user.
+  38:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * The code used by the application to handle the Firmware images is located in se_fwimg.c.
+  39:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @{
+  40:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   */
+  41:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  42:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /** @defgroup SE_APPLI_Exported_Functions Exported Functions
+  43:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @{
+  44:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   */
+  45:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  46:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** /**
+  47:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @brief Service called by the User Application to retrieve the Active Firmware Info.
+  48:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @param  SlotNumber index of the slot in the list
+  49:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @param p_FwInfo Active Firmware Info structure that will be filled.
+  50:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+  51:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   */
+  52:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** SE_ErrorStatus SE_APPLI_GetActiveFwInfo(uint32_t SlotNumber, SE_APP_ActiveFwInfo_t *p_FwInfo)
+  53:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** {
+  28              		.loc 1 53 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 320
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  54:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   SE_ErrorStatus e_ret_status;
+  32              		.loc 1 54 3 view .LVU1
+  55:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   uint8_t buffer[SE_FW_HEADER_TOT_LEN];     /* to read FW metadata from FLASH */
+  33              		.loc 1 55 3 view .LVU2
+  56:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   SE_FwRawHeaderTypeDef *pfw_image_header;  /* FW metadata */
+  34              		.loc 1 56 3 view .LVU3
+  57:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  58:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   /* Check the pointer allocation */
+  59:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   if (NULL == p_FwInfo)
+  35              		.loc 1 59 3 view .LVU4
+  53:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   SE_ErrorStatus e_ret_status;
+  36              		.loc 1 53 1 is_stmt 0 view .LVU5
+  37 0000 30B5     		push	{r4, r5, lr}
+  38              	.LCFI0:
+  39              		.cfi_def_cfa_offset 12
+  40              		.cfi_offset 4, -12
+  41              		.cfi_offset 5, -8
+  42              		.cfi_offset 14, -4
+  43 0002 0D4D     		ldr	r5, .L6
+  44 0004 0300     		movs	r3, r0
+  45 0006 0C00     		movs	r4, r1
+  60:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   {
+  61:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****     return SE_ERROR;
+  46              		.loc 1 61 12 view .LVU6
+  47 0008 2800     		movs	r0, r5
+  48              	.LVL1:
+  53:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   SE_ErrorStatus e_ret_status;
+  49              		.loc 1 53 1 view .LVU7
+  50 000a D1B0     		sub	sp, sp, #324
+  51              	.LCFI1:
+  52              		.cfi_def_cfa_offset 336
+ARM GAS  /tmp/ccUTCTFI.s 			page 3
+
+
+  59:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   {
+  53              		.loc 1 59 6 view .LVU8
+  54 000c 0029     		cmp	r1, #0
+  55 000e 10D0     		beq	.L1
+  62:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   }
+  63:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  64:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   /* Check Slot_Number value */
+  65:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   if (SlotNumber > SFU_NB_MAX_ACTIVE_IMAGE)
+  56              		.loc 1 65 3 is_stmt 1 view .LVU9
+  57              		.loc 1 65 6 is_stmt 0 view .LVU10
+  58 0010 012B     		cmp	r3, #1
+  59 0012 0ED8     		bhi	.L1
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   {
+  67:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****     return SE_ERROR;
+  68:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   }
+  69:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   /*
+  70:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****    * The Firmware Information is available in the header of the active slot.
+  71:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****    */
+  72:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   e_ret_status = SE_LL_FLASH_Read(buffer, (uint8_t *) SlotHeaderAdd[SlotNumber], sizeof(buffer));
+  60              		.loc 1 72 3 is_stmt 1 view .LVU11
+  61              		.loc 1 72 18 is_stmt 0 view .LVU12
+  62 0014 A022     		movs	r2, #160
+  63              		.loc 1 72 68 view .LVU13
+  64 0016 0949     		ldr	r1, .L6+4
+  65              	.LVL2:
+  66              		.loc 1 72 68 view .LVU14
+  67 0018 9B00     		lsls	r3, r3, #2
+  68              	.LVL3:
+  69              		.loc 1 72 18 view .LVU15
+  70 001a 6846     		mov	r0, sp
+  71 001c 5958     		ldr	r1, [r3, r1]
+  72 001e 5200     		lsls	r2, r2, #1
+  73 0020 FFF7FEFF 		bl	SE_LL_FLASH_Read
+  74              	.LVL4:
+  73:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   if (e_ret_status != SE_ERROR)
+  75              		.loc 1 73 3 is_stmt 1 view .LVU16
+  76              		.loc 1 73 6 is_stmt 0 view .LVU17
+  77 0024 A842     		cmp	r0, r5
+  78 0026 04D0     		beq	.L1
+  74:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   {
+  75:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****     pfw_image_header = (SE_FwRawHeaderTypeDef *)(uint32_t)buffer;
+  79              		.loc 1 75 5 is_stmt 1 view .LVU18
+  80              	.LVL5:
+  76:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  77:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****     /*
+  78:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****      * We do not check the header validity.
+  79:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****      * We just copy the information.
+  80:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****      */
+  81:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****     p_FwInfo->ActiveFwVersion = pfw_image_header->FwVersion;
+  81              		.loc 1 81 5 view .LVU19
+  82              		.loc 1 81 31 is_stmt 0 view .LVU20
+  83 0028 6B46     		mov	r3, sp
+  84 002a DB88     		ldrh	r3, [r3, #6]
+  85 002c 2380     		strh	r3, [r4]
+  82:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****     p_FwInfo->ActiveFwSize = pfw_image_header->FwSize;
+  86              		.loc 1 82 5 is_stmt 1 view .LVU21
+  87              		.loc 1 82 28 is_stmt 0 view .LVU22
+ARM GAS  /tmp/ccUTCTFI.s 			page 4
+
+
+  88 002e 029B     		ldr	r3, [sp, #8]
+  89 0030 6360     		str	r3, [r4, #4]
+  90              	.LVL6:
+  91              	.L1:
+  83:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   }
+  84:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** 
+  85:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c ****   return e_ret_status;
+  86:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.c **** }
+  92              		.loc 1 86 1 view .LVU23
+  93 0032 51B0     		add	sp, sp, #324
+  94              		@ sp needed
+  95              	.LVL7:
+  96              		.loc 1 86 1 view .LVU24
+  97 0034 30BD     		pop	{r4, r5, pc}
+  98              	.L7:
+  99 0036 C046     		.align	2
+ 100              	.L6:
+ 101 0038 99870100 		.word	100249
+ 102 003c 00000000 		.word	SlotHeaderAdd
+ 103              		.cfi_endproc
+ 104              	.LFE180:
+ 106              		.text
+ 107              	.Letext0:
+ 108              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 109              		.file 3 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_def_core.h"
+ 110              		.file 4 "Inc/se_def_metadata.h"
+ 111              		.file 5 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_user_application.h"
+ 112              		.file 6 "../1_Image_SBSFU/SBSFU/App/sfu_fwimg_regions.h"
+ 113              		.file 7 "Inc/se_low_level.h"
+ARM GAS  /tmp/ccUTCTFI.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 se_user_application.c
+     /tmp/ccUTCTFI.s:19     .text.SE_APPLI_GetActiveFwInfo:00000000 $t
+     /tmp/ccUTCTFI.s:25     .text.SE_APPLI_GetActiveFwInfo:00000000 SE_APPLI_GetActiveFwInfo
+     /tmp/ccUTCTFI.s:101    .text.SE_APPLI_GetActiveFwInfo:00000038 $d
+                           .group:00000000 wm4.0.e310b2036dcc8a4d3b16f3fea9ebd0de
+                           .group:00000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.se_def_core.h.21.4e4ed01aa34801a3fdac798922254e8b
+                           .group:00000000 wm4.se_crypto_config.h.23.4877f252b7277cd509a204488365106b
+                           .group:00000000 wm4.se_def_metadata.h.53.a6db72eb1c0ccedcf70ef4ddface5795
+                           .group:00000000 wm4.app_sfu.h.52.55f63580740e4a8cb8213d7618f37604
+                           .group:00000000 wm4.mapping_export.h.21.690e455ff83f2d626567681d657ba5ab
+                           .group:00000000 wm4.sfu_fwimg_regions.h.41.fdbfe18d9222adf4f8312b4630fa88a0
+                           .group:00000000 wm4.stm32g0xx_hal_conf.h.21.2418b000d87b23231c37db35ad77d0ea
+                           .group:00000000 wm4.stm32g0xx.h.37.aadb526b10f0f4555648bb8fa7c96b30
+                           .group:00000000 wm4.stm32g071xx.h.36.9469a89bf1e6c2a2fe25d20581d0f58b
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm0plus.h.66.bb83319bcb10b4c5f12c477f85f2aa51
+                           .group:00000000 wm4.cmsis_gcc.h.26.63926f8d3817e3a42e7f7ef2cd15156e
+                           .group:00000000 wm4.core_cm0plus.h.127.cfee784d07c850b645554dc8add78e69
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.stm32g071xx.h.155.9be12c2e48b47e8d66c20ceac374f1ee
+                           .group:00000000 wm4.stm32g0xx.h.154.7f8452780a6fe1b4b4d5bfbf416cea0c
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.2f8f7f94da7216ffa6187bf113829094
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.stm32g0xx_hal_def.h.57.7810ceeb3f277465a11a202f246b14c8
+                           .group:00000000 wm4.stm32g0xx_ll_rcc.h.20.b48ad5e6c80881ce9d548f86592ad1d8
+                           .group:00000000 wm4.stm32g0xx_hal_rcc.h.43.40a2deb1468b47dcb7de4a6adda92374
+                           .group:00000000 wm4.stm32g0xx_hal_rcc_ex.h.20.c2035e135ea57d6c1c2839329f24a562
+                           .group:00000000 wm4.stm32g0xx_hal_gpio.h.21.abd5f8c60de2afe2676b3cc6a4b2c068
+                           .group:00000000 wm4.stm32g0xx_hal_gpio_ex.h.21.c1a1c19cef6d6a2cf049535a12fe7f6a
+                           .group:00000000 wm4.stm32g0xx_hal_crc.h.21.8c2791752a3f5c79fed6a23e2361d260
+                           .group:00000000 wm4.stm32g0xx_hal_crc_ex.h.21.13b666a67e761630a3250514972d9a47
+                           .group:00000000 wm4.stm32g0xx_hal_flash.h.20.e512dd9a8958277cc7dd512f2312ae8a
+                           .group:00000000 wm4.stm32g0xx_hal_flash_ex.h.20.2a1daa1e7e7bd4a16651545fee4a1fbb
+                           .group:00000000 wm4.stm32g0xx_hal_flash.h.874.3e4bc5d8948716c644009bcc9a4f3f60
+                           .group:00000000 wm4.stm32g0xx_hal_pwr.h.21.7d5b107b2d1b54bfd27bcb92ed3281e0
+                           .group:00000000 wm4.stm32g0xx_hal_pwr_ex.h.21.01c718c420189d18e9ec3e46e6e9261f
+                           .group:00000000 wm4.stm32g0xx_hal.h.66.28db47a9e4ed9349693c6c0c6101689d
+                           .group:00000000 wm4.se_low_level.h.69.817001c691b349e6e02ccaa65ab75b6a
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.07bf1b8b16da454ae07478107717878b
+                           .group:00000000 wm4.ieeefp.h.77.fbf6f2f498a71d39a0aaf172d6680419
+                           .group:00000000 wm4.features.h.22.4e5514d51694f64cae235f84d9e565a5
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.c0958401bd0ce484d507ee19aacab817
+                           .group:00000000 wm4.reent.h.78.7f0775353a33c852a1479c008f68cd03
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+
+ARM GAS  /tmp/ccUTCTFI.s 			page 6
+
+
+UNDEFINED SYMBOLS
+SE_LL_FLASH_Read
+SlotHeaderAdd

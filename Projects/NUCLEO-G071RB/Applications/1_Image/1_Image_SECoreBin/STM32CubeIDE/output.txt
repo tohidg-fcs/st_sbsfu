@@ -1,0 +1,3 @@
+prebuild.sh : started
+python3 /workspaces/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Utilities/KeysAndImages/prepareimage.py
+SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256 selected

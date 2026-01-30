@@ -1,0 +1,161 @@
+ARM GAS  /tmp/cc2RcvJB.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"se_startup.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c"
+  18              		.section	.text.SE_CORE_Startup,"ax",%progbits
+  19              		.align	1
+  20              		.global	SE_CORE_Startup
+  21              		.syntax unified
+  22              		.code	16
+  23              		.thumb_func
+  25              	SE_CORE_Startup:
+  26              	.LFB2:
+   1:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /**
+   2:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   ******************************************************************************
+   3:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @file    se_startup.c
+   4:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @author  MCD Application Team
+   5:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @brief   Secure Engine STARTUP module.
+   6:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *          This file provides set of firmware functions to manage SE Startup
+   7:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *          functionalities.
+   8:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   ******************************************************************************
+   9:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @attention
+  10:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *
+  11:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * Copyright (c) 2017 STMicroelectronics.
+  12:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * All rights reserved.
+  13:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *
+  14:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * This software is licensed under terms that can be found in the LICENSE file in
+  15:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * the root directory of this software component.
+  16:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  17:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *
+  18:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   ******************************************************************************
+  19:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   */
+  20:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  21:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /* Place code in a specific section*/
+  22:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #if defined(__ICCARM__)
+  23:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #pragma default_function_attributes = @ ".SE_Startup_Code"
+  24:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #endif /* __ICCARM__ */
+  25:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  26:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /* Includes ------------------------------------------------------------------*/
+  27:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #include "se_def.h"
+  28:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #include "se_startup.h"
+  29:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #include "se_intrinsics.h"
+  30:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  31:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /** @addtogroup SE Secure Engine
+  32:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @{
+ARM GAS  /tmp/cc2RcvJB.s 			page 2
+
+
+  33:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   */
+  34:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  35:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /** @addtogroup SE_CORE SE Core
+  36:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @{
+  37:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   */
+  38:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  39:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /** @defgroup  SE_STARTUP SE Startup
+  40:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @brief Init of the SE handled by the bootloader (via se_interface_bootloader) before the isolat
+  41:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *        enabled.
+  42:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @{
+  43:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   */
+  44:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #if defined(__ICCARM__)
+  45:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** void __iar_data_init3(void); /*!< Compiler-specific data initialization function*/
+  46:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #elif defined (__ARMCC_VERSION)
+  47:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** void __arm_data_init(void);
+  48:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #elif defined(__GNUC__)
+  49:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** void __gcc_data_init(void);
+  50:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #endif /* __ICCARM__ */
+  51:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  52:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /** @defgroup SE_STARTUP_Exported_Functions Exported Functions
+  53:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @{
+  54:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   */
+  55:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  56:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** /**
+  57:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @brief Secure Engine Core Startup function.
+  58:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *        It is the initialization function for Secure Engine Core binary.
+  59:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   *        Initialize all variables defined in the binary.
+  60:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @note  It has to be called before the isolation mechanism is activated!!
+  61:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @param  None.
+  62:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+  63:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   */
+  64:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #if defined(__ARMCC_VERSION)
+  65:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** __attribute__((section(".SE_Startup_Code")))
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #endif /* __ARMCC_VERSION */
+  67:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** __root SE_ErrorStatus SE_CORE_Startup(void)
+  68:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** {
+  27              		.loc 1 68 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  69:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  70:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #if defined(__ICCARM__)
+  71:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   /* Data initialization function*/
+  72:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   __iar_data_init3();
+  73:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #elif defined (__ARMCC_VERSION)
+  74:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   __arm_data_init();
+  75:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #elif defined(__GNUC__)
+  76:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   __gcc_data_init();
+  31              		.loc 1 76 3 view .LVU1
+  68:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  32              		.loc 1 68 1 is_stmt 0 view .LVU2
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38              		.loc 1 76 3 view .LVU3
+ARM GAS  /tmp/cc2RcvJB.s 			page 3
+
+
+  39 0002 FFF7FEFF 		bl	__gcc_data_init
+  40              	.LVL0:
+  77:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** #endif /* __ICCARM__ */
+  78:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** 
+  79:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   /*NOTE : other initialization may be added here */
+  80:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c ****   return SE_SUCCESS;
+  41              		.loc 1 80 3 is_stmt 1 view .LVU4
+  81:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_startup.c **** }
+  42              		.loc 1 81 1 is_stmt 0 view .LVU5
+  43              		@ sp needed
+  44 0006 0148     		ldr	r0, .L2
+  45 0008 10BD     		pop	{r4, pc}
+  46              	.L3:
+  47 000a C046     		.align	2
+  48              	.L2:
+  49 000c 0F311200 		.word	1192207
+  50              		.cfi_endproc
+  51              	.LFE2:
+  53              		.text
+  54              	.Letext0:
+  55              		.file 2 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_def_core.h"
+ARM GAS  /tmp/cc2RcvJB.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 se_startup.c
+     /tmp/cc2RcvJB.s:19     .text.SE_CORE_Startup:00000000 $t
+     /tmp/cc2RcvJB.s:25     .text.SE_CORE_Startup:00000000 SE_CORE_Startup
+     /tmp/cc2RcvJB.s:49     .text.SE_CORE_Startup:0000000c $d
+                           .group:00000000 wm4.0.e310b2036dcc8a4d3b16f3fea9ebd0de
+                           .group:00000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.se_def_core.h.21.4e4ed01aa34801a3fdac798922254e8b
+                           .group:00000000 wm4.se_crypto_config.h.23.4877f252b7277cd509a204488365106b
+                           .group:00000000 wm4.se_def_metadata.h.53.a6db72eb1c0ccedcf70ef4ddface5795
+                           .group:00000000 wm4.se_intrinsics.h.23.3e6d026dc79f4aa0c74abfc81f81269c
+
+UNDEFINED SYMBOLS
+__gcc_data_init

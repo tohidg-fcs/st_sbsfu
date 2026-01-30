@@ -1,0 +1,543 @@
+ARM GAS  /tmp/ccskrZwP.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"se_fwimg.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c"
+  18              		.section	.text.SE_IMG_Write,"ax",%progbits
+  19              		.align	1
+  20              		.global	SE_IMG_Write
+  21              		.syntax unified
+  22              		.code	16
+  23              		.thumb_func
+  25              	SE_IMG_Write:
+  26              	.LVL0:
+  27              	.LFB180:
+   1:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /**
+   2:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   ******************************************************************************
+   3:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @file    se_fwimg.c
+   4:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @author  MCD Application Team
+   5:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @brief   This file provides a set of firmware functions used by the bootloader
+   6:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   *          to manage Secure Firmware Update functionalities.
+   7:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   ******************************************************************************
+   8:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @attention
+   9:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   *
+  10:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * Copyright (c) 2017 STMicroelectronics.
+  11:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * All rights reserved.
+  12:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   *
+  13:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * This software is licensed under terms that can be found in the LICENSE file in
+  14:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * the root directory of this software component.
+  15:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   *
+  17:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   ******************************************************************************
+  18:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  19:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  20:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /* Includes ------------------------------------------------------------------*/
+  21:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** #include "se_def.h"
+  22:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** #include "se_fwimg.h"
+  23:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** #include "se_low_level.h"
+  24:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** #include "se_exception.h"
+  25:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** #include "string.h"
+  26:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  27:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /** @addtogroup SE
+  28:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @{
+  29:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  30:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  31:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /** @addtogroup SE_CORE SE Core
+ARM GAS  /tmp/ccskrZwP.s 			page 2
+
+
+  32:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @{
+  33:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  34:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  35:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /** @defgroup SE_IMG SE Firmware Image
+  36:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @brief Code used to handle the Firmware Images.
+  37:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * This contains functions used by the bootloader.
+  38:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @{
+  39:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  40:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  41:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  42:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /** @defgroup SE_IMG_Exported_Functions Exported Functions
+  43:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @{
+  44:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  45:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  46:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /**
+  47:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @brief  Write in Flash protected area
+  48:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  pDestination pointer to destination area in Flash
+  49:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  pSource pointer to input buffer
+  50:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  Length number of bytes to be written
+  51:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @retval SE_SUCCESS if successful, otherwise SE_ERROR
+  52:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  53:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  54:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** SE_ErrorStatus SE_IMG_Write(uint8_t *pDestination, const uint8_t *pSource, uint32_t Length)
+  55:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** {
+  28              		.loc 1 55 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  56:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   SE_ErrorStatus ret;
+  32              		.loc 1 56 3 view .LVU1
+  57:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t i;
+  33              		.loc 1 57 3 view .LVU2
+  58:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t inside_header = 0U;
+  34              		.loc 1 58 3 view .LVU3
+  59:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t areabegin = (uint32_t)pDestination;
+  35              		.loc 1 59 3 view .LVU4
+  60:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t areaend = areabegin + Length - 1U;
+  36              		.loc 1 60 3 view .LVU5
+  55:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   SE_ErrorStatus ret;
+  37              		.loc 1 55 1 is_stmt 0 view .LVU6
+  38 0000 70B5     		push	{r4, r5, r6, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 16
+  41              		.cfi_offset 4, -16
+  42              		.cfi_offset 5, -12
+  43              		.cfi_offset 6, -8
+  44              		.cfi_offset 14, -4
+  61:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  62:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   /* Is destination area part of 1 of the firmware image headers ?
+  63:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****      Headers are located inside protected memory   */
+  64:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
+  65:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     if ((areabegin >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
+  67:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+  45              		.loc 1 67 54 view .LVU7
+  46 0002 8025     		movs	r5, #128
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ARM GAS  /tmp/ccskrZwP.s 			page 3
+
+
+  47              		.loc 1 66 36 view .LVU8
+  48 0004 074C     		ldr	r4, .L7
+  60:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  49              		.loc 1 60 12 view .LVU9
+  50 0006 531E     		subs	r3, r2, #1
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+  51              		.loc 1 66 36 view .LVU10
+  52 0008 6468     		ldr	r4, [r4, #4]
+  53              		.loc 1 67 54 view .LVU11
+  54 000a 2D01     		lsls	r5, r5, #4
+  60:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  55              		.loc 1 60 12 view .LVU12
+  56 000c 1B18     		adds	r3, r3, r0
+  57              	.LVL1:
+  64:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+  58              		.loc 1 64 3 is_stmt 1 view .LVU13
+  59              		.loc 1 67 54 is_stmt 0 view .LVU14
+  60 000e 6519     		adds	r5, r4, r5
+  64:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+  61              		.loc 1 64 18 is_stmt 1 discriminator 1 view .LVU15
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+  62              		.loc 1 66 5 view .LVU16
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+  63              		.loc 1 66 8 is_stmt 0 view .LVU17
+  64 0010 A042     		cmp	r0, r4
+  65 0012 04D3     		bcc	.L6
+  66:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+  66              		.loc 1 66 57 discriminator 1 view .LVU18
+  67 0014 9D42     		cmp	r5, r3
+  68 0016 02D9     		bls	.L6
+  68:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     {
+  69:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****       inside_header = 1U;
+  70:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     }
+  71:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+  72:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  73:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   /* Destination area part of 1 of the firmware image headers */
+  74:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   if (inside_header == 1U)
+  75:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+  76:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     /* Writing in protected memory */
+  77:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     ret = SE_LL_FLASH_Write(pDestination, pSource, Length);
+  69              		.loc 1 77 5 is_stmt 1 view .LVU19
+  70              		.loc 1 77 11 is_stmt 0 view .LVU20
+  71 0018 FFF7FEFF 		bl	SE_LL_FLASH_Write
+  72              	.LVL2:
+  73              	.L1:
+  78:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+  79:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   else
+  80:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+  81:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     /* Abnormal case: this primitive should not be used to access this address */
+  82:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     ret = SE_ERROR;
+  83:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+  84:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   return ret;
+  85:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+  74              		.loc 1 85 1 view .LVU21
+  75              		@ sp needed
+  76 001c 70BD     		pop	{r4, r5, r6, pc}
+  77              	.LVL3:
+ARM GAS  /tmp/ccskrZwP.s 			page 4
+
+
+  78              	.L6:
+  82:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+  79              		.loc 1 82 9 view .LVU22
+  80 001e 0248     		ldr	r0, .L7+4
+  81              	.LVL4:
+  84:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+  82              		.loc 1 84 3 is_stmt 1 view .LVU23
+  84:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+  83              		.loc 1 84 10 is_stmt 0 view .LVU24
+  84 0020 FCE7     		b	.L1
+  85              	.L8:
+  86 0022 C046     		.align	2
+  87              	.L7:
+  88 0024 00000000 		.word	SlotHeaderAdd
+  89 0028 99870100 		.word	100249
+  90              		.cfi_endproc
+  91              	.LFE180:
+  93              		.section	.text.SE_IMG_Read,"ax",%progbits
+  94              		.align	1
+  95              		.global	SE_IMG_Read
+  96              		.syntax unified
+  97              		.code	16
+  98              		.thumb_func
+ 100              	SE_IMG_Read:
+ 101              	.LVL5:
+ 102              	.LFB181:
+  86:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  87:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /**
+  88:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @brief  Read from Flash protected area
+  89:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  pDestination pointer to output buffer
+  90:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  pSource pointer to source area in Flash
+  91:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  Length number of bytes to be read
+  92:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @retval SE_SUCCESS if successful, otherwise SE_ERROR
+  93:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+  94:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+  95:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** SE_ErrorStatus SE_IMG_Read(uint8_t *pDestination, const uint8_t *pSource, uint32_t Length)
+  96:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** {
+ 103              		.loc 1 96 1 is_stmt 1 view -0
+ 104              		.cfi_startproc
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+  97:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   SE_ErrorStatus ret;
+ 107              		.loc 1 97 3 view .LVU26
+  98:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t i;
+ 108              		.loc 1 98 3 view .LVU27
+  99:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t inside_header = 0U;
+ 109              		.loc 1 99 3 view .LVU28
+ 100:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t areabegin = (uint32_t)pSource;
+ 110              		.loc 1 100 3 view .LVU29
+ 101:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t areaend = areabegin + Length - 1U;
+ 111              		.loc 1 101 3 view .LVU30
+  96:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   SE_ErrorStatus ret;
+ 112              		.loc 1 96 1 is_stmt 0 view .LVU31
+ 113 0000 70B5     		push	{r4, r5, r6, lr}
+ 114              	.LCFI1:
+ 115              		.cfi_def_cfa_offset 16
+ 116              		.cfi_offset 4, -16
+ARM GAS  /tmp/ccskrZwP.s 			page 5
+
+
+ 117              		.cfi_offset 5, -12
+ 118              		.cfi_offset 6, -8
+ 119              		.cfi_offset 14, -4
+ 102:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 103:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   /* Is destination area part of 1 of the firmware image headers ?
+ 104:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****      Headers are located inside protected memory   */
+ 105:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
+ 106:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 107:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     if ((areabegin >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
+ 108:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 120              		.loc 1 108 54 view .LVU32
+ 121 0002 8025     		movs	r5, #128
+ 107:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 122              		.loc 1 107 36 view .LVU33
+ 123 0004 074C     		ldr	r4, .L15
+ 101:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 124              		.loc 1 101 12 view .LVU34
+ 125 0006 531E     		subs	r3, r2, #1
+ 107:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 126              		.loc 1 107 36 view .LVU35
+ 127 0008 6468     		ldr	r4, [r4, #4]
+ 128              		.loc 1 108 54 view .LVU36
+ 129 000a 2D01     		lsls	r5, r5, #4
+ 101:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 130              		.loc 1 101 12 view .LVU37
+ 131 000c 5B18     		adds	r3, r3, r1
+ 132              	.LVL6:
+ 105:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 133              		.loc 1 105 3 is_stmt 1 view .LVU38
+ 134              		.loc 1 108 54 is_stmt 0 view .LVU39
+ 135 000e 6519     		adds	r5, r4, r5
+ 105:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 136              		.loc 1 105 18 is_stmt 1 discriminator 1 view .LVU40
+ 107:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 137              		.loc 1 107 5 view .LVU41
+ 107:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 138              		.loc 1 107 8 is_stmt 0 view .LVU42
+ 139 0010 A142     		cmp	r1, r4
+ 140 0012 04D3     		bcc	.L14
+ 107:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 141              		.loc 1 107 57 discriminator 1 view .LVU43
+ 142 0014 9D42     		cmp	r5, r3
+ 143 0016 02D9     		bls	.L14
+ 109:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     {
+ 110:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****       inside_header = 1U;
+ 111:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     }
+ 112:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 113:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 114:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   /* Destination area part of 1 of the firmware image headers */
+ 115:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   if (inside_header == 1U)
+ 116:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 117:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     /* Accessing protected memory */
+ 118:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     ret = SE_LL_FLASH_Read(pDestination, pSource, Length);
+ 144              		.loc 1 118 5 is_stmt 1 view .LVU44
+ 145              		.loc 1 118 11 is_stmt 0 view .LVU45
+ 146 0018 FFF7FEFF 		bl	SE_LL_FLASH_Read
+ 147              	.LVL7:
+ARM GAS  /tmp/ccskrZwP.s 			page 6
+
+
+ 148              	.L9:
+ 119:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 120:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   else
+ 121:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 122:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     /* Abnormal case: this primitive should not be used to access this address */
+ 123:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     ret = SE_ERROR;
+ 124:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 125:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   return ret;
+ 126:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+ 149              		.loc 1 126 1 view .LVU46
+ 150              		@ sp needed
+ 151 001c 70BD     		pop	{r4, r5, r6, pc}
+ 152              	.LVL8:
+ 153              	.L14:
+ 123:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 154              		.loc 1 123 9 view .LVU47
+ 155 001e 0248     		ldr	r0, .L15+4
+ 156              	.LVL9:
+ 125:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+ 157              		.loc 1 125 3 is_stmt 1 view .LVU48
+ 125:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+ 158              		.loc 1 125 10 is_stmt 0 view .LVU49
+ 159 0020 FCE7     		b	.L9
+ 160              	.L16:
+ 161 0022 C046     		.align	2
+ 162              	.L15:
+ 163 0024 00000000 		.word	SlotHeaderAdd
+ 164 0028 99870100 		.word	100249
+ 165              		.cfi_endproc
+ 166              	.LFE181:
+ 168              		.section	.text.SE_IMG_Erase,"ax",%progbits
+ 169              		.align	1
+ 170              		.global	SE_IMG_Erase
+ 171              		.syntax unified
+ 172              		.code	16
+ 173              		.thumb_func
+ 175              	SE_IMG_Erase:
+ 176              	.LVL10:
+ 177              	.LFB182:
+ 127:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 128:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** /**
+ 129:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @brief  Erase a Flash protected area
+ 130:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  pDestination pointer to destination area in Flash
+ 131:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @param  Length number of bytes to be erased
+ 132:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   * @retval SE_SUCCESS if successful, otherwise SE_ERROR
+ 133:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   */
+ 134:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 135:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** SE_ErrorStatus SE_IMG_Erase(uint8_t *pDestination, uint32_t Length)
+ 136:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** {
+ 178              		.loc 1 136 1 is_stmt 1 view -0
+ 179              		.cfi_startproc
+ 180              		@ args = 0, pretend = 0, frame = 0
+ 181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   SE_ErrorStatus ret;
+ 182              		.loc 1 137 3 view .LVU51
+ 138:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t i;
+ 183              		.loc 1 138 3 view .LVU52
+ARM GAS  /tmp/ccskrZwP.s 			page 7
+
+
+ 139:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t inside_header = 0U;
+ 184              		.loc 1 139 3 view .LVU53
+ 140:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t areabegin = (uint32_t)pDestination;
+ 185              		.loc 1 140 3 view .LVU54
+ 141:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   uint32_t areaend = areabegin + Length - 1U;
+ 186              		.loc 1 141 3 view .LVU55
+ 136:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   SE_ErrorStatus ret;
+ 187              		.loc 1 136 1 is_stmt 0 view .LVU56
+ 188 0000 10B5     		push	{r4, lr}
+ 189              	.LCFI2:
+ 190              		.cfi_def_cfa_offset 8
+ 191              		.cfi_offset 4, -8
+ 192              		.cfi_offset 14, -4
+ 142:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 143:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   /* Is destination area part of 1 of the firmware image headers ?
+ 144:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****      Headers are located inside protected memory   */
+ 145:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
+ 146:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 147:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     if ((areabegin >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
+ 148:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 193              		.loc 1 148 54 view .LVU57
+ 194 0002 8024     		movs	r4, #128
+ 147:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 195              		.loc 1 147 36 view .LVU58
+ 196 0004 074A     		ldr	r2, .L23
+ 141:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 197              		.loc 1 141 12 view .LVU59
+ 198 0006 4B1E     		subs	r3, r1, #1
+ 147:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 199              		.loc 1 147 36 view .LVU60
+ 200 0008 5268     		ldr	r2, [r2, #4]
+ 201              		.loc 1 148 54 view .LVU61
+ 202 000a 2401     		lsls	r4, r4, #4
+ 141:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 203              		.loc 1 141 12 view .LVU62
+ 204 000c 1B18     		adds	r3, r3, r0
+ 205              	.LVL11:
+ 145:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 206              		.loc 1 145 3 is_stmt 1 view .LVU63
+ 207              		.loc 1 148 54 is_stmt 0 view .LVU64
+ 208 000e 1419     		adds	r4, r2, r4
+ 145:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 209              		.loc 1 145 18 is_stmt 1 discriminator 1 view .LVU65
+ 147:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 210              		.loc 1 147 5 view .LVU66
+ 147:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 211              		.loc 1 147 8 is_stmt 0 view .LVU67
+ 212 0010 9042     		cmp	r0, r2
+ 213 0012 04D3     		bcc	.L22
+ 147:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****         (areaend < (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+ 214              		.loc 1 147 57 discriminator 1 view .LVU68
+ 215 0014 9C42     		cmp	r4, r3
+ 216 0016 02D9     		bls	.L22
+ 149:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     {
+ 150:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****       inside_header = 1U;
+ 151:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     }
+ 152:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ARM GAS  /tmp/ccskrZwP.s 			page 8
+
+
+ 153:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** 
+ 154:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   /* Destination area part of 1 of the firmware image headers */
+ 155:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   if (inside_header == 1U)
+ 156:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 157:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     /* Accessing protected memory */
+ 158:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     ret = SE_LL_FLASH_Erase(pDestination, Length);
+ 217              		.loc 1 158 5 is_stmt 1 view .LVU69
+ 218              		.loc 1 158 11 is_stmt 0 view .LVU70
+ 219 0018 FFF7FEFF 		bl	SE_LL_FLASH_Erase
+ 220              	.LVL12:
+ 221              	.L17:
+ 159:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 160:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   else
+ 161:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   {
+ 162:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     /* Abnormal case: this primitive should not be used to access this address */
+ 163:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****     ret = SE_ERROR;
+ 164:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 165:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   return ret;
+ 166:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+ 222              		.loc 1 166 1 view .LVU71
+ 223              		@ sp needed
+ 224 001c 10BD     		pop	{r4, pc}
+ 225              	.LVL13:
+ 226              	.L22:
+ 163:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c ****   }
+ 227              		.loc 1 163 9 view .LVU72
+ 228 001e 0248     		ldr	r0, .L23+4
+ 229              	.LVL14:
+ 165:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+ 230              		.loc 1 165 3 is_stmt 1 view .LVU73
+ 165:../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_fwimg.c **** }
+ 231              		.loc 1 165 10 is_stmt 0 view .LVU74
+ 232 0020 FCE7     		b	.L17
+ 233              	.L24:
+ 234 0022 C046     		.align	2
+ 235              	.L23:
+ 236 0024 00000000 		.word	SlotHeaderAdd
+ 237 0028 99870100 		.word	100249
+ 238              		.cfi_endproc
+ 239              	.LFE182:
+ 241              		.text
+ 242              	.Letext0:
+ 243              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 244              		.file 3 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_def_core.h"
+ 245              		.file 4 "Inc/se_low_level.h"
+ 246              		.file 5 "../1_Image_SBSFU/SBSFU/App/sfu_fwimg_regions.h"
+ARM GAS  /tmp/ccskrZwP.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 se_fwimg.c
+     /tmp/ccskrZwP.s:19     .text.SE_IMG_Write:00000000 $t
+     /tmp/ccskrZwP.s:25     .text.SE_IMG_Write:00000000 SE_IMG_Write
+     /tmp/ccskrZwP.s:88     .text.SE_IMG_Write:00000024 $d
+     /tmp/ccskrZwP.s:94     .text.SE_IMG_Read:00000000 $t
+     /tmp/ccskrZwP.s:100    .text.SE_IMG_Read:00000000 SE_IMG_Read
+     /tmp/ccskrZwP.s:163    .text.SE_IMG_Read:00000024 $d
+     /tmp/ccskrZwP.s:169    .text.SE_IMG_Erase:00000000 $t
+     /tmp/ccskrZwP.s:175    .text.SE_IMG_Erase:00000000 SE_IMG_Erase
+     /tmp/ccskrZwP.s:236    .text.SE_IMG_Erase:00000024 $d
+                           .group:00000000 wm4.0.e310b2036dcc8a4d3b16f3fea9ebd0de
+                           .group:00000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.se_def_core.h.21.4e4ed01aa34801a3fdac798922254e8b
+                           .group:00000000 wm4.se_crypto_config.h.23.4877f252b7277cd509a204488365106b
+                           .group:00000000 wm4.se_def_metadata.h.53.a6db72eb1c0ccedcf70ef4ddface5795
+                           .group:00000000 wm4.app_sfu.h.52.55f63580740e4a8cb8213d7618f37604
+                           .group:00000000 wm4.mapping_export.h.21.690e455ff83f2d626567681d657ba5ab
+                           .group:00000000 wm4.sfu_fwimg_regions.h.41.fdbfe18d9222adf4f8312b4630fa88a0
+                           .group:00000000 wm4.stm32g0xx_hal_conf.h.21.2418b000d87b23231c37db35ad77d0ea
+                           .group:00000000 wm4.stm32g0xx.h.37.aadb526b10f0f4555648bb8fa7c96b30
+                           .group:00000000 wm4.stm32g071xx.h.36.9469a89bf1e6c2a2fe25d20581d0f58b
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm0plus.h.66.bb83319bcb10b4c5f12c477f85f2aa51
+                           .group:00000000 wm4.cmsis_gcc.h.26.63926f8d3817e3a42e7f7ef2cd15156e
+                           .group:00000000 wm4.core_cm0plus.h.127.cfee784d07c850b645554dc8add78e69
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.stm32g071xx.h.155.9be12c2e48b47e8d66c20ceac374f1ee
+                           .group:00000000 wm4.stm32g0xx.h.154.7f8452780a6fe1b4b4d5bfbf416cea0c
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.2f8f7f94da7216ffa6187bf113829094
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.stm32g0xx_hal_def.h.57.7810ceeb3f277465a11a202f246b14c8
+                           .group:00000000 wm4.stm32g0xx_ll_rcc.h.20.b48ad5e6c80881ce9d548f86592ad1d8
+                           .group:00000000 wm4.stm32g0xx_hal_rcc.h.43.40a2deb1468b47dcb7de4a6adda92374
+                           .group:00000000 wm4.stm32g0xx_hal_rcc_ex.h.20.c2035e135ea57d6c1c2839329f24a562
+                           .group:00000000 wm4.stm32g0xx_hal_gpio.h.21.abd5f8c60de2afe2676b3cc6a4b2c068
+                           .group:00000000 wm4.stm32g0xx_hal_gpio_ex.h.21.c1a1c19cef6d6a2cf049535a12fe7f6a
+                           .group:00000000 wm4.stm32g0xx_hal_crc.h.21.8c2791752a3f5c79fed6a23e2361d260
+                           .group:00000000 wm4.stm32g0xx_hal_crc_ex.h.21.13b666a67e761630a3250514972d9a47
+                           .group:00000000 wm4.stm32g0xx_hal_flash.h.20.e512dd9a8958277cc7dd512f2312ae8a
+                           .group:00000000 wm4.stm32g0xx_hal_flash_ex.h.20.2a1daa1e7e7bd4a16651545fee4a1fbb
+                           .group:00000000 wm4.stm32g0xx_hal_flash.h.874.3e4bc5d8948716c644009bcc9a4f3f60
+                           .group:00000000 wm4.stm32g0xx_hal_pwr.h.21.7d5b107b2d1b54bfd27bcb92ed3281e0
+                           .group:00000000 wm4.stm32g0xx_hal_pwr_ex.h.21.01c718c420189d18e9ec3e46e6e9261f
+                           .group:00000000 wm4.stm32g0xx_hal.h.66.28db47a9e4ed9349693c6c0c6101689d
+                           .group:00000000 wm4.se_low_level.h.69.817001c691b349e6e02ccaa65ab75b6a
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.07bf1b8b16da454ae07478107717878b
+                           .group:00000000 wm4.ieeefp.h.77.fbf6f2f498a71d39a0aaf172d6680419
+                           .group:00000000 wm4.features.h.22.4e5514d51694f64cae235f84d9e565a5
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+ARM GAS  /tmp/ccskrZwP.s 			page 10
+
+
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.c0958401bd0ce484d507ee19aacab817
+                           .group:00000000 wm4.reent.h.78.7f0775353a33c852a1479c008f68cd03
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+
+UNDEFINED SYMBOLS
+SE_LL_FLASH_Write
+SlotHeaderAdd
+SE_LL_FLASH_Read
+SE_LL_FLASH_Erase

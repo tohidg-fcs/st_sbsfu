@@ -1,0 +1,496 @@
+ARM GAS  /tmp/ccPQUUFj.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"data_init.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "STM32CubeIDE/Application/User/data_init.c"
+  18              		.section	.text.LoopCopyDataInit,"ax",%progbits
+  19              		.align	1
+  20              		.global	LoopCopyDataInit
+  21              		.syntax unified
+  22              		.code	16
+  23              		.thumb_func
+  25              	LoopCopyDataInit:
+  26              	.LFB0:
+   1:STM32CubeIDE/Application/User/data_init.c **** /**
+   2:STM32CubeIDE/Application/User/data_init.c ****   ******************************************************************************
+   3:STM32CubeIDE/Application/User/data_init.c ****   * @file    data_init.c
+   4:STM32CubeIDE/Application/User/data_init.c ****   * @author  MCD Application Team
+   5:STM32CubeIDE/Application/User/data_init.c ****   * @brief   Data section (RW + ZI) initialization.
+   6:STM32CubeIDE/Application/User/data_init.c ****   *          This file provides set of firmware functions to manage SE low level
+   7:STM32CubeIDE/Application/User/data_init.c ****   *          interface functionalities.
+   8:STM32CubeIDE/Application/User/data_init.c ****   ******************************************************************************
+   9:STM32CubeIDE/Application/User/data_init.c ****   * @attention
+  10:STM32CubeIDE/Application/User/data_init.c ****   *
+  11:STM32CubeIDE/Application/User/data_init.c ****   * Copyright (c) 2017 STMicroelectronics.
+  12:STM32CubeIDE/Application/User/data_init.c ****   * All rights reserved.
+  13:STM32CubeIDE/Application/User/data_init.c ****   *
+  14:STM32CubeIDE/Application/User/data_init.c ****   * This software is licensed under terms that can be found in the LICENSE file in
+  15:STM32CubeIDE/Application/User/data_init.c ****   * the root directory of this software component.
+  16:STM32CubeIDE/Application/User/data_init.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  17:STM32CubeIDE/Application/User/data_init.c ****   *
+  18:STM32CubeIDE/Application/User/data_init.c ****   ******************************************************************************
+  19:STM32CubeIDE/Application/User/data_init.c ****   */
+  20:STM32CubeIDE/Application/User/data_init.c **** 
+  21:STM32CubeIDE/Application/User/data_init.c **** /* Includes ------------------------------------------------------------------*/
+  22:STM32CubeIDE/Application/User/data_init.c **** #include <stdint.h>
+  23:STM32CubeIDE/Application/User/data_init.c **** 
+  24:STM32CubeIDE/Application/User/data_init.c **** #ifndef vu32
+  25:STM32CubeIDE/Application/User/data_init.c **** #	define vu32 volatile uint32_t
+  26:STM32CubeIDE/Application/User/data_init.c **** #endif
+  27:STM32CubeIDE/Application/User/data_init.c **** 
+  28:STM32CubeIDE/Application/User/data_init.c **** /**
+  29:STM32CubeIDE/Application/User/data_init.c ****   * @brief  Copy initialized data from ROM to RAM.
+  30:STM32CubeIDE/Application/User/data_init.c ****   * @param  None.
+  31:STM32CubeIDE/Application/User/data_init.c ****   * @retval None.
+  32:STM32CubeIDE/Application/User/data_init.c ****   */
+ARM GAS  /tmp/ccPQUUFj.s 			page 2
+
+
+  33:STM32CubeIDE/Application/User/data_init.c **** 
+  34:STM32CubeIDE/Application/User/data_init.c **** void LoopCopyDataInit(void)
+  35:STM32CubeIDE/Application/User/data_init.c **** {
+  27              		.loc 1 35 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  36:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sidata asm("_sidata");
+  32              		.loc 1 36 2 view .LVU1
+  37:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sdata asm("_sdata");
+  33              		.loc 1 37 2 view .LVU2
+  38:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _edata asm("_edata");
+  34              		.loc 1 38 2 view .LVU3
+  39:STM32CubeIDE/Application/User/data_init.c **** 
+  40:STM32CubeIDE/Application/User/data_init.c **** 	vu32* src = (vu32*) &_sidata;
+  35              		.loc 1 40 2 view .LVU4
+  36              	.LVL0:
+  41:STM32CubeIDE/Application/User/data_init.c **** 	vu32* dst = (vu32*) &_sdata;
+  37              		.loc 1 41 2 view .LVU5
+  42:STM32CubeIDE/Application/User/data_init.c **** 
+  43:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_edata) - (vu32)(&_sdata)) / 4;
+  38              		.loc 1 43 2 view .LVU6
+  39              		.loc 1 43 30 is_stmt 0 view .LVU7
+  40 0000 0D4B     		ldr	r3, .L4
+  41 0002 0E49     		ldr	r1, .L4+4
+  35:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sidata asm("_sidata");
+  42              		.loc 1 35 1 view .LVU8
+  43 0004 82B0     		sub	sp, sp, #8
+  44              	.LCFI0:
+  45              		.cfi_def_cfa_offset 8
+  46              		.loc 1 43 30 view .LVU9
+  47 0006 5B1A     		subs	r3, r3, r1
+  48              		.loc 1 43 49 view .LVU10
+  49 0008 9B08     		lsrs	r3, r3, #2
+  50              		.loc 1 43 7 view .LVU11
+  51 000a 0093     		str	r3, [sp]
+  44:STM32CubeIDE/Application/User/data_init.c **** 
+  45:STM32CubeIDE/Application/User/data_init.c **** 	for(vu32 i=0; i < len; i++)
+  52              		.loc 1 45 2 is_stmt 1 view .LVU12
+  53              	.LBB2:
+  54              		.loc 1 45 6 view .LVU13
+  55              		.loc 1 45 11 is_stmt 0 view .LVU14
+  56 000c 0023     		movs	r3, #0
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  57              		.loc 1 46 15 view .LVU15
+  58 000e 0C48     		ldr	r0, .L4+8
+  45:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  59              		.loc 1 45 11 view .LVU16
+  60 0010 0193     		str	r3, [sp, #4]
+  61              	.L2:
+  45:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  62              		.loc 1 45 18 is_stmt 1 discriminator 1 view .LVU17
+  63 0012 019A     		ldr	r2, [sp, #4]
+  64 0014 009B     		ldr	r3, [sp]
+  65 0016 9A42     		cmp	r2, r3
+  66 0018 01D3     		bcc	.L3
+ARM GAS  /tmp/ccPQUUFj.s 			page 3
+
+
+  67              	.LBE2:
+  47:STM32CubeIDE/Application/User/data_init.c **** }
+  68              		.loc 1 47 1 is_stmt 0 view .LVU18
+  69 001a 02B0     		add	sp, sp, #8
+  70              		@ sp needed
+  71 001c 7047     		bx	lr
+  72              	.L3:
+  73              	.LBB3:
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  74              		.loc 1 46 3 is_stmt 1 view .LVU19
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  75              		.loc 1 46 15 is_stmt 0 view .LVU20
+  76 001e 019A     		ldr	r2, [sp, #4]
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  77              		.loc 1 46 6 view .LVU21
+  78 0020 019B     		ldr	r3, [sp, #4]
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  79              		.loc 1 46 15 view .LVU22
+  80 0022 9200     		lsls	r2, r2, #2
+  81 0024 1218     		adds	r2, r2, r0
+  82 0026 1268     		ldr	r2, [r2]
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  83              		.loc 1 46 6 view .LVU23
+  84 0028 9B00     		lsls	r3, r3, #2
+  85 002a CB18     		adds	r3, r1, r3
+  46:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  86              		.loc 1 46 10 view .LVU24
+  87 002c 1A60     		str	r2, [r3]
+  45:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = src[i];
+  88              		.loc 1 45 26 is_stmt 1 discriminator 3 view .LVU25
+  89 002e 019B     		ldr	r3, [sp, #4]
+  90 0030 0133     		adds	r3, r3, #1
+  91 0032 0193     		str	r3, [sp, #4]
+  92 0034 EDE7     		b	.L2
+  93              	.L5:
+  94 0036 C046     		.align	2
+  95              	.L4:
+  96 0038 00000000 		.word	_edata
+  97 003c 00000000 		.word	_sdata
+  98 0040 00000000 		.word	_sidata
+  99              	.LBE3:
+ 100              		.cfi_endproc
+ 101              	.LFE0:
+ 103              		.section	.text.LoopFillZerobss,"ax",%progbits
+ 104              		.align	1
+ 105              		.global	LoopFillZerobss
+ 106              		.syntax unified
+ 107              		.code	16
+ 108              		.thumb_func
+ 110              	LoopFillZerobss:
+ 111              	.LFB1:
+  48:STM32CubeIDE/Application/User/data_init.c **** 
+  49:STM32CubeIDE/Application/User/data_init.c **** /**
+  50:STM32CubeIDE/Application/User/data_init.c ****   * @brief  Clear the zero-initialized data section.
+  51:STM32CubeIDE/Application/User/data_init.c ****   * @param  None.
+  52:STM32CubeIDE/Application/User/data_init.c ****   * @retval None.
+  53:STM32CubeIDE/Application/User/data_init.c ****   */
+ARM GAS  /tmp/ccPQUUFj.s 			page 4
+
+
+  54:STM32CubeIDE/Application/User/data_init.c **** void LoopFillZerobss(void)
+  55:STM32CubeIDE/Application/User/data_init.c **** {
+ 112              		.loc 1 55 1 view -0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 8
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 116              		@ link register save eliminated.
+  56:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sbss asm("_sbss");
+ 117              		.loc 1 56 2 view .LVU27
+  57:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _ebss asm("_ebss");
+ 118              		.loc 1 57 2 view .LVU28
+  58:STM32CubeIDE/Application/User/data_init.c **** 
+  59:STM32CubeIDE/Application/User/data_init.c **** 	vu32* dst = (vu32*) &_sbss;
+ 119              		.loc 1 59 2 view .LVU29
+ 120              	.LVL1:
+  60:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_ebss) - (vu32)(&_sbss)) / 4;
+ 121              		.loc 1 60 2 view .LVU30
+ 122              	.LBB4:
+  61:STM32CubeIDE/Application/User/data_init.c **** 
+  62:STM32CubeIDE/Application/User/data_init.c **** 	for(vu32 i=0; i < len; i++)
+ 123              		.loc 1 62 11 is_stmt 0 view .LVU31
+ 124 0000 0021     		movs	r1, #0
+ 125              	.LBE4:
+  60:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_ebss) - (vu32)(&_sbss)) / 4;
+ 126              		.loc 1 60 29 view .LVU32
+ 127 0002 0A4B     		ldr	r3, .L9
+ 128 0004 0A4A     		ldr	r2, .L9+4
+  55:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sbss asm("_sbss");
+ 129              		.loc 1 55 1 view .LVU33
+ 130 0006 82B0     		sub	sp, sp, #8
+ 131              	.LCFI1:
+ 132              		.cfi_def_cfa_offset 8
+  60:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_ebss) - (vu32)(&_sbss)) / 4;
+ 133              		.loc 1 60 29 view .LVU34
+ 134 0008 9B1A     		subs	r3, r3, r2
+  60:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_ebss) - (vu32)(&_sbss)) / 4;
+ 135              		.loc 1 60 47 view .LVU35
+ 136 000a 9B08     		lsrs	r3, r3, #2
+  60:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_ebss) - (vu32)(&_sbss)) / 4;
+ 137              		.loc 1 60 7 view .LVU36
+ 138 000c 0093     		str	r3, [sp]
+ 139              		.loc 1 62 2 is_stmt 1 view .LVU37
+ 140              	.LBB5:
+ 141              		.loc 1 62 6 view .LVU38
+ 142              		.loc 1 62 11 is_stmt 0 view .LVU39
+ 143 000e 0191     		str	r1, [sp, #4]
+ 144              	.L7:
+ 145              		.loc 1 62 18 is_stmt 1 discriminator 1 view .LVU40
+ 146 0010 0198     		ldr	r0, [sp, #4]
+ 147 0012 009B     		ldr	r3, [sp]
+ 148 0014 9842     		cmp	r0, r3
+ 149 0016 01D3     		bcc	.L8
+ 150              	.LBE5:
+  63:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+  64:STM32CubeIDE/Application/User/data_init.c **** }
+ 151              		.loc 1 64 1 is_stmt 0 view .LVU41
+ 152 0018 02B0     		add	sp, sp, #8
+ARM GAS  /tmp/ccPQUUFj.s 			page 5
+
+
+ 153              		@ sp needed
+ 154 001a 7047     		bx	lr
+ 155              	.L8:
+ 156              	.LBB6:
+  63:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 157              		.loc 1 63 3 is_stmt 1 view .LVU42
+  63:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 158              		.loc 1 63 6 is_stmt 0 view .LVU43
+ 159 001c 019B     		ldr	r3, [sp, #4]
+ 160 001e 9B00     		lsls	r3, r3, #2
+ 161 0020 D318     		adds	r3, r2, r3
+  63:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 162              		.loc 1 63 10 view .LVU44
+ 163 0022 1960     		str	r1, [r3]
+  62:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 164              		.loc 1 62 26 is_stmt 1 discriminator 3 view .LVU45
+ 165 0024 019B     		ldr	r3, [sp, #4]
+ 166 0026 0133     		adds	r3, r3, #1
+ 167 0028 0193     		str	r3, [sp, #4]
+ 168 002a F1E7     		b	.L7
+ 169              	.L10:
+ 170              		.align	2
+ 171              	.L9:
+ 172 002c 00000000 		.word	_ebss
+ 173 0030 00000000 		.word	_sbss
+ 174              	.LBE6:
+ 175              		.cfi_endproc
+ 176              	.LFE1:
+ 178              		.section	.text.__gcc_data_init,"ax",%progbits
+ 179              		.align	1
+ 180              		.global	__gcc_data_init
+ 181              		.syntax unified
+ 182              		.code	16
+ 183              		.thumb_func
+ 185              	__gcc_data_init:
+ 186              	.LFB2:
+  65:STM32CubeIDE/Application/User/data_init.c **** 
+  66:STM32CubeIDE/Application/User/data_init.c **** /**
+  67:STM32CubeIDE/Application/User/data_init.c ****   * @brief  Data section initialization.
+  68:STM32CubeIDE/Application/User/data_init.c ****   * @param  None.
+  69:STM32CubeIDE/Application/User/data_init.c ****   * @retval None.
+  70:STM32CubeIDE/Application/User/data_init.c ****   */
+  71:STM32CubeIDE/Application/User/data_init.c **** void __gcc_data_init(void) {
+ 187              		.loc 1 71 28 view -0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+  72:STM32CubeIDE/Application/User/data_init.c **** 	LoopFillZerobss();
+ 191              		.loc 1 72 2 view .LVU47
+  71:STM32CubeIDE/Application/User/data_init.c **** 	LoopFillZerobss();
+ 192              		.loc 1 71 28 is_stmt 0 view .LVU48
+ 193 0000 10B5     		push	{r4, lr}
+ 194              	.LCFI2:
+ 195              		.cfi_def_cfa_offset 8
+ 196              		.cfi_offset 4, -8
+ 197              		.cfi_offset 14, -4
+ 198              		.loc 1 72 2 view .LVU49
+ARM GAS  /tmp/ccPQUUFj.s 			page 6
+
+
+ 199 0002 FFF7FEFF 		bl	LoopFillZerobss
+ 200              	.LVL2:
+  73:STM32CubeIDE/Application/User/data_init.c **** 	LoopCopyDataInit();
+ 201              		.loc 1 73 2 is_stmt 1 view .LVU50
+  74:STM32CubeIDE/Application/User/data_init.c **** }
+ 202              		.loc 1 74 1 is_stmt 0 view .LVU51
+ 203              		@ sp needed
+  73:STM32CubeIDE/Application/User/data_init.c **** 	LoopCopyDataInit();
+ 204              		.loc 1 73 2 view .LVU52
+ 205 0006 FFF7FEFF 		bl	LoopCopyDataInit
+ 206              	.LVL3:
+ 207              		.loc 1 74 1 view .LVU53
+ 208 000a 10BD     		pop	{r4, pc}
+ 209              		.cfi_endproc
+ 210              	.LFE2:
+ 212              		.section	.text.LoopCleanDataInit,"ax",%progbits
+ 213              		.align	1
+ 214              		.global	LoopCleanDataInit
+ 215              		.syntax unified
+ 216              		.code	16
+ 217              		.thumb_func
+ 219              	LoopCleanDataInit:
+ 220              	.LFB3:
+  75:STM32CubeIDE/Application/User/data_init.c **** 
+  76:STM32CubeIDE/Application/User/data_init.c **** /**
+  77:STM32CubeIDE/Application/User/data_init.c ****   * @brief  Clear the data initialized section.
+  78:STM32CubeIDE/Application/User/data_init.c ****   * @param  None.
+  79:STM32CubeIDE/Application/User/data_init.c ****   * @retval None.
+  80:STM32CubeIDE/Application/User/data_init.c ****   */
+  81:STM32CubeIDE/Application/User/data_init.c **** void LoopCleanDataInit(void) {
+ 221              		.loc 1 81 30 is_stmt 1 view -0
+ 222              		.cfi_startproc
+ 223              		@ args = 0, pretend = 0, frame = 8
+ 224              		@ frame_needed = 0, uses_anonymous_args = 0
+ 225              		@ link register save eliminated.
+  82:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sdata asm("_sdata");
+ 226              		.loc 1 82 2 view .LVU55
+  83:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _edata asm("_edata");
+ 227              		.loc 1 83 2 view .LVU56
+  84:STM32CubeIDE/Application/User/data_init.c **** 	vu32* dst = (vu32*) &_sdata;
+ 228              		.loc 1 84 2 view .LVU57
+ 229              	.LVL4:
+  85:STM32CubeIDE/Application/User/data_init.c **** 
+  86:STM32CubeIDE/Application/User/data_init.c **** 	vu32 len = ((vu32)(&_edata) - (vu32)(&_sdata)) / 4;
+ 230              		.loc 1 86 2 view .LVU58
+ 231              	.LBB7:
+  87:STM32CubeIDE/Application/User/data_init.c **** 
+  88:STM32CubeIDE/Application/User/data_init.c **** 	for(vu32 i=0; i < len; i++)
+ 232              		.loc 1 88 11 is_stmt 0 view .LVU59
+ 233 0000 0021     		movs	r1, #0
+ 234              	.LBE7:
+  86:STM32CubeIDE/Application/User/data_init.c **** 
+ 235              		.loc 1 86 30 view .LVU60
+ 236 0002 0A4B     		ldr	r3, .L15
+ 237 0004 0A4A     		ldr	r2, .L15+4
+  81:STM32CubeIDE/Application/User/data_init.c **** 	extern uint8_t* _sdata asm("_sdata");
+ 238              		.loc 1 81 30 view .LVU61
+ARM GAS  /tmp/ccPQUUFj.s 			page 7
+
+
+ 239 0006 82B0     		sub	sp, sp, #8
+ 240              	.LCFI3:
+ 241              		.cfi_def_cfa_offset 8
+  86:STM32CubeIDE/Application/User/data_init.c **** 
+ 242              		.loc 1 86 30 view .LVU62
+ 243 0008 9B1A     		subs	r3, r3, r2
+  86:STM32CubeIDE/Application/User/data_init.c **** 
+ 244              		.loc 1 86 49 view .LVU63
+ 245 000a 9B08     		lsrs	r3, r3, #2
+  86:STM32CubeIDE/Application/User/data_init.c **** 
+ 246              		.loc 1 86 7 view .LVU64
+ 247 000c 0093     		str	r3, [sp]
+ 248              		.loc 1 88 2 is_stmt 1 view .LVU65
+ 249              	.LBB8:
+ 250              		.loc 1 88 6 view .LVU66
+ 251              		.loc 1 88 11 is_stmt 0 view .LVU67
+ 252 000e 0191     		str	r1, [sp, #4]
+ 253              	.L13:
+ 254              		.loc 1 88 18 is_stmt 1 discriminator 1 view .LVU68
+ 255 0010 0198     		ldr	r0, [sp, #4]
+ 256 0012 009B     		ldr	r3, [sp]
+ 257 0014 9842     		cmp	r0, r3
+ 258 0016 01D3     		bcc	.L14
+ 259              	.LBE8:
+  89:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+  90:STM32CubeIDE/Application/User/data_init.c **** }
+ 260              		.loc 1 90 1 is_stmt 0 view .LVU69
+ 261 0018 02B0     		add	sp, sp, #8
+ 262              		@ sp needed
+ 263 001a 7047     		bx	lr
+ 264              	.L14:
+ 265              	.LBB9:
+  89:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 266              		.loc 1 89 3 is_stmt 1 view .LVU70
+  89:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 267              		.loc 1 89 6 is_stmt 0 view .LVU71
+ 268 001c 019B     		ldr	r3, [sp, #4]
+ 269 001e 9B00     		lsls	r3, r3, #2
+ 270 0020 D318     		adds	r3, r2, r3
+  89:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 271              		.loc 1 89 10 view .LVU72
+ 272 0022 1960     		str	r1, [r3]
+  88:STM32CubeIDE/Application/User/data_init.c **** 		dst[i] = 0;
+ 273              		.loc 1 88 26 is_stmt 1 discriminator 3 view .LVU73
+ 274 0024 019B     		ldr	r3, [sp, #4]
+ 275 0026 0133     		adds	r3, r3, #1
+ 276 0028 0193     		str	r3, [sp, #4]
+ 277 002a F1E7     		b	.L13
+ 278              	.L16:
+ 279              		.align	2
+ 280              	.L15:
+ 281 002c 00000000 		.word	_edata
+ 282 0030 00000000 		.word	_sdata
+ 283              	.LBE9:
+ 284              		.cfi_endproc
+ 285              	.LFE3:
+ 287              		.section	.text.__gcc_clean_data,"ax",%progbits
+ARM GAS  /tmp/ccPQUUFj.s 			page 8
+
+
+ 288              		.align	1
+ 289              		.global	__gcc_clean_data
+ 290              		.syntax unified
+ 291              		.code	16
+ 292              		.thumb_func
+ 294              	__gcc_clean_data:
+ 295              	.LFB4:
+  91:STM32CubeIDE/Application/User/data_init.c **** 
+  92:STM32CubeIDE/Application/User/data_init.c **** /**
+  93:STM32CubeIDE/Application/User/data_init.c ****   * @brief  Clear Data section.
+  94:STM32CubeIDE/Application/User/data_init.c ****   * @param  None.
+  95:STM32CubeIDE/Application/User/data_init.c ****   * @retval None.
+  96:STM32CubeIDE/Application/User/data_init.c ****   */
+  97:STM32CubeIDE/Application/User/data_init.c **** void __gcc_clean_data(void) {
+ 296              		.loc 1 97 29 view -0
+ 297              		.cfi_startproc
+ 298              		@ args = 0, pretend = 0, frame = 0
+ 299              		@ frame_needed = 0, uses_anonymous_args = 0
+  98:STM32CubeIDE/Application/User/data_init.c ****   LoopFillZerobss();
+ 300              		.loc 1 98 3 view .LVU75
+  97:STM32CubeIDE/Application/User/data_init.c ****   LoopFillZerobss();
+ 301              		.loc 1 97 29 is_stmt 0 view .LVU76
+ 302 0000 10B5     		push	{r4, lr}
+ 303              	.LCFI4:
+ 304              		.cfi_def_cfa_offset 8
+ 305              		.cfi_offset 4, -8
+ 306              		.cfi_offset 14, -4
+ 307              		.loc 1 98 3 view .LVU77
+ 308 0002 FFF7FEFF 		bl	LoopFillZerobss
+ 309              	.LVL5:
+  99:STM32CubeIDE/Application/User/data_init.c ****   LoopCleanDataInit();
+ 310              		.loc 1 99 3 is_stmt 1 view .LVU78
+ 100:STM32CubeIDE/Application/User/data_init.c **** }
+ 311              		.loc 1 100 1 is_stmt 0 view .LVU79
+ 312              		@ sp needed
+  99:STM32CubeIDE/Application/User/data_init.c ****   LoopCleanDataInit();
+ 313              		.loc 1 99 3 view .LVU80
+ 314 0006 FFF7FEFF 		bl	LoopCleanDataInit
+ 315              	.LVL6:
+ 316              		.loc 1 100 1 view .LVU81
+ 317 000a 10BD     		pop	{r4, pc}
+ 318              		.cfi_endproc
+ 319              	.LFE4:
+ 321              		.text
+ 322              	.Letext0:
+ 323              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ARM GAS  /tmp/ccPQUUFj.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 data_init.c
+     /tmp/ccPQUUFj.s:19     .text.LoopCopyDataInit:00000000 $t
+     /tmp/ccPQUUFj.s:25     .text.LoopCopyDataInit:00000000 LoopCopyDataInit
+     /tmp/ccPQUUFj.s:96     .text.LoopCopyDataInit:00000038 $d
+     /tmp/ccPQUUFj.s:104    .text.LoopFillZerobss:00000000 $t
+     /tmp/ccPQUUFj.s:110    .text.LoopFillZerobss:00000000 LoopFillZerobss
+     /tmp/ccPQUUFj.s:172    .text.LoopFillZerobss:0000002c $d
+     /tmp/ccPQUUFj.s:179    .text.__gcc_data_init:00000000 $t
+     /tmp/ccPQUUFj.s:185    .text.__gcc_data_init:00000000 __gcc_data_init
+     /tmp/ccPQUUFj.s:213    .text.LoopCleanDataInit:00000000 $t
+     /tmp/ccPQUUFj.s:219    .text.LoopCleanDataInit:00000000 LoopCleanDataInit
+     /tmp/ccPQUUFj.s:281    .text.LoopCleanDataInit:0000002c $d
+     /tmp/ccPQUUFj.s:288    .text.__gcc_clean_data:00000000 $t
+     /tmp/ccPQUUFj.s:294    .text.__gcc_clean_data:00000000 __gcc_clean_data
+                           .group:00000000 wm4.0.e310b2036dcc8a4d3b16f3fea9ebd0de
+                           .group:00000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+
+UNDEFINED SYMBOLS
+_edata
+_sdata
+_sidata
+_ebss
+_sbss

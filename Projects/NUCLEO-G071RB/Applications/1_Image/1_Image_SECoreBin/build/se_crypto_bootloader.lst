@@ -1,0 +1,3026 @@
+ARM GAS  /tmp/ccxX10rW.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.arch armv6s-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.file	"se_crypto_bootloader.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Src/se_crypto_bootloader.c"
+  18              		.section	.text.SE_CRYPTO_Encrypt_Init,"ax",%progbits
+  19              		.align	1
+  20              		.global	SE_CRYPTO_Encrypt_Init
+  21              		.syntax unified
+  22              		.code	16
+  23              		.thumb_func
+  25              	SE_CRYPTO_Encrypt_Init:
+  26              	.LVL0:
+  27              	.LFB183:
+   1:Src/se_crypto_bootloader.c **** /**
+   2:Src/se_crypto_bootloader.c ****   ******************************************************************************
+   3:Src/se_crypto_bootloader.c ****   * @file    se_crypto_bootloader.c
+   4:Src/se_crypto_bootloader.c ****   * @author  MCD Application Team
+   5:Src/se_crypto_bootloader.c ****   * @brief   Secure Engine CRYPTO module.
+   6:Src/se_crypto_bootloader.c ****   *          This file provides set of firmware functions to manage SE Crypto
+   7:Src/se_crypto_bootloader.c ****   *          functionalities. These services are used by the bootloader.
+   8:Src/se_crypto_bootloader.c ****   ******************************************************************************
+   9:Src/se_crypto_bootloader.c ****   * @attention
+  10:Src/se_crypto_bootloader.c ****   *
+  11:Src/se_crypto_bootloader.c ****   * Copyright (c) 2017 STMicroelectronics.
+  12:Src/se_crypto_bootloader.c ****   * All rights reserved.
+  13:Src/se_crypto_bootloader.c ****   *
+  14:Src/se_crypto_bootloader.c ****   * This software is licensed under terms that can be found in the LICENSE file in
+  15:Src/se_crypto_bootloader.c ****   * the root directory of this software component.
+  16:Src/se_crypto_bootloader.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  17:Src/se_crypto_bootloader.c ****   *
+  18:Src/se_crypto_bootloader.c ****   ******************************************************************************
+  19:Src/se_crypto_bootloader.c ****   */
+  20:Src/se_crypto_bootloader.c **** 
+  21:Src/se_crypto_bootloader.c **** /* Includes ------------------------------------------------------------------*/
+  22:Src/se_crypto_bootloader.c **** #include <string.h>               /* added for memcpy */
+  23:Src/se_crypto_bootloader.c **** #include "se_crypto_bootloader.h"
+  24:Src/se_crypto_bootloader.c **** #include "se_crypto_common.h"     /* re-use common crypto code (wrapper to cryptolib in this exampl
+  25:Src/se_crypto_bootloader.c **** #include "se_low_level.h"         /* required for assert_param */
+  26:Src/se_crypto_bootloader.c **** #include "se_key.h"               /* required to access the keys when not provided as input paramet
+  27:Src/se_crypto_bootloader.c ****                                      authentication) */
+  28:Src/se_crypto_bootloader.c **** #if defined(__CC_ARM) || defined(__ARMCC_VERSION)
+  29:Src/se_crypto_bootloader.c **** #include "mapping_sbsfu.h"
+  30:Src/se_crypto_bootloader.c **** #elif defined (__ICCARM__) || defined(__GNUC__)
+  31:Src/se_crypto_bootloader.c **** #include "mapping_export.h"
+ARM GAS  /tmp/ccxX10rW.s 			page 2
+
+
+  32:Src/se_crypto_bootloader.c **** #endif /* __ICCARM__ || __GNUC__ */
+  33:Src/se_crypto_bootloader.c **** 
+  34:Src/se_crypto_bootloader.c **** /** @addtogroup SE Secure Engine
+  35:Src/se_crypto_bootloader.c ****   * @{
+  36:Src/se_crypto_bootloader.c ****   */
+  37:Src/se_crypto_bootloader.c **** 
+  38:Src/se_crypto_bootloader.c **** /** @addtogroup SE_CORE SE Core
+  39:Src/se_crypto_bootloader.c ****   * @{
+  40:Src/se_crypto_bootloader.c ****   */
+  41:Src/se_crypto_bootloader.c **** 
+  42:Src/se_crypto_bootloader.c **** /** @defgroup  SE_CRYPTO SE Crypto
+  43:Src/se_crypto_bootloader.c ****   * @brief Crypto services (used by the bootloader and common crypto functions)
+  44:Src/se_crypto_bootloader.c ****   * @{
+  45:Src/se_crypto_bootloader.c ****   */
+  46:Src/se_crypto_bootloader.c **** 
+  47:Src/se_crypto_bootloader.c **** /** @defgroup  SE_CRYPTO_BOOTLOADER SE Crypto for Bootloader
+  48:Src/se_crypto_bootloader.c ****   * @brief Crypto functions used by the bootloader.
+  49:Src/se_crypto_bootloader.c ****   * @note In this example: \li the AES GCM crypto scheme is supported (@ref SECBOOT_AES128_GCM_AES1
+  50:Src/se_crypto_bootloader.c ****   *                        \li the ECC DSA without encryption crypto scheme is supported
+  51:Src/se_crypto_bootloader.c ****   *                        \li (@ref SECBOOT_ECCDSA_WITHOUT_ENCRYPT_SHA256),
+  52:Src/se_crypto_bootloader.c ****   *                        \li the ECC DSA+AES-CBC crypto scheme is supported
+  53:Src/se_crypto_bootloader.c ****   *                        \li (@ref SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256).
+  54:Src/se_crypto_bootloader.c ****   * @{
+  55:Src/se_crypto_bootloader.c ****   */
+  56:Src/se_crypto_bootloader.c **** 
+  57:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Variables Private Variables
+  58:Src/se_crypto_bootloader.c ****   * @{
+  59:Src/se_crypto_bootloader.c ****   */
+  60:Src/se_crypto_bootloader.c **** 
+  61:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+  62:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Variables_Symmeric_Key Symmetric Key Handling
+  63:Src/se_crypto_bootloader.c ****   *  @brief Variable(s) used to handle the symmetric key(s).
+  64:Src/se_crypto_bootloader.c ****   *  @note All these variables must be located in protected memory.
+  65:Src/se_crypto_bootloader.c ****   *  @{
+  66:Src/se_crypto_bootloader.c ****   */
+  67:Src/se_crypto_bootloader.c **** 
+  68:Src/se_crypto_bootloader.c **** static uint8_t m_aSE_FirmwareKey[SE_SYMKEY_LEN];        /* Variable used to store the Key inside th
+  69:Src/se_crypto_bootloader.c **** 
+  70:Src/se_crypto_bootloader.c **** 
+  71:Src/se_crypto_bootloader.c **** /**
+  72:Src/se_crypto_bootloader.c ****   * @}
+  73:Src/se_crypto_bootloader.c ****   */
+  74:Src/se_crypto_bootloader.c **** 
+  75:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+  76:Src/se_crypto_bootloader.c **** 
+  77:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+  78:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Variables_AES_GCM AES GCM Private Variables
+  79:Src/se_crypto_bootloader.c ****   * @Private variables used for AES GCM symmetric crypto
+  80:Src/se_crypto_bootloader.c ****   * @{
+  81:Src/se_crypto_bootloader.c ****   */
+  82:Src/se_crypto_bootloader.c **** extern AESGCMctx_stt m_xSE_AESGCMCtx; /*!<Variable used to store the AES128 context */
+  83:Src/se_crypto_bootloader.c **** 
+  84:Src/se_crypto_bootloader.c **** /**
+  85:Src/se_crypto_bootloader.c ****   * @}
+  86:Src/se_crypto_bootloader.c ****   */
+  87:Src/se_crypto_bootloader.c **** 
+  88:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ARM GAS  /tmp/ccxX10rW.s 			page 3
+
+
+  89:Src/se_crypto_bootloader.c **** 
+  90:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+  91:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Variables_AES_CBC AES CBC variables
+  92:Src/se_crypto_bootloader.c ****   *  @brief  Advanced Encryption Standard (AES), CBC (Cipher-Block Chaining) with support for Ciphe
+  93:Src/se_crypto_bootloader.c ****   *  @note   We do not use local variable(s) because we want this to be in the protected area (and 
+  94:Src/se_crypto_bootloader.c ****   protected),
+  95:Src/se_crypto_bootloader.c ****   *          and also because the contexts are used to store internal states.
+  96:Src/se_crypto_bootloader.c ****   *  @{
+  97:Src/se_crypto_bootloader.c ****   */
+  98:Src/se_crypto_bootloader.c **** static AESCBCctx_stt m_AESCBCctx; /*!<Variable used to store the AES CBC context */
+  99:Src/se_crypto_bootloader.c **** /**
+ 100:Src/se_crypto_bootloader.c ****   * @}
+ 101:Src/se_crypto_bootloader.c ****   */
+ 102:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 103:Src/se_crypto_bootloader.c **** 
+ 104:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+ 105:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Variables_SHA256 SHA256 variables
+ 106:Src/se_crypto_bootloader.c ****   *  @brief  Secure Hash Algorithm SHA-256.
+ 107:Src/se_crypto_bootloader.c ****   *  @note   We do not use local variable(s) because the context is used to store internal states.
+ 108:Src/se_crypto_bootloader.c ****   *  @{
+ 109:Src/se_crypto_bootloader.c ****   */
+ 110:Src/se_crypto_bootloader.c **** static SHA256ctx_stt m_SHA256ctx; /*!< Variable used to store the SHA256 context (this one does not
+ 111:Src/se_crypto_bootloader.c ****                                        protected as it is a HASH) */
+ 112:Src/se_crypto_bootloader.c **** 
+ 113:Src/se_crypto_bootloader.c **** /**
+ 114:Src/se_crypto_bootloader.c ****   * @}
+ 115:Src/se_crypto_bootloader.c ****   */
+ 116:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 117:Src/se_crypto_bootloader.c **** 
+ 118:Src/se_crypto_bootloader.c **** 
+ 119:Src/se_crypto_bootloader.c **** 
+ 120:Src/se_crypto_bootloader.c **** /**
+ 121:Src/se_crypto_bootloader.c ****   * @}
+ 122:Src/se_crypto_bootloader.c ****   */
+ 123:Src/se_crypto_bootloader.c **** 
+ 124:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Macros Private Macros
+ 125:Src/se_crypto_bootloader.c ****   * @{
+ 126:Src/se_crypto_bootloader.c ****   */
+ 127:Src/se_crypto_bootloader.c **** 
+ 128:Src/se_crypto_bootloader.c **** 
+ 129:Src/se_crypto_bootloader.c **** /**
+ 130:Src/se_crypto_bootloader.c ****   * @brief Clean up the RAM area storing the Firmware key.
+ 131:Src/se_crypto_bootloader.c ****   *        This applies only to the secret symmetric key loaded with SE_ReadKey_x().
+ 132:Src/se_crypto_bootloader.c ****   */
+ 133:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 134:Src/se_crypto_bootloader.c **** #define SE_CLEAN_UP_FW_KEY() \
+ 135:Src/se_crypto_bootloader.c ****   do { \
+ 136:Src/se_crypto_bootloader.c ****     (void)memcpy(m_aSE_FirmwareKey, (void const *)(SE_STARTUP_REGION_ROM_START + (SysTick->VAL % 0x
+ 137:Src/se_crypto_bootloader.c ****                  sizeof(m_aSE_FirmwareKey)); \
+ 138:Src/se_crypto_bootloader.c ****     (void)memcpy((void *)&m_AESCBCctx, (void const *)(SE_STARTUP_REGION_ROM_START + (SysTick->VAL %
+ 139:Src/se_crypto_bootloader.c ****                  sizeof(m_AESCBCctx)); \
+ 140:Src/se_crypto_bootloader.c ****   } while(0)
+ 141:Src/se_crypto_bootloader.c **** 
+ 142:Src/se_crypto_bootloader.c **** #elif (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 143:Src/se_crypto_bootloader.c **** 
+ 144:Src/se_crypto_bootloader.c **** #define SE_CLEAN_UP_FW_KEY() \
+ 145:Src/se_crypto_bootloader.c ****   do { \
+ARM GAS  /tmp/ccxX10rW.s 			page 4
+
+
+ 146:Src/se_crypto_bootloader.c ****     (void)memcpy(m_aSE_FirmwareKey, (void const *)(SE_STARTUP_REGION_ROM_START + (SysTick->VAL % 0x
+ 147:Src/se_crypto_bootloader.c ****                  sizeof(m_aSE_FirmwareKey)); \
+ 148:Src/se_crypto_bootloader.c ****     (void)memcpy((void *)&m_xSE_AESGCMCtx, (void const *)(SE_STARTUP_REGION_ROM_START + (SysTick->V
+ 149:Src/se_crypto_bootloader.c ****                  sizeof(m_xSE_AESGCMCtx)); \
+ 150:Src/se_crypto_bootloader.c ****   } while(0)
+ 151:Src/se_crypto_bootloader.c **** 
+ 152:Src/se_crypto_bootloader.c **** #else
+ 153:Src/se_crypto_bootloader.c **** 
+ 154:Src/se_crypto_bootloader.c **** #define SE_CLEAN_UP_FW_KEY() do { /* do nothing */; } while(0)
+ 155:Src/se_crypto_bootloader.c **** 
+ 156:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 157:Src/se_crypto_bootloader.c **** 
+ 158:Src/se_crypto_bootloader.c **** /**
+ 159:Src/se_crypto_bootloader.c ****   * @brief Clean up the RAM area storing the ECC Public Key.
+ 160:Src/se_crypto_bootloader.c ****   *        This applies only to the public asymmetric key loaded with SE_ReadKey_Pub().
+ 161:Src/se_crypto_bootloader.c ****   */
+ 162:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+ 163:Src/se_crypto_bootloader.c **** 
+ 164:Src/se_crypto_bootloader.c **** #define SE_CLEAN_UP_PUB_KEY() \
+ 165:Src/se_crypto_bootloader.c ****   do { \
+ 166:Src/se_crypto_bootloader.c ****     (void)memcpy(m_aSE_PubKey, (void const *)(SE_STARTUP_REGION_ROM_START + (SysTick->VAL % 0xFFFU)
+ 167:Src/se_crypto_bootloader.c ****                  sizeof(m_aSE_PubKey)); \
+ 168:Src/se_crypto_bootloader.c ****     (void)memcpy((void *)&m_SHA256ctx, (void const *)(SE_STARTUP_REGION_ROM_START + (SysTick->VAL %
+ 169:Src/se_crypto_bootloader.c ****                  sizeof(m_SHA256ctx)); \
+ 170:Src/se_crypto_bootloader.c ****   } while(0)
+ 171:Src/se_crypto_bootloader.c **** 
+ 172:Src/se_crypto_bootloader.c **** #else
+ 173:Src/se_crypto_bootloader.c **** 
+ 174:Src/se_crypto_bootloader.c **** #define SE_CLEAN_UP_PUB_KEY() do { /* do nothing */; } while(0)
+ 175:Src/se_crypto_bootloader.c **** 
+ 176:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 177:Src/se_crypto_bootloader.c **** 
+ 178:Src/se_crypto_bootloader.c **** /**
+ 179:Src/se_crypto_bootloader.c ****   * @}
+ 180:Src/se_crypto_bootloader.c ****   */
+ 181:Src/se_crypto_bootloader.c **** 
+ 182:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Functions Private Functions
+ 183:Src/se_crypto_bootloader.c ****   *  @brief These are private functions used internally by the crypto services provided to the boot
+ 184:Src/se_crypto_bootloader.c ****   *         i.e. the exported functions implemented in this file (@ref SE_CRYPTO_BOOTLOADER_Exporte
+ 185:Src/se_crypto_bootloader.c ****   *  @note  These functions are not part of the common crypto code because they are used by the boo
+ 186:Src/se_crypto_bootloader.c ****   *         only.
+ 187:Src/se_crypto_bootloader.c ****   * @{
+ 188:Src/se_crypto_bootloader.c ****   */
+ 189:Src/se_crypto_bootloader.c **** 
+ 190:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Functions_AES AES Functions
+ 191:Src/se_crypto_bootloader.c ****   *  @brief Helpers for AES: high level wrappers for the Cryptolib.
+ 192:Src/se_crypto_bootloader.c ****   *  @note This group of functions is empty because we do not provide high level wrappers for AES.
+ 193:Src/se_crypto_bootloader.c ****   * @{
+ 194:Src/se_crypto_bootloader.c ****   */
+ 195:Src/se_crypto_bootloader.c **** 
+ 196:Src/se_crypto_bootloader.c **** /* no high level wrappers provided for AES primitives: the Cryptolib APIs are called directly from 
+ 197:Src/se_crypto_bootloader.c ****   (@ref SE_CRYPTO_BOOTLOADER_Exported_Functions) */
+ 198:Src/se_crypto_bootloader.c **** 
+ 199:Src/se_crypto_bootloader.c **** /**
+ 200:Src/se_crypto_bootloader.c ****   * @}
+ 201:Src/se_crypto_bootloader.c ****   */
+ 202:Src/se_crypto_bootloader.c **** 
+ARM GAS  /tmp/ccxX10rW.s 			page 5
+
+
+ 203:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Functions_Readkey Readkey Functions
+ 204:Src/se_crypto_bootloader.c ****   *  @brief Read the relevant AES symmetric key.
+ 205:Src/se_crypto_bootloader.c ****   * @{
+ 206:Src/se_crypto_bootloader.c ****   */
+ 207:Src/se_crypto_bootloader.c **** 
+ 208:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+ 209:Src/se_crypto_bootloader.c **** /**
+ 210:Src/se_crypto_bootloader.c ****   * @brief  AES readkey function.
+ 211:Src/se_crypto_bootloader.c ****   * @param  pxSE_Metadata: Firmware metadata.
+ 212:Src/se_crypto_bootloader.c ****   * @retval none
+ 213:Src/se_crypto_bootloader.c ****   */
+ 214:Src/se_crypto_bootloader.c **** static void SE_CRYPTO_AES_ReadKey(SE_FwRawHeaderTypeDef *pxSE_Metadata)
+ 215:Src/se_crypto_bootloader.c **** {
+ 216:Src/se_crypto_bootloader.c ****   /* Read the AES Symmetric Key :
+ 217:Src/se_crypto_bootloader.c ****      - SFU1 / SE_ReadKey_1() ==> read key for SLOT_ACTIVE_1
+ 218:Src/se_crypto_bootloader.c ****      - SFU2 / SE_ReadKey_2() ==> read key for SLOT_ACTIVE_2
+ 219:Src/se_crypto_bootloader.c ****      - SFU3 / SE_ReadKey_3() ==> read key for SLOT_ACTIVE_3 */
+ 220:Src/se_crypto_bootloader.c ****   if (memcmp(pxSE_Metadata->SFUMagic, SFUM_1, strlen(SFUM_1)) == 0)
+ 221:Src/se_crypto_bootloader.c ****   {
+ 222:Src/se_crypto_bootloader.c ****     SE_ReadKey_1(&(m_aSE_FirmwareKey[0]));
+ 223:Src/se_crypto_bootloader.c ****   }
+ 224:Src/se_crypto_bootloader.c **** #if (SFU_NB_MAX_ACTIVE_IMAGE > 1U)
+ 225:Src/se_crypto_bootloader.c ****   else if (memcmp(pxSE_Metadata->SFUMagic, SFUM_2, strlen(SFUM_2)) == 0)
+ 226:Src/se_crypto_bootloader.c ****   {
+ 227:Src/se_crypto_bootloader.c ****     SE_ReadKey_2(&(m_aSE_FirmwareKey[0]));
+ 228:Src/se_crypto_bootloader.c ****   }
+ 229:Src/se_crypto_bootloader.c **** #endif  /* (NB_FW_IMAGES > 1) */
+ 230:Src/se_crypto_bootloader.c **** #if (SFU_NB_MAX_ACTIVE_IMAGE > 2U)
+ 231:Src/se_crypto_bootloader.c ****   else if (memcmp(pxSE_Metadata->SFUMagic, SFUM_3, strlen(SFUM_3)) == 0)
+ 232:Src/se_crypto_bootloader.c ****   {
+ 233:Src/se_crypto_bootloader.c ****     SE_ReadKey_3(&(m_aSE_FirmwareKey[0]));
+ 234:Src/se_crypto_bootloader.c ****   }
+ 235:Src/se_crypto_bootloader.c **** #endif  /* (NB_FW_IMAGES > 2) */
+ 236:Src/se_crypto_bootloader.c ****   else
+ 237:Src/se_crypto_bootloader.c ****   {
+ 238:Src/se_crypto_bootloader.c ****     /* nothing to do */
+ 239:Src/se_crypto_bootloader.c ****     ;
+ 240:Src/se_crypto_bootloader.c ****   }
+ 241:Src/se_crypto_bootloader.c **** }
+ 242:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 243:Src/se_crypto_bootloader.c **** 
+ 244:Src/se_crypto_bootloader.c **** 
+ 245:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+ 246:Src/se_crypto_bootloader.c **** /**
+ 247:Src/se_crypto_bootloader.c ****   * @brief  Read public key function.
+ 248:Src/se_crypto_bootloader.c ****   * @param  pxSE_Metadata: Firmware metadata.
+ 249:Src/se_crypto_bootloader.c ****   * @retval none
+ 250:Src/se_crypto_bootloader.c ****   */
+ 251:Src/se_crypto_bootloader.c **** static void SE_CRYPTO_ReadKey_Pub(SE_FwRawHeaderTypeDef *pxSE_Metadata, uint8_t *paSE_PubKey)
+ 252:Src/se_crypto_bootloader.c **** {
+ 253:Src/se_crypto_bootloader.c ****   /* Read the AES Symmetric Key :
+ 254:Src/se_crypto_bootloader.c ****      - SFU1 / SE_ReadKey_1() ==> read key for SLOT_ACTIVE_1
+ 255:Src/se_crypto_bootloader.c ****      - SFU2 / SE_ReadKey_2() ==> read key for SLOT_ACTIVE_2
+ 256:Src/se_crypto_bootloader.c ****      - SFU3 / SE_ReadKey_3() ==> read key for SLOT_ACTIVE_3 */
+ 257:Src/se_crypto_bootloader.c ****   if (memcmp(pxSE_Metadata->SFUMagic, SFUM_1, strlen(SFUM_1)) == 0)
+ 258:Src/se_crypto_bootloader.c ****   {
+ 259:Src/se_crypto_bootloader.c ****     SE_ReadKey_1_Pub(paSE_PubKey);
+ARM GAS  /tmp/ccxX10rW.s 			page 6
+
+
+ 260:Src/se_crypto_bootloader.c ****   }
+ 261:Src/se_crypto_bootloader.c **** #if (SFU_NB_MAX_ACTIVE_IMAGE > 1U)
+ 262:Src/se_crypto_bootloader.c ****   else if (memcmp(pxSE_Metadata->SFUMagic, SFUM_2, strlen(SFUM_2)) == 0)
+ 263:Src/se_crypto_bootloader.c ****   {
+ 264:Src/se_crypto_bootloader.c ****     SE_ReadKey_2_Pub(paSE_PubKey);
+ 265:Src/se_crypto_bootloader.c ****   }
+ 266:Src/se_crypto_bootloader.c **** #endif  /* (NB_FW_IMAGES > 1) */
+ 267:Src/se_crypto_bootloader.c **** #if (SFU_NB_MAX_ACTIVE_IMAGE > 2U)
+ 268:Src/se_crypto_bootloader.c ****   else if (memcmp(pxSE_Metadata->SFUMagic, SFUM_3, strlen(SFUM_3)) == 0)
+ 269:Src/se_crypto_bootloader.c ****   {
+ 270:Src/se_crypto_bootloader.c ****     SE_ReadKey_3_Pub(paSE_PubKey);
+ 271:Src/se_crypto_bootloader.c ****   }
+ 272:Src/se_crypto_bootloader.c **** #endif  /* (NB_FW_IMAGES > 2) */
+ 273:Src/se_crypto_bootloader.c ****   else
+ 274:Src/se_crypto_bootloader.c ****   {
+ 275:Src/se_crypto_bootloader.c ****     /* nothing to do */
+ 276:Src/se_crypto_bootloader.c ****     ;
+ 277:Src/se_crypto_bootloader.c ****   }
+ 278:Src/se_crypto_bootloader.c **** }
+ 279:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 280:Src/se_crypto_bootloader.c **** 
+ 281:Src/se_crypto_bootloader.c **** /**
+ 282:Src/se_crypto_bootloader.c ****   * @}
+ 283:Src/se_crypto_bootloader.c ****   */
+ 284:Src/se_crypto_bootloader.c **** 
+ 285:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Private_Functions_HASH Hash Functions
+ 286:Src/se_crypto_bootloader.c ****   *  @brief Hash algorithm(s): high level wrapper(s) for the Cryptolib.
+ 287:Src/se_crypto_bootloader.c ****   * @{
+ 288:Src/se_crypto_bootloader.c ****   */
+ 289:Src/se_crypto_bootloader.c **** 
+ 290:Src/se_crypto_bootloader.c **** 
+ 291:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+ 292:Src/se_crypto_bootloader.c **** /**
+ 293:Src/se_crypto_bootloader.c ****   * @brief  SHA256 HASH digest compute example.
+ 294:Src/se_crypto_bootloader.c ****   * @param  InputMessage: pointer to input message to be hashed.
+ 295:Src/se_crypto_bootloader.c ****   * @param  InputMessageLength: input data message length in byte.
+ 296:Src/se_crypto_bootloader.c ****   * @param  MessageDigest: pointer to output parameter that will handle message digest
+ 297:Src/se_crypto_bootloader.c ****   * @param  MessageDigestLength: pointer to output digest length.
+ 298:Src/se_crypto_bootloader.c ****   * @retval error status: can be HASH_SUCCESS if success or one of
+ 299:Src/se_crypto_bootloader.c ****   *         HASH_ERR_BAD_PARAMETER, HASH_ERR_BAD_CONTEXT,
+ 300:Src/se_crypto_bootloader.c ****   *         HASH_ERR_BAD_OPERATION if an error occurred.
+ 301:Src/se_crypto_bootloader.c ****   */
+ 302:Src/se_crypto_bootloader.c **** static int32_t SE_CRYPTO_SHA256_HASH_DigestCompute(const uint8_t *InputMessage, const int32_t Input
+ 303:Src/se_crypto_bootloader.c ****                                                    uint8_t *MessageDigest, int32_t *MessageDigestLe
+ 304:Src/se_crypto_bootloader.c **** {
+ 305:Src/se_crypto_bootloader.c ****   SHA256ctx_stt P_pSHA256ctx;
+ 306:Src/se_crypto_bootloader.c ****   int32_t error_status;
+ 307:Src/se_crypto_bootloader.c **** 
+ 308:Src/se_crypto_bootloader.c ****   /* Set the size of the desired hash digest */
+ 309:Src/se_crypto_bootloader.c ****   P_pSHA256ctx.mTagSize = CRL_SHA256_SIZE;
+ 310:Src/se_crypto_bootloader.c **** 
+ 311:Src/se_crypto_bootloader.c ****   /* Set flag field to default value */
+ 312:Src/se_crypto_bootloader.c ****   P_pSHA256ctx.mFlags = E_HASH_DEFAULT;
+ 313:Src/se_crypto_bootloader.c **** 
+ 314:Src/se_crypto_bootloader.c ****   error_status = SHA256_Init(&P_pSHA256ctx);
+ 315:Src/se_crypto_bootloader.c **** 
+ 316:Src/se_crypto_bootloader.c ****   /* check for initialization errors */
+ARM GAS  /tmp/ccxX10rW.s 			page 7
+
+
+ 317:Src/se_crypto_bootloader.c ****   if (error_status == HASH_SUCCESS)
+ 318:Src/se_crypto_bootloader.c ****   {
+ 319:Src/se_crypto_bootloader.c ****     /* Add data to be hashed */
+ 320:Src/se_crypto_bootloader.c ****     error_status = SHA256_Append(&P_pSHA256ctx,
+ 321:Src/se_crypto_bootloader.c ****                                  InputMessage,
+ 322:Src/se_crypto_bootloader.c ****                                  InputMessageLength);
+ 323:Src/se_crypto_bootloader.c **** 
+ 324:Src/se_crypto_bootloader.c ****     if (error_status == HASH_SUCCESS)
+ 325:Src/se_crypto_bootloader.c ****     {
+ 326:Src/se_crypto_bootloader.c ****       /* retrieve */
+ 327:Src/se_crypto_bootloader.c ****       error_status = SHA256_Finish(&P_pSHA256ctx, MessageDigest, MessageDigestLength);
+ 328:Src/se_crypto_bootloader.c ****     }
+ 329:Src/se_crypto_bootloader.c ****   }
+ 330:Src/se_crypto_bootloader.c **** 
+ 331:Src/se_crypto_bootloader.c ****   return error_status;
+ 332:Src/se_crypto_bootloader.c **** }
+ 333:Src/se_crypto_bootloader.c **** 
+ 334:Src/se_crypto_bootloader.c **** 
+ 335:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 336:Src/se_crypto_bootloader.c **** 
+ 337:Src/se_crypto_bootloader.c **** /**
+ 338:Src/se_crypto_bootloader.c ****   * @}
+ 339:Src/se_crypto_bootloader.c ****   */
+ 340:Src/se_crypto_bootloader.c **** /**
+ 341:Src/se_crypto_bootloader.c ****   * @}
+ 342:Src/se_crypto_bootloader.c ****   */
+ 343:Src/se_crypto_bootloader.c **** 
+ 344:Src/se_crypto_bootloader.c **** 
+ 345:Src/se_crypto_bootloader.c **** /** @defgroup SE_CRYPTO_BOOTLOADER_Exported_Functions Exported Functions
+ 346:Src/se_crypto_bootloader.c ****   * @brief The implementation of these functions is crypto-dependent (but the API is crypto-agnosti
+ 347:Src/se_crypto_bootloader.c ****   *        These functions use the generic SE_FwRawHeaderTypeDef structure to fill crypto specific 
+ 348:Src/se_crypto_bootloader.c ****   * @{
+ 349:Src/se_crypto_bootloader.c ****   */
+ 350:Src/se_crypto_bootloader.c **** 
+ 351:Src/se_crypto_bootloader.c **** /**
+ 352:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Encrypt Init function.
+ 353:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Encrypt_Init function included in the protected area.
+ 354:Src/se_crypto_bootloader.c ****   * @param pxSE_Metadata: Firmware metadata.
+ 355:Src/se_crypto_bootloader.c ****   * @param SE_FwType: Type of Fw Image.
+ 356:Src/se_crypto_bootloader.c ****   *        This parameter can be SE_FW_IMAGE_COMPLETE or SE_FW_IMAGE_PARTIAL.
+ 357:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 358:Src/se_crypto_bootloader.c ****   */
+ 359:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Encrypt_Init(SE_FwRawHeaderTypeDef *pxSE_Metadata, uint32_t SE_FwType)
+ 360:Src/se_crypto_bootloader.c **** {
+  28              		.loc 1 360 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 361:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+  33              		.loc 1 361 3 view .LVU1
+ 362:Src/se_crypto_bootloader.c **** 
+ 363:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 364:Src/se_crypto_bootloader.c ****   SE_GCMInitTypeDef se_gcm_init;
+ 365:Src/se_crypto_bootloader.c ****   /* Variables to handle FW image */
+ 366:Src/se_crypto_bootloader.c ****   uint32_t fw_size;
+ 367:Src/se_crypto_bootloader.c ****   uint8_t *fw_tag;
+ARM GAS  /tmp/ccxX10rW.s 			page 8
+
+
+ 368:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 369:Src/se_crypto_bootloader.c ****   /* The bootloader does not need the encrypt service in this crypto scheme: reject this request la
+ 370:Src/se_crypto_bootloader.c **** #else
+ 371:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 372:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM */
+ 373:Src/se_crypto_bootloader.c **** 
+ 374:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 375:Src/se_crypto_bootloader.c ****   if (pxSE_Metadata == NULL)
+  34              		.loc 1 375 3 view .LVU2
+ 376:Src/se_crypto_bootloader.c ****   {
+ 377:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 378:Src/se_crypto_bootloader.c ****   }
+ 379:Src/se_crypto_bootloader.c **** 
+ 380:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 381:Src/se_crypto_bootloader.c ****   /* Check the parameters value and set fw_size and fw_tag to check */
+ 382:Src/se_crypto_bootloader.c ****   if (SE_FwType == SE_FW_IMAGE_COMPLETE)
+ 383:Src/se_crypto_bootloader.c ****   {
+ 384:Src/se_crypto_bootloader.c ****     fw_size = pxSE_Metadata->FwSize;
+ 385:Src/se_crypto_bootloader.c ****     fw_tag = pxSE_Metadata->FwTag;
+ 386:Src/se_crypto_bootloader.c ****   }
+ 387:Src/se_crypto_bootloader.c ****   else if (SE_FwType == SE_FW_IMAGE_PARTIAL)
+ 388:Src/se_crypto_bootloader.c ****   {
+ 389:Src/se_crypto_bootloader.c ****     fw_size = pxSE_Metadata->PartialFwSize;
+ 390:Src/se_crypto_bootloader.c ****     fw_tag = pxSE_Metadata->PartialFwTag;
+ 391:Src/se_crypto_bootloader.c ****   }
+ 392:Src/se_crypto_bootloader.c ****   else
+ 393:Src/se_crypto_bootloader.c ****   {
+ 394:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 395:Src/se_crypto_bootloader.c ****   }
+ 396:Src/se_crypto_bootloader.c **** 
+ 397:Src/se_crypto_bootloader.c ****   /* Read the Symmetric Key */
+ 398:Src/se_crypto_bootloader.c ****   SE_CRYPTO_AES_ReadKey(pxSE_Metadata);
+ 399:Src/se_crypto_bootloader.c **** 
+ 400:Src/se_crypto_bootloader.c ****   /* Prepare a local structure with appropriate types (this step could be skipped) */
+ 401:Src/se_crypto_bootloader.c ****   se_gcm_init.HeaderSize = 0;
+ 402:Src/se_crypto_bootloader.c ****   se_gcm_init.PayloadSize = (int32_t)fw_size;
+ 403:Src/se_crypto_bootloader.c ****   se_gcm_init.pNonce = (uint8_t *)pxSE_Metadata->Nonce;
+ 404:Src/se_crypto_bootloader.c ****   se_gcm_init.NonceSize = SE_NONCE_LEN;
+ 405:Src/se_crypto_bootloader.c ****   se_gcm_init.pTag = (uint8_t *)fw_tag;
+ 406:Src/se_crypto_bootloader.c ****   se_gcm_init.TagSize = (int32_t)SE_TAG_LEN;
+ 407:Src/se_crypto_bootloader.c **** 
+ 408:Src/se_crypto_bootloader.c **** 
+ 409:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 410:Src/se_crypto_bootloader.c ****   if ((se_gcm_init.pNonce == NULL) || (se_gcm_init.pTag == NULL))
+ 411:Src/se_crypto_bootloader.c ****   {
+ 412:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 413:Src/se_crypto_bootloader.c ****   }
+ 414:Src/se_crypto_bootloader.c **** 
+ 415:Src/se_crypto_bootloader.c ****   /* Check the parameters */
+ 416:Src/se_crypto_bootloader.c ****   assert_param(IS_SE_CRYPTO_AES_GCM_NONCE_SIZE(se_gcm_init.NonceSize));
+ 417:Src/se_crypto_bootloader.c ****   assert_param(IS_SE_CRYPTO_AES_GCM_TAG_SIZE(se_gcm_init.TagSize));
+ 418:Src/se_crypto_bootloader.c **** 
+ 419:Src/se_crypto_bootloader.c ****   /* Common Crypto function call*/
+ 420:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Encrypt_Init(m_aSE_FirmwareKey, &se_gcm_init);
+ 421:Src/se_crypto_bootloader.c **** 
+ 422:Src/se_crypto_bootloader.c **** 
+ 423:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ARM GAS  /tmp/ccxX10rW.s 			page 9
+
+
+ 424:Src/se_crypto_bootloader.c **** 
+ 425:Src/se_crypto_bootloader.c ****   /* The bootloader does not need the encrypt service in this crypto scheme: reject this request */
+ 426:Src/se_crypto_bootloader.c ****   /* Prevent unused argument(s) compilation warning */
+ 427:Src/se_crypto_bootloader.c ****   UNUSED(SE_FwType);
+ 428:Src/se_crypto_bootloader.c ****   e_ret_status = SE_ERROR;
+ 429:Src/se_crypto_bootloader.c **** #else
+ 430:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 431:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 432:Src/se_crypto_bootloader.c **** 
+ 433:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 434:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 435:Src/se_crypto_bootloader.c **** }
+  35              		.loc 1 435 1 is_stmt 0 view .LVU3
+  36 0000 0048     		ldr	r0, .L2
+  37              	.LVL1:
+  38              		.loc 1 435 1 view .LVU4
+  39              		@ sp needed
+  40 0002 7047     		bx	lr
+  41              	.L3:
+  42              		.align	2
+  43              	.L2:
+  44 0004 99870100 		.word	100249
+  45              		.cfi_endproc
+  46              	.LFE183:
+  48              		.section	.text.SE_CRYPTO_Header_Append,"ax",%progbits
+  49              		.align	1
+  50              		.global	SE_CRYPTO_Header_Append
+  51              		.syntax unified
+  52              		.code	16
+  53              		.thumb_func
+  55              	SE_CRYPTO_Header_Append:
+  56              	.LVL2:
+  57              	.LFB184:
+ 436:Src/se_crypto_bootloader.c **** 
+ 437:Src/se_crypto_bootloader.c **** /**
+ 438:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Header Append function.
+ 439:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Header_Append function included in the protected area.
+ 440:Src/se_crypto_bootloader.c ****   * @param pInputBuffer: pointer to Input Buffer.
+ 441:Src/se_crypto_bootloader.c ****   * @param InputSize: Input Size (bytes).
+ 442:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 443:Src/se_crypto_bootloader.c ****   */
+ 444:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Header_Append(const uint8_t *pInputBuffer, int32_t InputSize)
+ 445:Src/se_crypto_bootloader.c **** {
+  58              		.loc 1 445 1 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+ 446:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+  63              		.loc 1 446 3 view .LVU6
+ 447:Src/se_crypto_bootloader.c **** 
+ 448:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 449:Src/se_crypto_bootloader.c ****   if (pInputBuffer == NULL)
+  64              		.loc 1 449 3 view .LVU7
+ 450:Src/se_crypto_bootloader.c ****   {
+ 451:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 452:Src/se_crypto_bootloader.c ****   }
+ARM GAS  /tmp/ccxX10rW.s 			page 10
+
+
+ 453:Src/se_crypto_bootloader.c **** 
+ 454:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 455:Src/se_crypto_bootloader.c ****   /* Common Crypto function call*/
+ 456:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Header_Append(pInputBuffer, InputSize);
+ 457:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 458:Src/se_crypto_bootloader.c ****   /* The bootloader does not need this service in this crypto scheme: reject this request */
+ 459:Src/se_crypto_bootloader.c ****   e_ret_status = SE_ERROR;
+ 460:Src/se_crypto_bootloader.c **** 
+ 461:Src/se_crypto_bootloader.c ****   /* Prevent unused argument(s) compilation warning */
+ 462:Src/se_crypto_bootloader.c ****   UNUSED(InputSize);
+ 463:Src/se_crypto_bootloader.c **** #else
+ 464:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 465:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM */
+ 466:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 467:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 468:Src/se_crypto_bootloader.c **** } /* SECBOOT_CRYPTO_SCHEME */
+  65              		.loc 1 468 1 is_stmt 0 view .LVU8
+  66 0000 0048     		ldr	r0, .L5
+  67              	.LVL3:
+  68              		.loc 1 468 1 view .LVU9
+  69              		@ sp needed
+  70 0002 7047     		bx	lr
+  71              	.L6:
+  72              		.align	2
+  73              	.L5:
+  74 0004 99870100 		.word	100249
+  75              		.cfi_endproc
+  76              	.LFE184:
+  78              		.section	.text.SE_CRYPTO_Encrypt_Append,"ax",%progbits
+  79              		.align	1
+  80              		.global	SE_CRYPTO_Encrypt_Append
+  81              		.syntax unified
+  82              		.code	16
+  83              		.thumb_func
+  85              	SE_CRYPTO_Encrypt_Append:
+  86              	.LVL4:
+  87              	.LFB185:
+ 469:Src/se_crypto_bootloader.c **** 
+ 470:Src/se_crypto_bootloader.c **** /**
+ 471:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Encrypt Append function.
+ 472:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Encrypt_Append function included in the protected area.
+ 473:Src/se_crypto_bootloader.c ****   * @param pInputBuffer: pointer to Input Buffer.
+ 474:Src/se_crypto_bootloader.c ****   * @param InputSize: Input Size (bytes).
+ 475:Src/se_crypto_bootloader.c ****   * @param pOutputBuffer: pointer to Output Buffer.
+ 476:Src/se_crypto_bootloader.c ****   * @param pOutputSize: pointer to Output Size (bytes).
+ 477:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 478:Src/se_crypto_bootloader.c ****   */
+ 479:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Encrypt_Append(const uint8_t *pInputBuffer, int32_t InputSize, uint8_t *pO
+ 480:Src/se_crypto_bootloader.c ****                                         int32_t *pOutputSize)
+ 481:Src/se_crypto_bootloader.c **** {
+  88              		.loc 1 481 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		@ link register save eliminated.
+ 482:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+  93              		.loc 1 482 3 view .LVU11
+ARM GAS  /tmp/ccxX10rW.s 			page 11
+
+
+ 483:Src/se_crypto_bootloader.c **** 
+ 484:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 485:Src/se_crypto_bootloader.c ****   if ((pInputBuffer == NULL) || (pOutputBuffer == NULL) || (pOutputSize == NULL))
+  94              		.loc 1 485 3 view .LVU12
+ 486:Src/se_crypto_bootloader.c ****   {
+ 487:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+  95              		.loc 1 487 5 view .LVU13
+ 488:Src/se_crypto_bootloader.c ****   }
+ 489:Src/se_crypto_bootloader.c **** 
+ 490:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 491:Src/se_crypto_bootloader.c **** 
+ 492:Src/se_crypto_bootloader.c ****   /* Common Crypto function call*/
+ 493:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Encrypt_Append(pInputBuffer, InputSize, pOutputBuffer, pOutputSi
+ 494:Src/se_crypto_bootloader.c **** 
+ 495:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 496:Src/se_crypto_bootloader.c ****   /* The bootloader does not need the encrypt service in this crypto scheme: reject this request */
+ 497:Src/se_crypto_bootloader.c ****   e_ret_status = SE_ERROR;
+ 498:Src/se_crypto_bootloader.c **** 
+ 499:Src/se_crypto_bootloader.c ****   /* Prevent unused argument(s) compilation warning */
+ 500:Src/se_crypto_bootloader.c ****   UNUSED(InputSize);
+ 501:Src/se_crypto_bootloader.c **** #else
+ 502:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 503:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM */
+ 504:Src/se_crypto_bootloader.c **** 
+ 505:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 506:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 507:Src/se_crypto_bootloader.c **** } /* SECBOOT_CRYPTO_SCHEME */
+  96              		.loc 1 507 1 is_stmt 0 view .LVU14
+  97 0000 0048     		ldr	r0, .L8
+  98              	.LVL5:
+  99              		.loc 1 507 1 view .LVU15
+ 100              		@ sp needed
+ 101 0002 7047     		bx	lr
+ 102              	.L9:
+ 103              		.align	2
+ 104              	.L8:
+ 105 0004 99870100 		.word	100249
+ 106              		.cfi_endproc
+ 107              	.LFE185:
+ 109              		.global	__aeabi_uidivmod
+ 110              		.section	.text.SE_CRYPTO_Encrypt_Finish,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	SE_CRYPTO_Encrypt_Finish
+ 113              		.syntax unified
+ 114              		.code	16
+ 115              		.thumb_func
+ 117              	SE_CRYPTO_Encrypt_Finish:
+ 118              	.LVL6:
+ 119              	.LFB186:
+ 508:Src/se_crypto_bootloader.c **** 
+ 509:Src/se_crypto_bootloader.c **** /**
+ 510:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Encrypt Finish function.
+ 511:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Encrypt_Finish function included in the protected area.
+ 512:Src/se_crypto_bootloader.c ****   * @param pOutputBuffer: pointer to Output Buffer.
+ 513:Src/se_crypto_bootloader.c ****   * @param pOutputSize: pointer to Output Size (bytes).
+ 514:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 515:Src/se_crypto_bootloader.c ****   */
+ARM GAS  /tmp/ccxX10rW.s 			page 12
+
+
+ 516:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Encrypt_Finish(uint8_t *pOutputBuffer, int32_t *pOutputSize)
+ 517:Src/se_crypto_bootloader.c **** {
+ 120              		.loc 1 517 1 is_stmt 1 view -0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 518:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 124              		.loc 1 518 3 view .LVU17
+ 519:Src/se_crypto_bootloader.c **** 
+ 520:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 521:Src/se_crypto_bootloader.c ****   if ((pOutputBuffer == NULL) || (pOutputSize == NULL))
+ 125              		.loc 1 521 3 view .LVU18
+ 517:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 126              		.loc 1 517 1 is_stmt 0 view .LVU19
+ 127 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 128              	.LCFI0:
+ 129              		.cfi_def_cfa_offset 24
+ 130              		.cfi_offset 3, -24
+ 131              		.cfi_offset 4, -20
+ 132              		.cfi_offset 5, -16
+ 133              		.cfi_offset 6, -12
+ 134              		.cfi_offset 7, -8
+ 135              		.cfi_offset 14, -4
+ 136 0002 0C4D     		ldr	r5, .L17
+ 522:Src/se_crypto_bootloader.c ****   {
+ 523:Src/se_crypto_bootloader.c ****     /* Clean-up the key in RAM */
+ 524:Src/se_crypto_bootloader.c ****     SE_CLEAN_UP_FW_KEY();
+ 525:Src/se_crypto_bootloader.c **** 
+ 526:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 527:Src/se_crypto_bootloader.c ****   }
+ 528:Src/se_crypto_bootloader.c **** 
+ 529:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 530:Src/se_crypto_bootloader.c **** 
+ 531:Src/se_crypto_bootloader.c ****   /* Common Crypto function call*/
+ 532:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Encrypt_Finish(pOutputBuffer, pOutputSize);
+ 533:Src/se_crypto_bootloader.c **** 
+ 534:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 535:Src/se_crypto_bootloader.c ****   /* The bootloader does not need the encrypt service in this crypto scheme: reject this request */
+ 536:Src/se_crypto_bootloader.c ****   e_ret_status = SE_ERROR;
+ 537:Src/se_crypto_bootloader.c **** #else
+ 538:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 539:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 540:Src/se_crypto_bootloader.c **** 
+ 541:Src/se_crypto_bootloader.c ****   /* Clean-up the key in RAM */
+ 542:Src/se_crypto_bootloader.c ****   SE_CLEAN_UP_FW_KEY();
+ 137              		.loc 1 542 3 view .LVU20
+ 138 0004 0C49     		ldr	r1, .L17+4
+ 139              	.LVL7:
+ 140              		.loc 1 542 3 view .LVU21
+ 141 0006 A868     		ldr	r0, [r5, #8]
+ 142              	.LVL8:
+ 143              		.loc 1 542 3 view .LVU22
+ 144 0008 FFF7FEFF 		bl	__aeabi_uidivmod
+ 145              	.LVL9:
+ 543:Src/se_crypto_bootloader.c **** 
+ 544:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 545:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ARM GAS  /tmp/ccxX10rW.s 			page 13
+
+
+ 546:Src/se_crypto_bootloader.c **** }
+ 146              		.loc 1 546 1 view .LVU23
+ 147              		@ sp needed
+ 542:Src/se_crypto_bootloader.c **** 
+ 148              		.loc 1 542 3 view .LVU24
+ 149 000c 0B4C     		ldr	r4, .L17+8
+ 150 000e 0C4F     		ldr	r7, .L17+12
+ 151 0010 1022     		movs	r2, #16
+ 152 0012 3800     		movs	r0, r7
+ 153 0014 6118     		adds	r1, r4, r1
+ 154 0016 0B4E     		ldr	r6, .L17+16
+ 536:Src/se_crypto_bootloader.c **** #else
+ 155              		.loc 1 536 3 is_stmt 1 view .LVU25
+ 156              	.LVL10:
+ 542:Src/se_crypto_bootloader.c **** 
+ 157              		.loc 1 542 3 view .LVU26
+ 542:Src/se_crypto_bootloader.c **** 
+ 158              		.loc 1 542 3 view .LVU27
+ 159 0018 FFF7FEFF 		bl	memcpy
+ 160              	.LVL11:
+ 542:Src/se_crypto_bootloader.c **** 
+ 161              		.loc 1 542 3 view .LVU28
+ 162 001c A868     		ldr	r0, [r5, #8]
+ 163 001e 0649     		ldr	r1, .L17+4
+ 164 0020 FFF7FEFF 		bl	__aeabi_uidivmod
+ 165              	.LVL12:
+ 166 0024 8C22     		movs	r2, #140
+ 167 0026 3000     		movs	r0, r6
+ 168 0028 6118     		adds	r1, r4, r1
+ 169 002a 5200     		lsls	r2, r2, #1
+ 170 002c FFF7FEFF 		bl	memcpy
+ 171              	.LVL13:
+ 542:Src/se_crypto_bootloader.c **** 
+ 172              		.loc 1 542 3 discriminator 1 view .LVU29
+ 545:Src/se_crypto_bootloader.c **** }
+ 173              		.loc 1 545 3 view .LVU30
+ 174              		.loc 1 546 1 is_stmt 0 view .LVU31
+ 175 0030 0548     		ldr	r0, .L17+20
+ 176 0032 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 177              	.L18:
+ 178              		.align	2
+ 179              	.L17:
+ 180 0034 10E000E0 		.word	-536813552
+ 181 0038 FF0F0000 		.word	4095
+ 182 003c 00000000 		.word	__ICFEDIT_SE_Startup_region_ROM_start__
+ 183 0040 00000000 		.word	m_aSE_FirmwareKey
+ 184 0044 00000000 		.word	m_AESCBCctx
+ 185 0048 99870100 		.word	100249
+ 186              		.cfi_endproc
+ 187              	.LFE186:
+ 189              		.section	.rodata.SE_CRYPTO_Decrypt_Init.str1.1,"aMS",%progbits,1
+ 190              	.LC3:
+ 191 0000 53465531 		.ascii	"SFU1\000"
+ 191      00
+ 192              		.section	.text.SE_CRYPTO_Decrypt_Init,"ax",%progbits
+ 193              		.align	1
+ 194              		.global	SE_CRYPTO_Decrypt_Init
+ARM GAS  /tmp/ccxX10rW.s 			page 14
+
+
+ 195              		.syntax unified
+ 196              		.code	16
+ 197              		.thumb_func
+ 199              	SE_CRYPTO_Decrypt_Init:
+ 200              	.LVL14:
+ 201              	.LFB187:
+ 547:Src/se_crypto_bootloader.c **** 
+ 548:Src/se_crypto_bootloader.c **** /**
+ 549:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Decrypt Init function.
+ 550:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Decrypt_Init function included in the protected area.
+ 551:Src/se_crypto_bootloader.c ****   * @param pxSE_Metadata: Firmware metadata.
+ 552:Src/se_crypto_bootloader.c ****   * @param SE_FwType: Type of Fw Image.
+ 553:Src/se_crypto_bootloader.c ****   *        This parameter can be SE_FW_IMAGE_COMPLETE or SE_FW_IMAGE_PARTIAL.
+ 554:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 555:Src/se_crypto_bootloader.c ****   */
+ 556:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Decrypt_Init(SE_FwRawHeaderTypeDef *pxSE_Metadata, uint32_t SE_FwType)
+ 557:Src/se_crypto_bootloader.c **** {
+ 202              		.loc 1 557 1 is_stmt 1 view -0
+ 203              		.cfi_startproc
+ 204              		@ args = 0, pretend = 0, frame = 0
+ 205              		@ frame_needed = 0, uses_anonymous_args = 0
+ 558:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 206              		.loc 1 558 3 view .LVU33
+ 559:Src/se_crypto_bootloader.c **** 
+ 560:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 561:Src/se_crypto_bootloader.c ****   /* Variables to handle partial/complete FW image */
+ 562:Src/se_crypto_bootloader.c ****   uint32_t fw_size;
+ 563:Src/se_crypto_bootloader.c ****   uint8_t *fw_tag;
+ 564:Src/se_crypto_bootloader.c ****   SE_GCMInitTypeDef se_gcm_init;
+ 565:Src/se_crypto_bootloader.c **** #elif (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 566:Src/se_crypto_bootloader.c ****   /*
+ 567:Src/se_crypto_bootloader.c ****    * No need for a local struct like se_gcm_init because we do not rely on the SE common crypto cod
+ 568:Src/se_crypto_bootloader.c ****    * available for the UserApp).
+ 569:Src/se_crypto_bootloader.c ****    * We call directly the Cryptolib.
+ 570:Src/se_crypto_bootloader.c ****    */
+ 571:Src/se_crypto_bootloader.c ****   int32_t cryptolib_status;
+ 207              		.loc 1 571 3 view .LVU34
+ 572:Src/se_crypto_bootloader.c **** #elif  SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITHOUT_ENCRYPT_SHA256
+ 573:Src/se_crypto_bootloader.c ****   /*
+ 574:Src/se_crypto_bootloader.c ****    * In this crypto scheme the Firmware is not encrypted or does not need to be decrypted.
+ 575:Src/se_crypto_bootloader.c ****    * The Decrypt operation is called anyhow before installing the firmware.
+ 576:Src/se_crypto_bootloader.c ****    * Indeed, it allows moving the Firmware image blocks in FLASH.
+ 577:Src/se_crypto_bootloader.c ****    * These moves are mandatory to create the appropriate mapping in FLASH
+ 578:Src/se_crypto_bootloader.c ****    * allowing the swap procedure to run without using the swap area at each and every move.
+ 579:Src/se_crypto_bootloader.c ****    *
+ 580:Src/se_crypto_bootloader.c ****    * See in SB_SFU project: @ref SFU_IMG_PrepareCandidateImageForInstall.
+ 581:Src/se_crypto_bootloader.c ****    */
+ 582:Src/se_crypto_bootloader.c **** #else
+ 583:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 584:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM */
+ 585:Src/se_crypto_bootloader.c **** 
+ 586:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 587:Src/se_crypto_bootloader.c ****   if (pxSE_Metadata == NULL)
+ 208              		.loc 1 587 3 view .LVU35
+ 557:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 209              		.loc 1 557 1 is_stmt 0 view .LVU36
+ 210 0000 70B5     		push	{r4, r5, r6, lr}
+ARM GAS  /tmp/ccxX10rW.s 			page 15
+
+
+ 211              	.LCFI1:
+ 212              		.cfi_def_cfa_offset 16
+ 213              		.cfi_offset 4, -16
+ 214              		.cfi_offset 5, -12
+ 215              		.cfi_offset 6, -8
+ 216              		.cfi_offset 14, -4
+ 557:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 217              		.loc 1 557 1 view .LVU37
+ 218 0002 041E     		subs	r4, r0, #0
+ 219              		.loc 1 587 6 view .LVU38
+ 220 0004 01D1     		bne	.L20
+ 221              	.LVL15:
+ 222              	.L23:
+ 588:Src/se_crypto_bootloader.c ****   {
+ 589:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 223              		.loc 1 589 12 view .LVU39
+ 224 0006 0D48     		ldr	r0, .L24
+ 225              	.L19:
+ 590:Src/se_crypto_bootloader.c ****   }
+ 591:Src/se_crypto_bootloader.c **** 
+ 592:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 593:Src/se_crypto_bootloader.c ****   /* Check the parameters value and set fw_size and fw_tag to check */
+ 594:Src/se_crypto_bootloader.c ****   if (SE_FwType == SE_FW_IMAGE_COMPLETE)
+ 595:Src/se_crypto_bootloader.c ****   {
+ 596:Src/se_crypto_bootloader.c ****     fw_size = pxSE_Metadata->FwSize;
+ 597:Src/se_crypto_bootloader.c ****     fw_tag = pxSE_Metadata->FwTag;
+ 598:Src/se_crypto_bootloader.c ****   }
+ 599:Src/se_crypto_bootloader.c ****   else if (SE_FwType == SE_FW_IMAGE_PARTIAL)
+ 600:Src/se_crypto_bootloader.c ****   {
+ 601:Src/se_crypto_bootloader.c ****     fw_size = pxSE_Metadata->PartialFwSize;
+ 602:Src/se_crypto_bootloader.c ****     fw_tag = pxSE_Metadata->PartialFwTag;
+ 603:Src/se_crypto_bootloader.c ****   }
+ 604:Src/se_crypto_bootloader.c ****   else
+ 605:Src/se_crypto_bootloader.c ****   {
+ 606:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 607:Src/se_crypto_bootloader.c ****   }
+ 608:Src/se_crypto_bootloader.c **** 
+ 609:Src/se_crypto_bootloader.c ****   /* Read the Symmetric Key */
+ 610:Src/se_crypto_bootloader.c ****   SE_CRYPTO_AES_ReadKey(pxSE_Metadata);
+ 611:Src/se_crypto_bootloader.c **** 
+ 612:Src/se_crypto_bootloader.c ****   /*
+ 613:Src/se_crypto_bootloader.c ****    * Please note that the init below is hard-coded to consider that there is NO additional data.
+ 614:Src/se_crypto_bootloader.c ****    */
+ 615:Src/se_crypto_bootloader.c ****   se_gcm_init.HeaderSize = 0; /* no Additional authenticated data considered */
+ 616:Src/se_crypto_bootloader.c ****   se_gcm_init.PayloadSize = (int32_t)fw_size;
+ 617:Src/se_crypto_bootloader.c ****   se_gcm_init.pNonce = (uint8_t *)pxSE_Metadata->Nonce;
+ 618:Src/se_crypto_bootloader.c ****   se_gcm_init.NonceSize = SE_NONCE_LEN;
+ 619:Src/se_crypto_bootloader.c ****   se_gcm_init.pTag = (uint8_t *)fw_tag;
+ 620:Src/se_crypto_bootloader.c ****   se_gcm_init.TagSize = (int32_t)SE_TAG_LEN;
+ 621:Src/se_crypto_bootloader.c **** 
+ 622:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 623:Src/se_crypto_bootloader.c ****   if ((se_gcm_init.pNonce == NULL) || (se_gcm_init.pTag == NULL))
+ 624:Src/se_crypto_bootloader.c ****   {
+ 625:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 626:Src/se_crypto_bootloader.c ****   }
+ 627:Src/se_crypto_bootloader.c **** 
+ 628:Src/se_crypto_bootloader.c ****   /* Check the parameters */
+ARM GAS  /tmp/ccxX10rW.s 			page 16
+
+
+ 629:Src/se_crypto_bootloader.c ****   assert_param(IS_SE_CRYPTO_AES_GCM_NONCE_SIZE(se_gcm_init.NonceSize));
+ 630:Src/se_crypto_bootloader.c ****   assert_param(IS_SE_CRYPTO_AES_GCM_TAG_SIZE(se_gcm_init.TagSize));
+ 631:Src/se_crypto_bootloader.c **** 
+ 632:Src/se_crypto_bootloader.c ****   /* Common Crypto function call*/
+ 633:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Decrypt_Init(m_aSE_FirmwareKey, &se_gcm_init);
+ 634:Src/se_crypto_bootloader.c **** 
+ 635:Src/se_crypto_bootloader.c **** 
+ 636:Src/se_crypto_bootloader.c **** #elif (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 637:Src/se_crypto_bootloader.c ****   /* Prevent unused argument(s) compilation warning */
+ 638:Src/se_crypto_bootloader.c ****   UNUSED(SE_FwType);
+ 639:Src/se_crypto_bootloader.c ****   /* Read the Symmetric Key */
+ 640:Src/se_crypto_bootloader.c ****   SE_CRYPTO_AES_ReadKey(pxSE_Metadata);
+ 641:Src/se_crypto_bootloader.c **** 
+ 642:Src/se_crypto_bootloader.c ****   /* Set flag field to default value */
+ 643:Src/se_crypto_bootloader.c ****   m_AESCBCctx.mFlags = E_SK_DEFAULT;
+ 644:Src/se_crypto_bootloader.c **** 
+ 645:Src/se_crypto_bootloader.c ****   /* Set key size to 16 (corresponding to AES-128) */
+ 646:Src/se_crypto_bootloader.c ****   m_AESCBCctx.mKeySize = (int32_t) SE_SYMKEY_LEN;
+ 647:Src/se_crypto_bootloader.c **** 
+ 648:Src/se_crypto_bootloader.c ****   /* Set iv size field to IvLength*/
+ 649:Src/se_crypto_bootloader.c ****   m_AESCBCctx.mIvSize = (int32_t) SE_IV_LEN;
+ 650:Src/se_crypto_bootloader.c **** 
+ 651:Src/se_crypto_bootloader.c ****   /* Initialize the operation, by passing the key and IV */
+ 652:Src/se_crypto_bootloader.c ****   cryptolib_status = AES_CBC_Decrypt_Init(&m_AESCBCctx, m_aSE_FirmwareKey, pxSE_Metadata->InitVecto
+ 653:Src/se_crypto_bootloader.c **** 
+ 654:Src/se_crypto_bootloader.c ****   /* map the return code */
+ 655:Src/se_crypto_bootloader.c ****   if (AES_SUCCESS == cryptolib_status)
+ 656:Src/se_crypto_bootloader.c ****   {
+ 657:Src/se_crypto_bootloader.c ****     e_ret_status = SE_SUCCESS;
+ 658:Src/se_crypto_bootloader.c ****   }
+ 659:Src/se_crypto_bootloader.c ****   else
+ 660:Src/se_crypto_bootloader.c ****   {
+ 661:Src/se_crypto_bootloader.c ****     e_ret_status = SE_ERROR;
+ 662:Src/se_crypto_bootloader.c ****   }
+ 663:Src/se_crypto_bootloader.c **** 
+ 664:Src/se_crypto_bootloader.c **** #elif  SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITHOUT_ENCRYPT_SHA256
+ 665:Src/se_crypto_bootloader.c ****   /* Nothing to do as we won't decrypt anything */
+ 666:Src/se_crypto_bootloader.c ****   /* Prevent unused argument(s) compilation warning */
+ 667:Src/se_crypto_bootloader.c ****   UNUSED(SE_FwType);
+ 668:Src/se_crypto_bootloader.c ****   e_ret_status = SE_SUCCESS;
+ 669:Src/se_crypto_bootloader.c **** #else
+ 670:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 671:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 672:Src/se_crypto_bootloader.c **** 
+ 673:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 674:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 675:Src/se_crypto_bootloader.c **** }
+ 226              		.loc 1 675 1 view .LVU40
+ 227              		@ sp needed
+ 228              	.LVL16:
+ 229              		.loc 1 675 1 view .LVU41
+ 230 0008 70BD     		pop	{r4, r5, r6, pc}
+ 231              	.LVL17:
+ 232              	.L20:
+ 638:Src/se_crypto_bootloader.c ****   /* Read the Symmetric Key */
+ 233              		.loc 1 638 3 is_stmt 1 view .LVU42
+ 640:Src/se_crypto_bootloader.c **** 
+ARM GAS  /tmp/ccxX10rW.s 			page 17
+
+
+ 234              		.loc 1 640 3 view .LVU43
+ 235              	.LBB4:
+ 236              	.LBI4:
+ 214:Src/se_crypto_bootloader.c **** {
+ 237              		.loc 1 214 13 view .LVU44
+ 238              	.LBB5:
+ 220:Src/se_crypto_bootloader.c ****   {
+ 239              		.loc 1 220 3 view .LVU45
+ 220:Src/se_crypto_bootloader.c ****   {
+ 240              		.loc 1 220 7 is_stmt 0 view .LVU46
+ 241 000a 0422     		movs	r2, #4
+ 242 000c 0C49     		ldr	r1, .L24+4
+ 243              	.LVL18:
+ 220:Src/se_crypto_bootloader.c ****   {
+ 244              		.loc 1 220 7 view .LVU47
+ 245 000e FFF7FEFF 		bl	memcmp
+ 246              	.LVL19:
+ 220:Src/se_crypto_bootloader.c ****   {
+ 247              		.loc 1 220 7 view .LVU48
+ 248 0012 0C4D     		ldr	r5, .L24+8
+ 220:Src/se_crypto_bootloader.c ****   {
+ 249              		.loc 1 220 6 discriminator 1 view .LVU49
+ 250 0014 0028     		cmp	r0, #0
+ 251 0016 02D1     		bne	.L22
+ 222:Src/se_crypto_bootloader.c ****   }
+ 252              		.loc 1 222 5 is_stmt 1 view .LVU50
+ 253 0018 2800     		movs	r0, r5
+ 254 001a FFF7FEFF 		bl	SE_ReadKey_1
+ 255              	.LVL20:
+ 256              	.L22:
+ 239:Src/se_crypto_bootloader.c ****   }
+ 257              		.loc 1 239 5 view .LVU51
+ 239:Src/se_crypto_bootloader.c ****   }
+ 258              		.loc 1 239 5 is_stmt 0 view .LVU52
+ 259              	.LBE5:
+ 260              	.LBE4:
+ 643:Src/se_crypto_bootloader.c **** 
+ 261              		.loc 1 643 3 is_stmt 1 view .LVU53
+ 643:Src/se_crypto_bootloader.c **** 
+ 262              		.loc 1 643 22 is_stmt 0 view .LVU54
+ 263 001e 0023     		movs	r3, #0
+ 652:Src/se_crypto_bootloader.c **** 
+ 264              		.loc 1 652 89 view .LVU55
+ 265 0020 2200     		movs	r2, r4
+ 643:Src/se_crypto_bootloader.c **** 
+ 266              		.loc 1 643 22 view .LVU56
+ 267 0022 0948     		ldr	r0, .L24+12
+ 652:Src/se_crypto_bootloader.c **** 
+ 268              		.loc 1 652 22 view .LVU57
+ 269 0024 2900     		movs	r1, r5
+ 643:Src/se_crypto_bootloader.c **** 
+ 270              		.loc 1 643 22 view .LVU58
+ 271 0026 0371     		strb	r3, [r0, #4]
+ 646:Src/se_crypto_bootloader.c **** 
+ 272              		.loc 1 646 3 is_stmt 1 view .LVU59
+ 652:Src/se_crypto_bootloader.c **** 
+ 273              		.loc 1 652 89 is_stmt 0 view .LVU60
+ARM GAS  /tmp/ccxX10rW.s 			page 18
+
+
+ 274 0028 5432     		adds	r2, r2, #84
+ 646:Src/se_crypto_bootloader.c **** 
+ 275              		.loc 1 646 24 view .LVU61
+ 276 002a 1033     		adds	r3, r3, #16
+ 277 002c 4362     		str	r3, [r0, #36]
+ 649:Src/se_crypto_bootloader.c **** 
+ 278              		.loc 1 649 3 is_stmt 1 view .LVU62
+ 649:Src/se_crypto_bootloader.c **** 
+ 279              		.loc 1 649 23 is_stmt 0 view .LVU63
+ 280 002e 0361     		str	r3, [r0, #16]
+ 652:Src/se_crypto_bootloader.c **** 
+ 281              		.loc 1 652 3 is_stmt 1 view .LVU64
+ 652:Src/se_crypto_bootloader.c **** 
+ 282              		.loc 1 652 22 is_stmt 0 view .LVU65
+ 283 0030 FFF7FEFF 		bl	AES_CBC_Decrypt_Init
+ 284              	.LVL21:
+ 655:Src/se_crypto_bootloader.c ****   {
+ 285              		.loc 1 655 3 is_stmt 1 view .LVU66
+ 655:Src/se_crypto_bootloader.c ****   {
+ 286              		.loc 1 655 6 is_stmt 0 view .LVU67
+ 287 0034 0028     		cmp	r0, #0
+ 288 0036 E6D1     		bne	.L23
+ 657:Src/se_crypto_bootloader.c ****   }
+ 289              		.loc 1 657 18 view .LVU68
+ 290 0038 0448     		ldr	r0, .L24+16
+ 291              	.LVL22:
+ 657:Src/se_crypto_bootloader.c ****   }
+ 292              		.loc 1 657 18 view .LVU69
+ 293 003a E5E7     		b	.L19
+ 294              	.L25:
+ 295              		.align	2
+ 296              	.L24:
+ 297 003c 99870100 		.word	100249
+ 298 0040 00000000 		.word	.LC3
+ 299 0044 00000000 		.word	m_aSE_FirmwareKey
+ 300 0048 00000000 		.word	m_AESCBCctx
+ 301 004c 0F311200 		.word	1192207
+ 302              		.cfi_endproc
+ 303              	.LFE187:
+ 305              		.section	.text.SE_CRYPTO_Decrypt_Append,"ax",%progbits
+ 306              		.align	1
+ 307              		.global	SE_CRYPTO_Decrypt_Append
+ 308              		.syntax unified
+ 309              		.code	16
+ 310              		.thumb_func
+ 312              	SE_CRYPTO_Decrypt_Append:
+ 313              	.LVL23:
+ 314              	.LFB188:
+ 676:Src/se_crypto_bootloader.c **** 
+ 677:Src/se_crypto_bootloader.c **** /**
+ 678:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Decrypt Append function.
+ 679:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Decrypt_Append function included in the protected area.
+ 680:Src/se_crypto_bootloader.c ****   * @param pInputBuffer: pointer to Input Buffer.
+ 681:Src/se_crypto_bootloader.c ****   * @param InputSize: Input Size (bytes).
+ 682:Src/se_crypto_bootloader.c ****   * @param pOutputBuffer: pointer to Output Buffer.
+ 683:Src/se_crypto_bootloader.c ****   * @param pOutputSize: pointer to Output Size (bytes).
+ 684:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ARM GAS  /tmp/ccxX10rW.s 			page 19
+
+
+ 685:Src/se_crypto_bootloader.c ****   */
+ 686:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Decrypt_Append(const uint8_t *pInputBuffer, int32_t InputSize, uint8_t *pO
+ 687:Src/se_crypto_bootloader.c ****                                         int32_t *pOutputSize)
+ 688:Src/se_crypto_bootloader.c **** {
+ 315              		.loc 1 688 1 is_stmt 1 view -0
+ 316              		.cfi_startproc
+ 317              		@ args = 0, pretend = 0, frame = 0
+ 318              		@ frame_needed = 0, uses_anonymous_args = 0
+ 689:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 319              		.loc 1 689 3 view .LVU71
+ 690:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 691:Src/se_crypto_bootloader.c ****   int32_t cryptolib_status;
+ 320              		.loc 1 691 3 view .LVU72
+ 692:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256 */
+ 693:Src/se_crypto_bootloader.c **** 
+ 694:Src/se_crypto_bootloader.c ****   /* DecryptImageInDwlSlot() always starts by calling the Decrypt service with a 0 byte buffer */
+ 695:Src/se_crypto_bootloader.c ****   if (0 == InputSize)
+ 321              		.loc 1 695 3 view .LVU73
+ 688:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 322              		.loc 1 688 1 is_stmt 0 view .LVU74
+ 323 0000 13B5     		push	{r0, r1, r4, lr}
+ 324              	.LCFI2:
+ 325              		.cfi_def_cfa_offset 16
+ 326              		.cfi_offset 0, -16
+ 327              		.cfi_offset 1, -12
+ 328              		.cfi_offset 4, -8
+ 329              		.cfi_offset 14, -4
+ 688:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 330              		.loc 1 688 1 view .LVU75
+ 331 0002 0400     		movs	r4, r0
+ 332              		.loc 1 695 6 view .LVU76
+ 333 0004 0029     		cmp	r1, #0
+ 334 0006 01D1     		bne	.L27
+ 335              	.LVL24:
+ 336              	.L31:
+ 696:Src/se_crypto_bootloader.c ****   {
+ 697:Src/se_crypto_bootloader.c ****     /* Nothing to do but we must return a success for the decrypt operation to continue */
+ 698:Src/se_crypto_bootloader.c ****     return (SE_SUCCESS);
+ 337              		.loc 1 698 12 view .LVU77
+ 338 0008 0948     		ldr	r0, .L41
+ 339              	.L26:
+ 699:Src/se_crypto_bootloader.c ****   }
+ 700:Src/se_crypto_bootloader.c **** 
+ 701:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 702:Src/se_crypto_bootloader.c ****   if ((pInputBuffer == NULL) || (pOutputBuffer == NULL) || (pOutputSize == NULL))
+ 703:Src/se_crypto_bootloader.c ****   {
+ 704:Src/se_crypto_bootloader.c ****     return SE_ERROR;
+ 705:Src/se_crypto_bootloader.c ****   }
+ 706:Src/se_crypto_bootloader.c **** 
+ 707:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 708:Src/se_crypto_bootloader.c ****   /* Crypto function call*/
+ 709:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Decrypt_Append(pInputBuffer, InputSize, pOutputBuffer, pOutputSi
+ 710:Src/se_crypto_bootloader.c **** 
+ 711:Src/se_crypto_bootloader.c **** #elif (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 712:Src/se_crypto_bootloader.c ****   /* Crypto function call */
+ 713:Src/se_crypto_bootloader.c ****   cryptolib_status = AES_CBC_Decrypt_Append(&m_AESCBCctx, pInputBuffer, InputSize, pOutputBuffer, p
+ 714:Src/se_crypto_bootloader.c **** 
+ARM GAS  /tmp/ccxX10rW.s 			page 20
+
+
+ 715:Src/se_crypto_bootloader.c ****   /* map the return code */
+ 716:Src/se_crypto_bootloader.c ****   if (AES_SUCCESS == cryptolib_status)
+ 717:Src/se_crypto_bootloader.c ****   {
+ 718:Src/se_crypto_bootloader.c ****     e_ret_status = SE_SUCCESS;
+ 719:Src/se_crypto_bootloader.c ****   }
+ 720:Src/se_crypto_bootloader.c ****   else
+ 721:Src/se_crypto_bootloader.c ****   {
+ 722:Src/se_crypto_bootloader.c ****     e_ret_status = SE_ERROR;
+ 723:Src/se_crypto_bootloader.c ****   }
+ 724:Src/se_crypto_bootloader.c **** 
+ 725:Src/se_crypto_bootloader.c **** #elif  SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITHOUT_ENCRYPT_SHA256
+ 726:Src/se_crypto_bootloader.c ****   /*
+ 727:Src/se_crypto_bootloader.c ****    * The firmware is not encrypted or does not need to be decrypted.
+ 728:Src/se_crypto_bootloader.c ****    * The only thing we need to do is to recopy the input buffer in the output buffer
+ 729:Src/se_crypto_bootloader.c ****    */
+ 730:Src/se_crypto_bootloader.c ****   (void)memcpy(pOutputBuffer, pInputBuffer, (uint32_t)InputSize);
+ 731:Src/se_crypto_bootloader.c ****   *pOutputSize = InputSize;
+ 732:Src/se_crypto_bootloader.c ****   e_ret_status = SE_SUCCESS;
+ 733:Src/se_crypto_bootloader.c **** #else
+ 734:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 735:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 736:Src/se_crypto_bootloader.c **** 
+ 737:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 738:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 739:Src/se_crypto_bootloader.c **** }
+ 340              		.loc 1 739 1 view .LVU78
+ 341              		@ sp needed
+ 342              	.LVL25:
+ 343              		.loc 1 739 1 view .LVU79
+ 344 000a 16BD     		pop	{r1, r2, r4, pc}
+ 345              	.LVL26:
+ 346              	.L27:
+ 702:Src/se_crypto_bootloader.c ****   {
+ 347              		.loc 1 702 3 is_stmt 1 view .LVU80
+ 702:Src/se_crypto_bootloader.c ****   {
+ 348              		.loc 1 702 6 is_stmt 0 view .LVU81
+ 349 000c 0028     		cmp	r0, #0
+ 350 000e 03D0     		beq	.L29
+ 702:Src/se_crypto_bootloader.c ****   {
+ 351              		.loc 1 702 30 discriminator 1 view .LVU82
+ 352 0010 002A     		cmp	r2, #0
+ 353 0012 01D0     		beq	.L29
+ 702:Src/se_crypto_bootloader.c ****   {
+ 354              		.loc 1 702 57 discriminator 2 view .LVU83
+ 355 0014 002B     		cmp	r3, #0
+ 356 0016 01D1     		bne	.L30
+ 357              	.LVL27:
+ 358              	.L29:
+ 704:Src/se_crypto_bootloader.c ****   }
+ 359              		.loc 1 704 12 view .LVU84
+ 360 0018 0648     		ldr	r0, .L41+4
+ 361 001a F6E7     		b	.L26
+ 362              	.LVL28:
+ 363              	.L30:
+ 713:Src/se_crypto_bootloader.c **** 
+ 364              		.loc 1 713 3 is_stmt 1 view .LVU85
+ 713:Src/se_crypto_bootloader.c **** 
+ARM GAS  /tmp/ccxX10rW.s 			page 21
+
+
+ 365              		.loc 1 713 22 is_stmt 0 view .LVU86
+ 366 001c 0093     		str	r3, [sp]
+ 367 001e 0648     		ldr	r0, .L41+8
+ 368              	.LVL29:
+ 713:Src/se_crypto_bootloader.c **** 
+ 369              		.loc 1 713 22 view .LVU87
+ 370 0020 1300     		movs	r3, r2
+ 371              	.LVL30:
+ 713:Src/se_crypto_bootloader.c **** 
+ 372              		.loc 1 713 22 view .LVU88
+ 373 0022 0A00     		movs	r2, r1
+ 374              	.LVL31:
+ 713:Src/se_crypto_bootloader.c **** 
+ 375              		.loc 1 713 22 view .LVU89
+ 376 0024 2100     		movs	r1, r4
+ 377              	.LVL32:
+ 713:Src/se_crypto_bootloader.c **** 
+ 378              		.loc 1 713 22 view .LVU90
+ 379 0026 FFF7FEFF 		bl	AES_CBC_Decrypt_Append
+ 380              	.LVL33:
+ 716:Src/se_crypto_bootloader.c ****   {
+ 381              		.loc 1 716 3 is_stmt 1 view .LVU91
+ 716:Src/se_crypto_bootloader.c ****   {
+ 382              		.loc 1 716 6 is_stmt 0 view .LVU92
+ 383 002a 0028     		cmp	r0, #0
+ 384 002c ECD0     		beq	.L31
+ 385 002e F3E7     		b	.L29
+ 386              	.L42:
+ 387              		.align	2
+ 388              	.L41:
+ 389 0030 0F311200 		.word	1192207
+ 390 0034 99870100 		.word	100249
+ 391 0038 00000000 		.word	m_AESCBCctx
+ 392              		.cfi_endproc
+ 393              	.LFE188:
+ 395              		.section	.text.SE_CRYPTO_Decrypt_Finish,"ax",%progbits
+ 396              		.align	1
+ 397              		.global	SE_CRYPTO_Decrypt_Finish
+ 398              		.syntax unified
+ 399              		.code	16
+ 400              		.thumb_func
+ 402              	SE_CRYPTO_Decrypt_Finish:
+ 403              	.LVL34:
+ 404              	.LFB189:
+ 740:Src/se_crypto_bootloader.c **** 
+ 741:Src/se_crypto_bootloader.c **** /**
+ 742:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Decrypt Finish function.
+ 743:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Decrypt_Finish function included in the protected area.
+ 744:Src/se_crypto_bootloader.c ****   *        This parameter can be a value of @ref SE_Status_Structure_definition.
+ 745:Src/se_crypto_bootloader.c ****   * @param pOutputBuffer: pointer to Output Buffer.
+ 746:Src/se_crypto_bootloader.c ****   * @param pOutputSize: pointer to Output Size (bytes).
+ 747:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 748:Src/se_crypto_bootloader.c ****   */
+ 749:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Decrypt_Finish(uint8_t *pOutputBuffer, int32_t *pOutputSize)
+ 750:Src/se_crypto_bootloader.c **** {
+ 405              		.loc 1 750 1 is_stmt 1 view -0
+ 406              		.cfi_startproc
+ARM GAS  /tmp/ccxX10rW.s 			page 22
+
+
+ 407              		@ args = 0, pretend = 0, frame = 8
+ 408              		@ frame_needed = 0, uses_anonymous_args = 0
+ 751:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status = SE_ERROR;
+ 409              		.loc 1 751 3 view .LVU94
+ 752:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 753:Src/se_crypto_bootloader.c ****   int32_t cryptolib_status;
+ 410              		.loc 1 753 3 view .LVU95
+ 754:Src/se_crypto_bootloader.c **** #elif (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 755:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256 */
+ 756:Src/se_crypto_bootloader.c **** 
+ 757:Src/se_crypto_bootloader.c ****   /* Check the pointers allocation */
+ 758:Src/se_crypto_bootloader.c ****   if ((pOutputBuffer == NULL) || (pOutputSize == NULL))
+ 411              		.loc 1 758 3 view .LVU96
+ 750:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status = SE_ERROR;
+ 412              		.loc 1 750 1 is_stmt 0 view .LVU97
+ 413 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 414              	.LCFI3:
+ 415              		.cfi_def_cfa_offset 32
+ 416              		.cfi_offset 0, -32
+ 417              		.cfi_offset 1, -28
+ 418              		.cfi_offset 2, -24
+ 419              		.cfi_offset 4, -20
+ 420              		.cfi_offset 5, -16
+ 421              		.cfi_offset 6, -12
+ 422              		.cfi_offset 7, -8
+ 423              		.cfi_offset 14, -4
+ 424 0002 1F4B     		ldr	r3, .L52
+ 750:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status = SE_ERROR;
+ 425              		.loc 1 750 1 view .LVU98
+ 426 0004 0A00     		movs	r2, r1
+ 427 0006 1F4E     		ldr	r6, .L52+4
+ 428 0008 1F4D     		ldr	r5, .L52+8
+ 429 000a 204F     		ldr	r7, .L52+12
+ 430 000c 0193     		str	r3, [sp, #4]
+ 431              		.loc 1 758 6 view .LVU99
+ 432 000e 0028     		cmp	r0, #0
+ 433 0010 01D0     		beq	.L44
+ 434              		.loc 1 758 31 discriminator 1 view .LVU100
+ 435 0012 0029     		cmp	r1, #0
+ 436 0014 15D1     		bne	.L45
+ 437              	.L44:
+ 759:Src/se_crypto_bootloader.c ****   {
+ 760:Src/se_crypto_bootloader.c ****     /* Clean-up the key in RAM */
+ 761:Src/se_crypto_bootloader.c ****     SE_CLEAN_UP_FW_KEY();
+ 438              		.loc 1 761 5 is_stmt 1 view .LVU101
+ 439              		.loc 1 761 5 view .LVU102
+ 440 0016 B068     		ldr	r0, [r6, #8]
+ 441              	.LVL35:
+ 442              		.loc 1 761 5 is_stmt 0 view .LVU103
+ 443 0018 1D49     		ldr	r1, .L52+16
+ 444              	.LVL36:
+ 445              		.loc 1 761 5 view .LVU104
+ 446 001a FFF7FEFF 		bl	__aeabi_uidivmod
+ 447              	.LVL37:
+ 448              		.loc 1 761 5 view .LVU105
+ 449 001e 1022     		movs	r2, #16
+ 450 0020 6918     		adds	r1, r5, r1
+ARM GAS  /tmp/ccxX10rW.s 			page 23
+
+
+ 451 0022 0198     		ldr	r0, [sp, #4]
+ 452 0024 FFF7FEFF 		bl	memcpy
+ 453              	.LVL38:
+ 454              		.loc 1 761 5 is_stmt 1 view .LVU106
+ 455 0028 B068     		ldr	r0, [r6, #8]
+ 456 002a 1949     		ldr	r1, .L52+16
+ 457 002c FFF7FEFF 		bl	__aeabi_uidivmod
+ 458              	.LVL39:
+ 459 0030 8C22     		movs	r2, #140
+ 460 0032 3800     		movs	r0, r7
+ 461 0034 6918     		adds	r1, r5, r1
+ 462 0036 5200     		lsls	r2, r2, #1
+ 463 0038 FFF7FEFF 		bl	memcpy
+ 464              	.LVL40:
+ 465              		.loc 1 761 5 discriminator 1 view .LVU107
+ 762:Src/se_crypto_bootloader.c **** 
+ 763:Src/se_crypto_bootloader.c ****     return e_ret_status;
+ 466              		.loc 1 763 5 view .LVU108
+ 467              		.loc 1 763 12 is_stmt 0 view .LVU109
+ 468 003c 154C     		ldr	r4, .L52+20
+ 469              	.LVL41:
+ 470              	.L43:
+ 764:Src/se_crypto_bootloader.c ****   }
+ 765:Src/se_crypto_bootloader.c **** 
+ 766:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 767:Src/se_crypto_bootloader.c **** 
+ 768:Src/se_crypto_bootloader.c ****   /* Crypto function call*/
+ 769:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Decrypt_Finish(pOutputBuffer, pOutputSize);
+ 770:Src/se_crypto_bootloader.c **** 
+ 771:Src/se_crypto_bootloader.c **** #elif (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256)
+ 772:Src/se_crypto_bootloader.c ****   /* Crypto function call */
+ 773:Src/se_crypto_bootloader.c ****   cryptolib_status = AES_CBC_Decrypt_Finish(&m_AESCBCctx, pOutputBuffer, pOutputSize);
+ 774:Src/se_crypto_bootloader.c **** 
+ 775:Src/se_crypto_bootloader.c ****   /* map the return code */
+ 776:Src/se_crypto_bootloader.c ****   if (AES_SUCCESS == cryptolib_status)
+ 777:Src/se_crypto_bootloader.c ****   {
+ 778:Src/se_crypto_bootloader.c ****     e_ret_status = SE_SUCCESS;
+ 779:Src/se_crypto_bootloader.c ****   }
+ 780:Src/se_crypto_bootloader.c ****   else
+ 781:Src/se_crypto_bootloader.c ****   {
+ 782:Src/se_crypto_bootloader.c ****     e_ret_status = SE_ERROR;
+ 783:Src/se_crypto_bootloader.c ****   }
+ 784:Src/se_crypto_bootloader.c **** #elif  SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITHOUT_ENCRYPT_SHA256
+ 785:Src/se_crypto_bootloader.c ****   /* Nothing to do */
+ 786:Src/se_crypto_bootloader.c ****   e_ret_status = SE_SUCCESS;
+ 787:Src/se_crypto_bootloader.c **** #else
+ 788:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 789:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 790:Src/se_crypto_bootloader.c **** 
+ 791:Src/se_crypto_bootloader.c ****   /* Clean-up the key in RAM */
+ 792:Src/se_crypto_bootloader.c ****   SE_CLEAN_UP_FW_KEY();
+ 793:Src/se_crypto_bootloader.c **** 
+ 794:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 795:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 796:Src/se_crypto_bootloader.c **** }
+ 471              		.loc 1 796 1 view .LVU110
+ 472 003e 2000     		movs	r0, r4
+ARM GAS  /tmp/ccxX10rW.s 			page 24
+
+
+ 473              		@ sp needed
+ 474 0040 FEBD     		pop	{r1, r2, r3, r4, r5, r6, r7, pc}
+ 475              	.LVL42:
+ 476              	.L45:
+ 773:Src/se_crypto_bootloader.c **** 
+ 477              		.loc 1 773 3 is_stmt 1 view .LVU111
+ 773:Src/se_crypto_bootloader.c **** 
+ 478              		.loc 1 773 22 is_stmt 0 view .LVU112
+ 479 0042 0100     		movs	r1, r0
+ 480              	.LVL43:
+ 773:Src/se_crypto_bootloader.c **** 
+ 481              		.loc 1 773 22 view .LVU113
+ 482 0044 3800     		movs	r0, r7
+ 483              	.LVL44:
+ 773:Src/se_crypto_bootloader.c **** 
+ 484              		.loc 1 773 22 view .LVU114
+ 485 0046 FFF7FEFF 		bl	AES_CBC_Decrypt_Finish
+ 486              	.LVL45:
+ 776:Src/se_crypto_bootloader.c ****   {
+ 487              		.loc 1 776 3 is_stmt 1 view .LVU115
+ 778:Src/se_crypto_bootloader.c ****   }
+ 488              		.loc 1 778 18 is_stmt 0 view .LVU116
+ 489 004a 431E     		subs	r3, r0, #1
+ 490 004c 9841     		sbcs	r0, r0, r3
+ 491              	.LVL46:
+ 778:Src/se_crypto_bootloader.c ****   }
+ 492              		.loc 1 778 18 view .LVU117
+ 493 004e 124B     		ldr	r3, .L52+24
+ 494 0050 4442     		rsbs	r4, r0, #0
+ 495 0052 1C40     		ands	r4, r3
+ 496 0054 114B     		ldr	r3, .L52+28
+ 792:Src/se_crypto_bootloader.c **** 
+ 497              		.loc 1 792 3 view .LVU118
+ 498 0056 B068     		ldr	r0, [r6, #8]
+ 499 0058 0D49     		ldr	r1, .L52+16
+ 778:Src/se_crypto_bootloader.c ****   }
+ 500              		.loc 1 778 18 view .LVU119
+ 501 005a E418     		adds	r4, r4, r3
+ 502              	.LVL47:
+ 792:Src/se_crypto_bootloader.c **** 
+ 503              		.loc 1 792 3 is_stmt 1 view .LVU120
+ 792:Src/se_crypto_bootloader.c **** 
+ 504              		.loc 1 792 3 view .LVU121
+ 505 005c FFF7FEFF 		bl	__aeabi_uidivmod
+ 506              	.LVL48:
+ 507 0060 1022     		movs	r2, #16
+ 508 0062 6918     		adds	r1, r5, r1
+ 509 0064 0198     		ldr	r0, [sp, #4]
+ 510 0066 FFF7FEFF 		bl	memcpy
+ 511              	.LVL49:
+ 792:Src/se_crypto_bootloader.c **** 
+ 512              		.loc 1 792 3 view .LVU122
+ 513 006a B068     		ldr	r0, [r6, #8]
+ 514 006c 0849     		ldr	r1, .L52+16
+ 515 006e FFF7FEFF 		bl	__aeabi_uidivmod
+ 516              	.LVL50:
+ 517 0072 8C22     		movs	r2, #140
+ARM GAS  /tmp/ccxX10rW.s 			page 25
+
+
+ 518 0074 3800     		movs	r0, r7
+ 519 0076 6918     		adds	r1, r5, r1
+ 520 0078 5200     		lsls	r2, r2, #1
+ 521 007a FFF7FEFF 		bl	memcpy
+ 522              	.LVL51:
+ 792:Src/se_crypto_bootloader.c **** 
+ 523              		.loc 1 792 3 discriminator 1 view .LVU123
+ 795:Src/se_crypto_bootloader.c **** }
+ 524              		.loc 1 795 3 view .LVU124
+ 795:Src/se_crypto_bootloader.c **** }
+ 525              		.loc 1 795 10 is_stmt 0 view .LVU125
+ 526 007e DEE7     		b	.L43
+ 527              	.L53:
+ 528              		.align	2
+ 529              	.L52:
+ 530 0080 00000000 		.word	m_aSE_FirmwareKey
+ 531 0084 10E000E0 		.word	-536813552
+ 532 0088 00000000 		.word	__ICFEDIT_SE_Startup_region_ROM_start__
+ 533 008c 00000000 		.word	m_AESCBCctx
+ 534 0090 FF0F0000 		.word	4095
+ 535 0094 99870100 		.word	100249
+ 536 0098 8A56EFFF 		.word	-1091958
+ 537 009c 0F311200 		.word	1192207
+ 538              		.cfi_endproc
+ 539              	.LFE189:
+ 541              		.section	.text.SE_CRYPTO_AuthenticateFW_Init,"ax",%progbits
+ 542              		.align	1
+ 543              		.global	SE_CRYPTO_AuthenticateFW_Init
+ 544              		.syntax unified
+ 545              		.code	16
+ 546              		.thumb_func
+ 548              	SE_CRYPTO_AuthenticateFW_Init:
+ 549              	.LVL52:
+ 550              	.LFB190:
+ 797:Src/se_crypto_bootloader.c **** 
+ 798:Src/se_crypto_bootloader.c **** 
+ 799:Src/se_crypto_bootloader.c **** /**
+ 800:Src/se_crypto_bootloader.c ****   * @brief Secure Engine AuthenticateFW Init function.
+ 801:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib function included in the protected area used to initial
+ 802:Src/se_crypto_bootloader.c ****   *        authentication procedure.
+ 803:Src/se_crypto_bootloader.c ****   * @param pKey: pointer to the key.
+ 804:Src/se_crypto_bootloader.c ****   * @param pxSE_Metadata: Firmware metadata.
+ 805:Src/se_crypto_bootloader.c ****   * @param SE_FwType: Type of Fw Image.
+ 806:Src/se_crypto_bootloader.c ****   *        This parameter can be SE_FW_IMAGE_COMPLETE or SE_FW_IMAGE_PARTIAL.
+ 807:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 808:Src/se_crypto_bootloader.c ****   */
+ 809:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_AuthenticateFW_Init(SE_FwRawHeaderTypeDef *pxSE_Metadata, uint32_t SE_FwTy
+ 810:Src/se_crypto_bootloader.c **** {
+ 551              		.loc 1 810 1 is_stmt 1 view -0
+ 552              		.cfi_startproc
+ 553              		@ args = 0, pretend = 0, frame = 0
+ 554              		@ frame_needed = 0, uses_anonymous_args = 0
+ 811:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 555              		.loc 1 811 3 view .LVU127
+ 812:Src/se_crypto_bootloader.c **** 
+ 813:Src/se_crypto_bootloader.c ****   /*
+ 814:Src/se_crypto_bootloader.c ****    * Depending on the crypto scheme, the Firmware Tag (signature) can be:
+ARM GAS  /tmp/ccxX10rW.s 			page 26
+
+
+ 815:Src/se_crypto_bootloader.c ****    *   - either an AES GCM tag
+ 816:Src/se_crypto_bootloader.c ****    *   - or a SHA256 digest (encapsulated in the authenticated FW metadata)
+ 817:Src/se_crypto_bootloader.c ****    */
+ 818:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 819:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_Encrypt_Init(pxSE_Metadata, SE_FwType);
+ 820:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 821:Src/se_crypto_bootloader.c ****   int32_t error_status;
+ 556              		.loc 1 821 3 view .LVU128
+ 822:Src/se_crypto_bootloader.c **** 
+ 823:Src/se_crypto_bootloader.c ****   /* Prevent unused argument(s) compilation warning */
+ 824:Src/se_crypto_bootloader.c ****   UNUSED(pxSE_Metadata);
+ 557              		.loc 1 824 3 view .LVU129
+ 825:Src/se_crypto_bootloader.c ****   UNUSED(SE_FwType);
+ 558              		.loc 1 825 3 view .LVU130
+ 826:Src/se_crypto_bootloader.c **** 
+ 827:Src/se_crypto_bootloader.c ****   /* Set the size of the desired hash digest: SHA-256 */
+ 828:Src/se_crypto_bootloader.c ****   m_SHA256ctx.mTagSize = CRL_SHA256_SIZE;
+ 559              		.loc 1 828 3 view .LVU131
+ 560              		.loc 1 828 24 is_stmt 0 view .LVU132
+ 561 0000 2023     		movs	r3, #32
+ 562 0002 0748     		ldr	r0, .L57
+ 563              	.LVL53:
+ 810:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 564              		.loc 1 810 1 view .LVU133
+ 565 0004 10B5     		push	{r4, lr}
+ 566              	.LCFI4:
+ 567              		.cfi_def_cfa_offset 8
+ 568              		.cfi_offset 4, -8
+ 569              		.cfi_offset 14, -4
+ 570              		.loc 1 828 24 view .LVU134
+ 571 0006 8360     		str	r3, [r0, #8]
+ 829:Src/se_crypto_bootloader.c **** 
+ 830:Src/se_crypto_bootloader.c ****   /* Set flag field to default value */
+ 831:Src/se_crypto_bootloader.c ****   m_SHA256ctx.mFlags = E_HASH_DEFAULT;
+ 572              		.loc 1 831 3 is_stmt 1 view .LVU135
+ 573              		.loc 1 831 22 is_stmt 0 view .LVU136
+ 574 0008 0023     		movs	r3, #0
+ 832:Src/se_crypto_bootloader.c **** 
+ 833:Src/se_crypto_bootloader.c ****   /* Initialize the HASH context */
+ 834:Src/se_crypto_bootloader.c ****   error_status = SHA256_Init(&m_SHA256ctx);
+ 835:Src/se_crypto_bootloader.c **** 
+ 836:Src/se_crypto_bootloader.c ****   if (HASH_SUCCESS == error_status)
+ 837:Src/se_crypto_bootloader.c ****   {
+ 838:Src/se_crypto_bootloader.c ****     e_ret_status = SE_SUCCESS;
+ 839:Src/se_crypto_bootloader.c ****   }
+ 840:Src/se_crypto_bootloader.c ****   else
+ 841:Src/se_crypto_bootloader.c ****   {
+ 842:Src/se_crypto_bootloader.c ****     e_ret_status = SE_ERROR;
+ 843:Src/se_crypto_bootloader.c ****   }
+ 844:Src/se_crypto_bootloader.c **** #else
+ 845:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 846:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 847:Src/se_crypto_bootloader.c **** 
+ 848:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 849:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 850:Src/se_crypto_bootloader.c **** }
+ 575              		.loc 1 850 1 view .LVU137
+ARM GAS  /tmp/ccxX10rW.s 			page 27
+
+
+ 576              		@ sp needed
+ 831:Src/se_crypto_bootloader.c **** 
+ 577              		.loc 1 831 22 view .LVU138
+ 578 000a 0371     		strb	r3, [r0, #4]
+ 834:Src/se_crypto_bootloader.c **** 
+ 579              		.loc 1 834 3 is_stmt 1 view .LVU139
+ 834:Src/se_crypto_bootloader.c **** 
+ 580              		.loc 1 834 18 is_stmt 0 view .LVU140
+ 581 000c FFF7FEFF 		bl	SHA256_Init
+ 582              	.LVL54:
+ 836:Src/se_crypto_bootloader.c ****   {
+ 583              		.loc 1 836 3 is_stmt 1 view .LVU141
+ 838:Src/se_crypto_bootloader.c ****   }
+ 584              		.loc 1 838 18 is_stmt 0 view .LVU142
+ 585 0010 431E     		subs	r3, r0, #1
+ 586 0012 9841     		sbcs	r0, r0, r3
+ 587              	.LVL55:
+ 838:Src/se_crypto_bootloader.c ****   }
+ 588              		.loc 1 838 18 view .LVU143
+ 589 0014 034B     		ldr	r3, .L57+4
+ 590 0016 4042     		rsbs	r0, r0, #0
+ 591 0018 1840     		ands	r0, r3
+ 592 001a 034B     		ldr	r3, .L57+8
+ 593 001c C018     		adds	r0, r0, r3
+ 594              		.loc 1 850 1 view .LVU144
+ 595 001e 10BD     		pop	{r4, pc}
+ 596              	.L58:
+ 597              		.align	2
+ 598              	.L57:
+ 599 0020 00000000 		.word	m_SHA256ctx
+ 600 0024 8A56EFFF 		.word	-1091958
+ 601 0028 0F311200 		.word	1192207
+ 602              		.cfi_endproc
+ 603              	.LFE190:
+ 605              		.section	.text.SE_CRYPTO_AuthenticateFW_Append,"ax",%progbits
+ 606              		.align	1
+ 607              		.global	SE_CRYPTO_AuthenticateFW_Append
+ 608              		.syntax unified
+ 609              		.code	16
+ 610              		.thumb_func
+ 612              	SE_CRYPTO_AuthenticateFW_Append:
+ 613              	.LVL56:
+ 614              	.LFB191:
+ 851:Src/se_crypto_bootloader.c **** 
+ 852:Src/se_crypto_bootloader.c **** /**
+ 853:Src/se_crypto_bootloader.c ****   * @brief Secure Engine AuthenticateFW Append function.
+ 854:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Append function included in the protected area used dur
+ 855:Src/se_crypto_bootloader.c ****   *        authentication procedure.
+ 856:Src/se_crypto_bootloader.c ****   * @param pInputBuffer: pointer to Input Buffer.
+ 857:Src/se_crypto_bootloader.c ****   * @param InputSize: Input Size (bytes).
+ 858:Src/se_crypto_bootloader.c ****   * @param pOutputBuffer: pointer to Output Buffer.
+ 859:Src/se_crypto_bootloader.c ****   * @param pOutputSize: pointer to Output Size (bytes).
+ 860:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 861:Src/se_crypto_bootloader.c ****   */
+ 862:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_AuthenticateFW_Append(const uint8_t *pInputBuffer, int32_t InputSize, uint
+ 863:Src/se_crypto_bootloader.c ****                                                int32_t *pOutputSize)
+ 864:Src/se_crypto_bootloader.c **** {
+ARM GAS  /tmp/ccxX10rW.s 			page 28
+
+
+ 615              		.loc 1 864 1 is_stmt 1 view -0
+ 616              		.cfi_startproc
+ 617              		@ args = 0, pretend = 0, frame = 0
+ 618              		@ frame_needed = 0, uses_anonymous_args = 0
+ 865:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 619              		.loc 1 865 3 view .LVU146
+ 866:Src/se_crypto_bootloader.c ****   /*
+ 867:Src/se_crypto_bootloader.c ****    * Depending on the crypto scheme, the Firmware Tag (signature) can be:
+ 868:Src/se_crypto_bootloader.c ****    *   - either an AES GCM tag
+ 869:Src/se_crypto_bootloader.c ****    *   - or a SHA256 digest
+ 870:Src/se_crypto_bootloader.c ****    */
+ 871:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 872:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_Encrypt_Append(pInputBuffer, InputSize, pOutputBuffer, pOutputSize);
+ 873:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 874:Src/se_crypto_bootloader.c ****   int32_t error_status;
+ 620              		.loc 1 874 3 view .LVU147
+ 875:Src/se_crypto_bootloader.c **** 
+ 876:Src/se_crypto_bootloader.c ****   /* The parameters below are useless for the HASH but are needed for API compatibility with other 
+ 877:Src/se_crypto_bootloader.c ****   (void)pOutputBuffer;
+ 621              		.loc 1 877 3 view .LVU148
+ 878:Src/se_crypto_bootloader.c ****   (void)pOutputSize;
+ 622              		.loc 1 878 3 view .LVU149
+ 879:Src/se_crypto_bootloader.c **** 
+ 880:Src/se_crypto_bootloader.c ****   /* Add data to be hashed */
+ 881:Src/se_crypto_bootloader.c ****   error_status = SHA256_Append(&m_SHA256ctx, pInputBuffer, InputSize);
+ 623              		.loc 1 881 3 view .LVU150
+ 624              		.loc 1 881 18 is_stmt 0 view .LVU151
+ 625 0000 074B     		ldr	r3, .L62
+ 626              	.LVL57:
+ 864:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 627              		.loc 1 864 1 view .LVU152
+ 628 0002 0A00     		movs	r2, r1
+ 629              	.LVL58:
+ 864:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 630              		.loc 1 864 1 view .LVU153
+ 631 0004 10B5     		push	{r4, lr}
+ 632              	.LCFI5:
+ 633              		.cfi_def_cfa_offset 8
+ 634              		.cfi_offset 4, -8
+ 635              		.cfi_offset 14, -4
+ 636              		.loc 1 881 18 view .LVU154
+ 637 0006 0100     		movs	r1, r0
+ 638              	.LVL59:
+ 882:Src/se_crypto_bootloader.c **** 
+ 883:Src/se_crypto_bootloader.c ****   if (HASH_SUCCESS == error_status)
+ 884:Src/se_crypto_bootloader.c ****   {
+ 885:Src/se_crypto_bootloader.c ****     e_ret_status = SE_SUCCESS;
+ 886:Src/se_crypto_bootloader.c ****   }
+ 887:Src/se_crypto_bootloader.c ****   else
+ 888:Src/se_crypto_bootloader.c ****   {
+ 889:Src/se_crypto_bootloader.c ****     e_ret_status = SE_ERROR;
+ 890:Src/se_crypto_bootloader.c ****   }
+ 891:Src/se_crypto_bootloader.c **** #else
+ 892:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 893:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 894:Src/se_crypto_bootloader.c **** 
+ 895:Src/se_crypto_bootloader.c ****   /* Return status*/
+ARM GAS  /tmp/ccxX10rW.s 			page 29
+
+
+ 896:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 897:Src/se_crypto_bootloader.c **** }
+ 639              		.loc 1 897 1 view .LVU155
+ 640              		@ sp needed
+ 881:Src/se_crypto_bootloader.c **** 
+ 641              		.loc 1 881 18 view .LVU156
+ 642 0008 1800     		movs	r0, r3
+ 643              	.LVL60:
+ 881:Src/se_crypto_bootloader.c **** 
+ 644              		.loc 1 881 18 view .LVU157
+ 645 000a FFF7FEFF 		bl	SHA256_Append
+ 646              	.LVL61:
+ 883:Src/se_crypto_bootloader.c ****   {
+ 647              		.loc 1 883 3 is_stmt 1 view .LVU158
+ 885:Src/se_crypto_bootloader.c ****   }
+ 648              		.loc 1 885 18 is_stmt 0 view .LVU159
+ 649 000e 431E     		subs	r3, r0, #1
+ 650 0010 9841     		sbcs	r0, r0, r3
+ 651              	.LVL62:
+ 885:Src/se_crypto_bootloader.c ****   }
+ 652              		.loc 1 885 18 view .LVU160
+ 653 0012 044B     		ldr	r3, .L62+4
+ 654 0014 4042     		rsbs	r0, r0, #0
+ 655 0016 1840     		ands	r0, r3
+ 656 0018 034B     		ldr	r3, .L62+8
+ 657 001a C018     		adds	r0, r0, r3
+ 658              		.loc 1 897 1 view .LVU161
+ 659 001c 10BD     		pop	{r4, pc}
+ 660              	.L63:
+ 661 001e C046     		.align	2
+ 662              	.L62:
+ 663 0020 00000000 		.word	m_SHA256ctx
+ 664 0024 8A56EFFF 		.word	-1091958
+ 665 0028 0F311200 		.word	1192207
+ 666              		.cfi_endproc
+ 667              	.LFE191:
+ 669              		.section	.text.SE_CRYPTO_AuthenticateFW_Finish,"ax",%progbits
+ 670              		.align	1
+ 671              		.global	SE_CRYPTO_AuthenticateFW_Finish
+ 672              		.syntax unified
+ 673              		.code	16
+ 674              		.thumb_func
+ 676              	SE_CRYPTO_AuthenticateFW_Finish:
+ 677              	.LVL63:
+ 678              	.LFB192:
+ 898:Src/se_crypto_bootloader.c **** 
+ 899:Src/se_crypto_bootloader.c **** /**
+ 900:Src/se_crypto_bootloader.c ****   * @brief Secure Engine AuthenticateFW Finish function.
+ 901:Src/se_crypto_bootloader.c ****   *        It is a wrapper of the Cryptolib Encrypt_Finish function included in the protected area 
+ 902:Src/se_crypto_bootloader.c ****   *        authentication procedure..
+ 903:Src/se_crypto_bootloader.c ****   * @param pOutputBuffer: pointer to Output Buffer.
+ 904:Src/se_crypto_bootloader.c ****   * @param pOutputSize: pointer to Output Size (bytes).
+ 905:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 906:Src/se_crypto_bootloader.c ****   */
+ 907:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_AuthenticateFW_Finish(uint8_t *pOutputBuffer, int32_t *pOutputSize)
+ 908:Src/se_crypto_bootloader.c **** {
+ 679              		.loc 1 908 1 is_stmt 1 view -0
+ARM GAS  /tmp/ccxX10rW.s 			page 30
+
+
+ 680              		.cfi_startproc
+ 681              		@ args = 0, pretend = 0, frame = 0
+ 682              		@ frame_needed = 0, uses_anonymous_args = 0
+ 909:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 683              		.loc 1 909 3 view .LVU163
+ 910:Src/se_crypto_bootloader.c ****   /*
+ 911:Src/se_crypto_bootloader.c ****    * Depending on the crypto scheme, the Firmware Tag (signature) can be:
+ 912:Src/se_crypto_bootloader.c ****    *   - either an AES GCM tag
+ 913:Src/se_crypto_bootloader.c ****    *   - or a SHA256 digest
+ 914:Src/se_crypto_bootloader.c ****    */
+ 915:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+ 916:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_Encrypt_Finish(pOutputBuffer, pOutputSize);
+ 917:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+ 918:Src/se_crypto_bootloader.c ****   int32_t error_status;
+ 684              		.loc 1 918 3 view .LVU164
+ 919:Src/se_crypto_bootloader.c **** 
+ 920:Src/se_crypto_bootloader.c ****   /* Add data to be hashed */
+ 921:Src/se_crypto_bootloader.c ****   error_status = SHA256_Finish(&m_SHA256ctx, pOutputBuffer, pOutputSize);
+ 685              		.loc 1 921 3 view .LVU165
+ 686              		.loc 1 921 18 is_stmt 0 view .LVU166
+ 687 0000 074B     		ldr	r3, .L67
+ 908:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status;
+ 688              		.loc 1 908 1 view .LVU167
+ 689 0002 0A00     		movs	r2, r1
+ 690 0004 10B5     		push	{r4, lr}
+ 691              	.LCFI6:
+ 692              		.cfi_def_cfa_offset 8
+ 693              		.cfi_offset 4, -8
+ 694              		.cfi_offset 14, -4
+ 695              		.loc 1 921 18 view .LVU168
+ 696 0006 0100     		movs	r1, r0
+ 697              	.LVL64:
+ 922:Src/se_crypto_bootloader.c **** 
+ 923:Src/se_crypto_bootloader.c ****   if (HASH_SUCCESS == error_status)
+ 924:Src/se_crypto_bootloader.c ****   {
+ 925:Src/se_crypto_bootloader.c ****     e_ret_status = SE_SUCCESS;
+ 926:Src/se_crypto_bootloader.c ****   }
+ 927:Src/se_crypto_bootloader.c ****   else
+ 928:Src/se_crypto_bootloader.c ****   {
+ 929:Src/se_crypto_bootloader.c ****     e_ret_status = SE_ERROR;
+ 930:Src/se_crypto_bootloader.c ****   }
+ 931:Src/se_crypto_bootloader.c **** #else
+ 932:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+ 933:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 934:Src/se_crypto_bootloader.c **** 
+ 935:Src/se_crypto_bootloader.c ****   /* Return status*/
+ 936:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 937:Src/se_crypto_bootloader.c **** }
+ 698              		.loc 1 937 1 view .LVU169
+ 699              		@ sp needed
+ 921:Src/se_crypto_bootloader.c **** 
+ 700              		.loc 1 921 18 view .LVU170
+ 701 0008 1800     		movs	r0, r3
+ 702              	.LVL65:
+ 921:Src/se_crypto_bootloader.c **** 
+ 703              		.loc 1 921 18 view .LVU171
+ 704 000a FFF7FEFF 		bl	SHA256_Finish
+ARM GAS  /tmp/ccxX10rW.s 			page 31
+
+
+ 705              	.LVL66:
+ 923:Src/se_crypto_bootloader.c ****   {
+ 706              		.loc 1 923 3 is_stmt 1 view .LVU172
+ 925:Src/se_crypto_bootloader.c ****   }
+ 707              		.loc 1 925 18 is_stmt 0 view .LVU173
+ 708 000e 431E     		subs	r3, r0, #1
+ 709 0010 9841     		sbcs	r0, r0, r3
+ 710              	.LVL67:
+ 925:Src/se_crypto_bootloader.c ****   }
+ 711              		.loc 1 925 18 view .LVU174
+ 712 0012 044B     		ldr	r3, .L67+4
+ 713 0014 4042     		rsbs	r0, r0, #0
+ 714 0016 1840     		ands	r0, r3
+ 715 0018 034B     		ldr	r3, .L67+8
+ 716 001a C018     		adds	r0, r0, r3
+ 717              		.loc 1 937 1 view .LVU175
+ 718 001c 10BD     		pop	{r4, pc}
+ 719              	.L68:
+ 720 001e C046     		.align	2
+ 721              	.L67:
+ 722 0020 00000000 		.word	m_SHA256ctx
+ 723 0024 8A56EFFF 		.word	-1091958
+ 724 0028 0F311200 		.word	1192207
+ 725              		.cfi_endproc
+ 726              	.LFE192:
+ 728              		.section	.text.SE_CRYPTO_Authenticate_Metadata,"ax",%progbits
+ 729              		.align	1
+ 730              		.global	SE_CRYPTO_Authenticate_Metadata
+ 731              		.syntax unified
+ 732              		.code	16
+ 733              		.thumb_func
+ 735              	SE_CRYPTO_Authenticate_Metadata:
+ 736              	.LVL68:
+ 737              	.LFB193:
+ 938:Src/se_crypto_bootloader.c **** 
+ 939:Src/se_crypto_bootloader.c **** /**
+ 940:Src/se_crypto_bootloader.c ****   * @brief Secure Engine Authenticate Metadata function.
+ 941:Src/se_crypto_bootloader.c ****   *        Authenticates the header containing the Firmware metadata.
+ 942:Src/se_crypto_bootloader.c ****   * @param pxSE_Metadata: Firmware metadata.
+ 943:Src/se_crypto_bootloader.c ****   * @retval SE_ErrorStatus SE_SUCCESS if successful, SE_ERROR otherwise.
+ 944:Src/se_crypto_bootloader.c ****   */
+ 945:Src/se_crypto_bootloader.c **** SE_ErrorStatus SE_CRYPTO_Authenticate_Metadata(SE_FwRawHeaderTypeDef *pxSE_Metadata)
+ 946:Src/se_crypto_bootloader.c **** {
+ 738              		.loc 1 946 1 is_stmt 1 view -0
+ 739              		.cfi_startproc
+ 740              		@ args = 0, pretend = 0, frame = 176
+ 741              		@ frame_needed = 0, uses_anonymous_args = 0
+ 947:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status = SE_ERROR;
+ 742              		.loc 1 947 3 view .LVU177
+ 948:Src/se_crypto_bootloader.c **** 
+ 949:Src/se_crypto_bootloader.c ****   /*
+ 950:Src/se_crypto_bootloader.c ****    * Module variables for crypto key handling.
+ 951:Src/se_crypto_bootloader.c ****    */
+ 952:Src/se_crypto_bootloader.c **** #if ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME ==
+ 953:Src/se_crypto_bootloader.c **** 
+ 954:Src/se_crypto_bootloader.c ****   /******************************************************************************/
+ 955:Src/se_crypto_bootloader.c ****   /******** Parameters for Elliptic Curve P-256 SHA-256 from FIPS 186-3**********/
+ARM GAS  /tmp/ccxX10rW.s 			page 32
+
+
+ 956:Src/se_crypto_bootloader.c ****   /******************************************************************************/
+ 957:Src/se_crypto_bootloader.c ****   static const uint8_t P_256_a[] __attribute__((aligned(4))) =
+ 743              		.loc 1 957 3 view .LVU178
+ 958:Src/se_crypto_bootloader.c ****   {
+ 959:Src/se_crypto_bootloader.c ****     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 960:Src/se_crypto_bootloader.c ****     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 961:Src/se_crypto_bootloader.c ****     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC
+ 962:Src/se_crypto_bootloader.c ****   };
+ 963:Src/se_crypto_bootloader.c ****   static const uint8_t P_256_b[] __attribute__((aligned(4))) =
+ 744              		.loc 1 963 3 view .LVU179
+ 964:Src/se_crypto_bootloader.c ****   {
+ 965:Src/se_crypto_bootloader.c ****     0x5a, 0xc6, 0x35, 0xd8, 0xaa, 0x3a, 0x93, 0xe7, 0xb3, 0xeb, 0xbd, 0x55, 0x76,
+ 966:Src/se_crypto_bootloader.c ****     0x98, 0x86, 0xbc, 0x65, 0x1d, 0x06, 0xb0, 0xcc, 0x53, 0xb0, 0xf6, 0x3b, 0xce,
+ 967:Src/se_crypto_bootloader.c ****     0x3c, 0x3e, 0x27, 0xd2, 0x60, 0x4b
+ 968:Src/se_crypto_bootloader.c ****   };
+ 969:Src/se_crypto_bootloader.c ****   static const uint8_t P_256_p[] __attribute__((aligned(4))) =
+ 745              		.loc 1 969 3 view .LVU180
+ 970:Src/se_crypto_bootloader.c ****   {
+ 971:Src/se_crypto_bootloader.c ****     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 972:Src/se_crypto_bootloader.c ****     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 973:Src/se_crypto_bootloader.c ****     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+ 974:Src/se_crypto_bootloader.c ****   };
+ 975:Src/se_crypto_bootloader.c ****   static const uint8_t P_256_n[] __attribute__((aligned(4))) =
+ 746              		.loc 1 975 3 view .LVU181
+ 976:Src/se_crypto_bootloader.c ****   {
+ 977:Src/se_crypto_bootloader.c ****     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 978:Src/se_crypto_bootloader.c ****     0xFF, 0xFF, 0xFF, 0xBC, 0xE6, 0xFA, 0xAD, 0xA7, 0x17, 0x9E, 0x84, 0xF3, 0xB9,
+ 979:Src/se_crypto_bootloader.c ****     0xCA, 0xC2, 0xFC, 0x63, 0x25, 0x51
+ 980:Src/se_crypto_bootloader.c ****   };
+ 981:Src/se_crypto_bootloader.c ****   static const uint8_t P_256_Gx[] __attribute__((aligned(4))) =
+ 747              		.loc 1 981 3 view .LVU182
+ 982:Src/se_crypto_bootloader.c ****   {
+ 983:Src/se_crypto_bootloader.c ****     0x6B, 0x17, 0xD1, 0xF2, 0xE1, 0x2C, 0x42, 0x47, 0xF8, 0xBC, 0xE6, 0xE5, 0x63,
+ 984:Src/se_crypto_bootloader.c ****     0xA4, 0x40, 0xF2, 0x77, 0x03, 0x7D, 0x81, 0x2D, 0xEB, 0x33, 0xA0, 0xF4, 0xA1,
+ 985:Src/se_crypto_bootloader.c ****     0x39, 0x45, 0xD8, 0x98, 0xC2, 0x96
+ 986:Src/se_crypto_bootloader.c ****   };
+ 987:Src/se_crypto_bootloader.c ****   static const uint8_t P_256_Gy[] __attribute__((aligned(4))) =
+ 748              		.loc 1 987 3 view .LVU183
+ 988:Src/se_crypto_bootloader.c ****   {
+ 989:Src/se_crypto_bootloader.c ****     0x4F, 0xE3, 0x42, 0xE2, 0xFE, 0x1A, 0x7F, 0x9B, 0x8E, 0xE7, 0xEB, 0x4A, 0x7C,
+ 990:Src/se_crypto_bootloader.c ****     0x0F, 0x9E, 0x16, 0x2B, 0xCE, 0x33, 0x57, 0x6B, 0x31, 0x5E, 0xCE, 0xCB, 0xB6,
+ 991:Src/se_crypto_bootloader.c ****     0x40, 0x68, 0x37, 0xBF, 0x51, 0xF5
+ 992:Src/se_crypto_bootloader.c ****   };
+ 993:Src/se_crypto_bootloader.c **** 
+ 994:Src/se_crypto_bootloader.c ****   /** pre-allocated memory buffer used to store the internal values required by ECCDSA computation 
+ 995:Src/se_crypto_bootloader.c ****   static uint8_t preallocated_buffer[2048];
+ 749              		.loc 1 995 3 view .LVU184
+ 996:Src/se_crypto_bootloader.c **** 
+ 997:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+ 998:Src/se_crypto_bootloader.c **** 
+ 999:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+1000:Src/se_crypto_bootloader.c **** 
+1001:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+1002:Src/se_crypto_bootloader.c ****   /*
+1003:Src/se_crypto_bootloader.c ****     * Variable used to store the Asymmetric Key inside the protected area (even if this is a public
+1004:Src/se_crypto_bootloader.c ****     * like the secret key).
+1005:Src/se_crypto_bootloader.c ****     * Please make sure this variable is placed in protected SRAM1.
+ARM GAS  /tmp/ccxX10rW.s 			page 33
+
+
+1006:Src/se_crypto_bootloader.c ****     */
+1007:Src/se_crypto_bootloader.c ****   static uint8_t m_aSE_PubKey[SE_ASYM_PUBKEY_LEN];
+ 750              		.loc 1 1007 3 view .LVU185
+1008:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+1009:Src/se_crypto_bootloader.c **** 
+1010:Src/se_crypto_bootloader.c ****   /*
+1011:Src/se_crypto_bootloader.c ****     * Local variables for authentication procedure.
+1012:Src/se_crypto_bootloader.c ****     */
+1013:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+1014:Src/se_crypto_bootloader.c ****   SE_GCMInitTypeDef se_gcm_init;
+1015:Src/se_crypto_bootloader.c ****   uint8_t fw_raw_header_output[SE_FW_HEADER_TOT_LEN];
+1016:Src/se_crypto_bootloader.c ****   int32_t fw_raw_header_output_length;
+1017:Src/se_crypto_bootloader.c **** 
+1018:Src/se_crypto_bootloader.c ****   /* the key to be used for crypto operations (as this is a pointer to m_aSE_FirmwareKey or m_aSE_P
+1019:Src/se_crypto_bootloader.c ****      local variable, the pointed data is protected) */
+1020:Src/se_crypto_bootloader.c ****   uint8_t *pKey;
+1021:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+1022:Src/se_crypto_bootloader.c ****   int32_t status;
+ 751              		.loc 1 1022 3 view .LVU186
+1023:Src/se_crypto_bootloader.c ****   ECDSAsignature_stt *sign = NULL;
+ 752              		.loc 1 1023 3 view .LVU187
+ 753              		.loc 1 1023 23 is_stmt 0 view .LVU188
+ 754 0000 0023     		movs	r3, #0
+ 946:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status = SE_ERROR;
+ 755              		.loc 1 946 1 view .LVU189
+ 756 0002 F0B5     		push	{r4, r5, r6, r7, lr}
+ 757              	.LCFI7:
+ 758              		.cfi_def_cfa_offset 20
+ 759              		.cfi_offset 4, -20
+ 760              		.cfi_offset 5, -16
+ 761              		.cfi_offset 6, -12
+ 762              		.cfi_offset 7, -8
+ 763              		.cfi_offset 14, -4
+ 764 0004 AFB0     		sub	sp, sp, #188
+ 765              	.LCFI8:
+ 766              		.cfi_def_cfa_offset 208
+ 946:Src/se_crypto_bootloader.c ****   SE_ErrorStatus e_ret_status = SE_ERROR;
+ 767              		.loc 1 946 1 view .LVU190
+ 768 0006 0400     		movs	r4, r0
+ 769              		.loc 1 1023 23 view .LVU191
+ 770 0008 0293     		str	r3, [sp, #8]
+1024:Src/se_crypto_bootloader.c ****   /* structure require for initialization */
+1025:Src/se_crypto_bootloader.c ****   membuf_stt Crypto_Buffer;
+ 771              		.loc 1 1025 3 is_stmt 1 view .LVU192
+1026:Src/se_crypto_bootloader.c ****   /* Proceed with ECC signature generation */
+1027:Src/se_crypto_bootloader.c ****   EC_stt EC_st;
+ 772              		.loc 1 1027 3 view .LVU193
+1028:Src/se_crypto_bootloader.c ****   /* Structure that will contain the public key, please note that the public key
+1029:Src/se_crypto_bootloader.c ****     * is just a point on the curve, hence the name ECpoint_stt
+1030:Src/se_crypto_bootloader.c ****     */
+1031:Src/se_crypto_bootloader.c ****   ECpoint_stt *PubKey = NULL;
+ 773              		.loc 1 1031 3 view .LVU194
+ 774              		.loc 1 1031 16 is_stmt 0 view .LVU195
+ 775 000a 0393     		str	r3, [sp, #12]
+1032:Src/se_crypto_bootloader.c ****   /* Structure context used to call the ECDSAverify */
+1033:Src/se_crypto_bootloader.c ****   ECDSAverifyCtx_stt verctx;
+ 776              		.loc 1 1033 3 is_stmt 1 view .LVU196
+ARM GAS  /tmp/ccxX10rW.s 			page 34
+
+
+1034:Src/se_crypto_bootloader.c ****   const uint8_t *pSign_r;
+ 777              		.loc 1 1034 3 view .LVU197
+1035:Src/se_crypto_bootloader.c ****   const uint8_t *pSign_s;
+ 778              		.loc 1 1035 3 view .LVU198
+1036:Src/se_crypto_bootloader.c ****   /* Firmware metadata to be authenticated and reference MAC */
+1037:Src/se_crypto_bootloader.c ****   const uint8_t *pPayload;    /* Metadata payload */
+ 779              		.loc 1 1037 3 view .LVU199
+1038:Src/se_crypto_bootloader.c ****   int32_t payloadSize;        /* Metadata length to be considered for hash */
+ 780              		.loc 1 1038 3 view .LVU200
+1039:Src/se_crypto_bootloader.c ****   uint8_t *pSign;             /* Reference MAC (ECCDSA signed SHA256 of the FW metadata) */
+ 781              		.loc 1 1039 3 view .LVU201
+1040:Src/se_crypto_bootloader.c ****   const uint8_t *pPub_x;
+ 782              		.loc 1 1040 3 view .LVU202
+1041:Src/se_crypto_bootloader.c ****   const uint8_t *pPub_y;
+ 783              		.loc 1 1041 3 view .LVU203
+1042:Src/se_crypto_bootloader.c ****   /* buffer for sha256 computing */
+1043:Src/se_crypto_bootloader.c ****   uint8_t MessageDigest[CRL_SHA256_SIZE];
+ 784              		.loc 1 1043 3 view .LVU204
+1044:Src/se_crypto_bootloader.c ****   int32_t MessageDigestLength = 0;
+ 785              		.loc 1 1044 3 view .LVU205
+ 786              		.loc 1 1044 11 is_stmt 0 view .LVU206
+ 787 000c 0493     		str	r3, [sp, #16]
+1045:Src/se_crypto_bootloader.c **** 
+1046:Src/se_crypto_bootloader.c ****   /* the key to be used for crypto operations (as this is a pointer to m_aSE_FirmwareKey or m_aSE_P
+1047:Src/se_crypto_bootloader.c ****      local variable, the pointed data is protected) */
+1048:Src/se_crypto_bootloader.c ****   uint8_t *pKey;
+ 788              		.loc 1 1048 3 is_stmt 1 view .LVU207
+1049:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+1050:Src/se_crypto_bootloader.c **** 
+1051:Src/se_crypto_bootloader.c ****   if (NULL == pxSE_Metadata)
+ 789              		.loc 1 1051 3 view .LVU208
+ 790              		.loc 1 1051 6 is_stmt 0 view .LVU209
+ 791 000e 9842     		cmp	r0, r3
+ 792 0010 00D1     		bne	.LCB665
+ 793 0012 A8E0     		b	.L79	@long jump
+ 794              	.LCB665:
+1052:Src/se_crypto_bootloader.c ****   {
+1053:Src/se_crypto_bootloader.c ****     return e_ret_status;
+1054:Src/se_crypto_bootloader.c ****   }
+1055:Src/se_crypto_bootloader.c **** 
+1056:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+1057:Src/se_crypto_bootloader.c ****   /* Initialize the key */
+1058:Src/se_crypto_bootloader.c ****   SE_CRYPTO_AES_ReadKey(pxSE_Metadata);
+1059:Src/se_crypto_bootloader.c ****   pKey = &(m_aSE_FirmwareKey[0]);
+1060:Src/se_crypto_bootloader.c **** 
+1061:Src/se_crypto_bootloader.c ****   /*
+1062:Src/se_crypto_bootloader.c ****     * Call the DECRYPT primitive to verify the HeaderSignature:
+1063:Src/se_crypto_bootloader.c ****     *   1. Payload size is set to 0 because there is no encrypted data to decrypt
+1064:Src/se_crypto_bootloader.c ****     *   2. Header data is processed as Additional authenticated data (authentication only, no encry
+1065:Src/se_crypto_bootloader.c ****     *   3. The HeaderSignature is the tag to be verified to authenticate the header (at the FINISH 
+1066:Src/se_crypto_bootloader.c ****     */
+1067:Src/se_crypto_bootloader.c **** 
+1068:Src/se_crypto_bootloader.c ****   se_gcm_init.HeaderSize = (int32_t)SE_FW_AUTH_LEN; /* Authenticated part of the header */
+1069:Src/se_crypto_bootloader.c ****   se_gcm_init.PayloadSize = (int32_t) 0U;
+1070:Src/se_crypto_bootloader.c ****   se_gcm_init.pNonce = (uint8_t *)pxSE_Metadata->Nonce;
+1071:Src/se_crypto_bootloader.c ****   se_gcm_init.NonceSize = SE_NONCE_LEN;
+1072:Src/se_crypto_bootloader.c ****   se_gcm_init.pTag = (uint8_t *) pxSE_Metadata->HeaderSignature;
+ARM GAS  /tmp/ccxX10rW.s 			page 35
+
+
+1073:Src/se_crypto_bootloader.c ****   se_gcm_init.TagSize = SE_TAG_LEN;
+1074:Src/se_crypto_bootloader.c **** 
+1075:Src/se_crypto_bootloader.c ****   /* Check the parameters */
+1076:Src/se_crypto_bootloader.c ****   assert_param(IS_SE_CRYPTO_AES_GCM_NONCE_SIZE(se_gcm_init.NonceSize));
+1077:Src/se_crypto_bootloader.c ****   assert_param(IS_SE_CRYPTO_AES_GCM_TAG_SIZE(se_gcm_init.TagSize));
+1078:Src/se_crypto_bootloader.c **** 
+1079:Src/se_crypto_bootloader.c ****   /*
+1080:Src/se_crypto_bootloader.c ****     * Common Crypto function calls to:
+1081:Src/se_crypto_bootloader.c ****     *    initiate decrypt service
+1082:Src/se_crypto_bootloader.c ****     *    provide the header data (additional authenticated data)
+1083:Src/se_crypto_bootloader.c ****     *    finish the decrypt to check the header tag
+1084:Src/se_crypto_bootloader.c ****     */
+1085:Src/se_crypto_bootloader.c **** 
+1086:Src/se_crypto_bootloader.c ****   /* Initialize the operation */
+1087:Src/se_crypto_bootloader.c ****   e_ret_status = SE_CRYPTO_AES_GCM_Decrypt_Init(pKey, &se_gcm_init);
+1088:Src/se_crypto_bootloader.c **** 
+1089:Src/se_crypto_bootloader.c ****   /* check for initialization errors */
+1090:Src/se_crypto_bootloader.c ****   if (e_ret_status == SE_SUCCESS)
+1091:Src/se_crypto_bootloader.c ****   {
+1092:Src/se_crypto_bootloader.c ****     /* Process header */
+1093:Src/se_crypto_bootloader.c ****     e_ret_status = SE_CRYPTO_AES_GCM_Header_Append((uint8_t *)pxSE_Metadata, se_gcm_init.HeaderSize
+1094:Src/se_crypto_bootloader.c **** 
+1095:Src/se_crypto_bootloader.c ****     /* Authenticate */
+1096:Src/se_crypto_bootloader.c ****     if (e_ret_status == SE_SUCCESS)
+1097:Src/se_crypto_bootloader.c ****     {
+1098:Src/se_crypto_bootloader.c ****       /* Finalize data */
+1099:Src/se_crypto_bootloader.c ****       e_ret_status = SE_CRYPTO_AES_GCM_Decrypt_Finish(fw_raw_header_output, &fw_raw_header_output_l
+1100:Src/se_crypto_bootloader.c ****     }
+1101:Src/se_crypto_bootloader.c ****   }
+1102:Src/se_crypto_bootloader.c **** 
+1103:Src/se_crypto_bootloader.c **** #elif ( (SECBOOT_CRYPTO_SCHEME == SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256) || (SECBOOT_CRYPTO_SCHEME 
+1104:Src/se_crypto_bootloader.c ****   e_ret_status = SE_ERROR;
+ 795              		.loc 1 1104 3 is_stmt 1 view .LVU210
+1105:Src/se_crypto_bootloader.c ****   /* Retrieve the ECC Public Key */
+1106:Src/se_crypto_bootloader.c ****   SE_CRYPTO_ReadKey_Pub(pxSE_Metadata, &m_aSE_PubKey[0U]);
+ 796              		.loc 1 1106 3 view .LVU211
+ 797              	.LVL69:
+ 798              	.LBB10:
+ 799              	.LBI10:
+ 251:Src/se_crypto_bootloader.c **** {
+ 800              		.loc 1 251 13 view .LVU212
+ 801              	.LBB11:
+ 257:Src/se_crypto_bootloader.c ****   {
+ 802              		.loc 1 257 3 view .LVU213
+ 257:Src/se_crypto_bootloader.c ****   {
+ 803              		.loc 1 257 7 is_stmt 0 view .LVU214
+ 804 0014 0422     		movs	r2, #4
+ 805 0016 5549     		ldr	r1, .L81
+ 806 0018 FFF7FEFF 		bl	memcmp
+ 807              	.LVL70:
+ 257:Src/se_crypto_bootloader.c ****   {
+ 808              		.loc 1 257 7 view .LVU215
+ 809 001c 544E     		ldr	r6, .L81+4
+ 257:Src/se_crypto_bootloader.c ****   {
+ 810              		.loc 1 257 6 discriminator 1 view .LVU216
+ 811 001e 0028     		cmp	r0, #0
+ 812 0020 02D1     		bne	.L71
+ARM GAS  /tmp/ccxX10rW.s 			page 36
+
+
+ 259:Src/se_crypto_bootloader.c ****   }
+ 813              		.loc 1 259 5 is_stmt 1 view .LVU217
+ 814 0022 3000     		movs	r0, r6
+ 815 0024 FFF7FEFF 		bl	SE_ReadKey_1_Pub
+ 816              	.LVL71:
+ 817              	.L71:
+ 276:Src/se_crypto_bootloader.c ****   }
+ 818              		.loc 1 276 5 view .LVU218
+ 276:Src/se_crypto_bootloader.c ****   }
+ 819              		.loc 1 276 5 is_stmt 0 view .LVU219
+ 820              	.LBE11:
+ 821              	.LBE10:
+1107:Src/se_crypto_bootloader.c ****   pKey = &(m_aSE_PubKey[0]);
+ 822              		.loc 1 1107 3 is_stmt 1 view .LVU220
+1108:Src/se_crypto_bootloader.c **** 
+1109:Src/se_crypto_bootloader.c ****   /* Set the local variables required to handle the Firmware Metadata during the authentication pro
+1110:Src/se_crypto_bootloader.c ****   pPayload = (const uint8_t *)pxSE_Metadata;
+ 823              		.loc 1 1110 3 view .LVU221
+1111:Src/se_crypto_bootloader.c ****   payloadSize = (int32_t) SE_FW_AUTH_LEN;                            /* Authenticated part of the h
+ 824              		.loc 1 1111 3 view .LVU222
+1112:Src/se_crypto_bootloader.c ****   pSign = pxSE_Metadata->HeaderSignature;
+ 825              		.loc 1 1112 3 view .LVU223
+1113:Src/se_crypto_bootloader.c **** 
+1114:Src/se_crypto_bootloader.c ****   /* Set the local variables dealing with the public key */
+1115:Src/se_crypto_bootloader.c ****   pPub_x  =  pKey;
+ 826              		.loc 1 1115 3 view .LVU224
+1116:Src/se_crypto_bootloader.c ****   pPub_y = (uint8_t *)(pKey + 32);
+ 827              		.loc 1 1116 3 view .LVU225
+1117:Src/se_crypto_bootloader.c **** 
+1118:Src/se_crypto_bootloader.c ****   /* signature to be verified with r and s components */
+1119:Src/se_crypto_bootloader.c ****   pSign_r = pSign;
+ 828              		.loc 1 1119 3 view .LVU226
+1120:Src/se_crypto_bootloader.c ****   pSign_s = (uint8_t *)(pSign + 32);
+ 829              		.loc 1 1120 3 view .LVU227
+1121:Src/se_crypto_bootloader.c **** 
+1122:Src/se_crypto_bootloader.c ****   /* Compute the SHA256 of the Firmware Metadata */
+1123:Src/se_crypto_bootloader.c ****   status = SE_CRYPTO_SHA256_HASH_DigestCompute(pPayload,
+ 830              		.loc 1 1123 3 view .LVU228
+ 831              	.LBB12:
+ 832              	.LBI12:
+ 302:Src/se_crypto_bootloader.c ****                                                    uint8_t *MessageDigest, int32_t *MessageDigestLe
+ 833              		.loc 1 302 16 view .LVU229
+ 834              	.LBB13:
+ 305:Src/se_crypto_bootloader.c ****   int32_t error_status;
+ 835              		.loc 1 305 3 view .LVU230
+ 306:Src/se_crypto_bootloader.c **** 
+ 836              		.loc 1 306 3 view .LVU231
+ 309:Src/se_crypto_bootloader.c **** 
+ 837              		.loc 1 309 3 view .LVU232
+ 312:Src/se_crypto_bootloader.c **** 
+ 838              		.loc 1 312 23 is_stmt 0 view .LVU233
+ 839 0028 6A46     		mov	r2, sp
+ 840 002a 4821     		movs	r1, #72
+ 309:Src/se_crypto_bootloader.c **** 
+ 841              		.loc 1 309 25 view .LVU234
+ 842 002c 2027     		movs	r7, #32
+ 312:Src/se_crypto_bootloader.c **** 
+ARM GAS  /tmp/ccxX10rW.s 			page 37
+
+
+ 843              		.loc 1 312 23 view .LVU235
+ 844 002e 0023     		movs	r3, #0
+ 845 0030 5218     		adds	r2, r2, r1
+ 309:Src/se_crypto_bootloader.c **** 
+ 846              		.loc 1 309 25 view .LVU236
+ 847 0032 1397     		str	r7, [sp, #76]
+ 312:Src/se_crypto_bootloader.c **** 
+ 848              		.loc 1 312 3 is_stmt 1 view .LVU237
+ 314:Src/se_crypto_bootloader.c **** 
+ 849              		.loc 1 314 18 is_stmt 0 view .LVU238
+ 850 0034 11A8     		add	r0, sp, #68
+ 312:Src/se_crypto_bootloader.c **** 
+ 851              		.loc 1 312 23 view .LVU239
+ 852 0036 1370     		strb	r3, [r2]
+ 314:Src/se_crypto_bootloader.c **** 
+ 853              		.loc 1 314 3 is_stmt 1 view .LVU240
+ 314:Src/se_crypto_bootloader.c **** 
+ 854              		.loc 1 314 18 is_stmt 0 view .LVU241
+ 855 0038 FFF7FEFF 		bl	SHA256_Init
+ 856              	.LVL72:
+ 317:Src/se_crypto_bootloader.c ****   {
+ 857              		.loc 1 317 3 is_stmt 1 view .LVU242
+ 317:Src/se_crypto_bootloader.c ****   {
+ 858              		.loc 1 317 6 is_stmt 0 view .LVU243
+ 859 003c 0028     		cmp	r0, #0
+ 860 003e 18D0     		beq	.L72
+ 861              	.LVL73:
+ 862              	.L76:
+ 317:Src/se_crypto_bootloader.c ****   {
+ 863              		.loc 1 317 6 view .LVU244
+ 864              	.LBE13:
+ 865              	.LBE12:
+1104:Src/se_crypto_bootloader.c ****   /* Retrieve the ECC Public Key */
+ 866              		.loc 1 1104 16 view .LVU245
+ 867 0040 4C4C     		ldr	r4, .L81+8
+ 868              	.LVL74:
+ 869              	.L73:
+1124:Src/se_crypto_bootloader.c ****                                                payloadSize,
+1125:Src/se_crypto_bootloader.c ****                                                (uint8_t *)MessageDigest,
+1126:Src/se_crypto_bootloader.c ****                                                &MessageDigestLength);
+1127:Src/se_crypto_bootloader.c **** 
+1128:Src/se_crypto_bootloader.c ****   if (status == HASH_SUCCESS)
+1129:Src/se_crypto_bootloader.c ****   {
+1130:Src/se_crypto_bootloader.c ****     /* We prepare the memory buffer structure */
+1131:Src/se_crypto_bootloader.c ****     Crypto_Buffer.pmBuf =  preallocated_buffer;
+1132:Src/se_crypto_bootloader.c ****     Crypto_Buffer.mUsed = 0;
+1133:Src/se_crypto_bootloader.c ****     Crypto_Buffer.mSize = (int16_t) sizeof(preallocated_buffer);
+1134:Src/se_crypto_bootloader.c ****     EC_st.pmA = P_256_a;
+1135:Src/se_crypto_bootloader.c ****     EC_st.pmB = P_256_b;
+1136:Src/se_crypto_bootloader.c ****     EC_st.pmP = P_256_p;
+1137:Src/se_crypto_bootloader.c ****     EC_st.pmN = P_256_n;
+1138:Src/se_crypto_bootloader.c ****     EC_st.pmGx = P_256_Gx;
+1139:Src/se_crypto_bootloader.c ****     EC_st.pmGy = P_256_Gy;
+1140:Src/se_crypto_bootloader.c ****     EC_st.mAsize = (int32_t)sizeof(P_256_a);
+1141:Src/se_crypto_bootloader.c ****     EC_st.mBsize = (int32_t)sizeof(P_256_b);
+1142:Src/se_crypto_bootloader.c ****     EC_st.mNsize = (int32_t)sizeof(P_256_n);
+1143:Src/se_crypto_bootloader.c ****     EC_st.mPsize = (int32_t)sizeof(P_256_p);
+ARM GAS  /tmp/ccxX10rW.s 			page 38
+
+
+1144:Src/se_crypto_bootloader.c ****     EC_st.mGxsize = (int32_t)sizeof(P_256_Gx);
+1145:Src/se_crypto_bootloader.c ****     EC_st.mGysize = (int32_t)sizeof(P_256_Gy);
+1146:Src/se_crypto_bootloader.c **** 
+1147:Src/se_crypto_bootloader.c ****     status = ECCinitEC(&EC_st, &Crypto_Buffer);
+1148:Src/se_crypto_bootloader.c **** 
+1149:Src/se_crypto_bootloader.c ****     if (status == ECC_SUCCESS)
+1150:Src/se_crypto_bootloader.c ****     {
+1151:Src/se_crypto_bootloader.c ****       status = ECCinitPoint(&PubKey, &EC_st, &Crypto_Buffer);
+1152:Src/se_crypto_bootloader.c ****     }
+1153:Src/se_crypto_bootloader.c **** 
+1154:Src/se_crypto_bootloader.c ****     if (status == ECC_SUCCESS)
+1155:Src/se_crypto_bootloader.c ****     {
+1156:Src/se_crypto_bootloader.c ****       /* Point is initialized, now import the public key */
+1157:Src/se_crypto_bootloader.c ****       (void)ECCsetPointCoordinate(PubKey, E_ECC_POINT_COORDINATE_X, pPub_x, 32);
+1158:Src/se_crypto_bootloader.c ****       (void)ECCsetPointCoordinate(PubKey, E_ECC_POINT_COORDINATE_Y, pPub_y, 32);
+1159:Src/se_crypto_bootloader.c ****       /* Try to validate the Public Key. */
+1160:Src/se_crypto_bootloader.c ****       status = ECCvalidatePubKey(PubKey, &EC_st, &Crypto_Buffer);
+1161:Src/se_crypto_bootloader.c ****     }
+1162:Src/se_crypto_bootloader.c **** 
+1163:Src/se_crypto_bootloader.c ****     if (status == ECC_SUCCESS)
+1164:Src/se_crypto_bootloader.c ****     {
+1165:Src/se_crypto_bootloader.c ****       /* Public Key is validated, Initialize the signature object */
+1166:Src/se_crypto_bootloader.c ****       status = ECDSAinitSign(&sign, &EC_st, &Crypto_Buffer);
+1167:Src/se_crypto_bootloader.c ****     }
+1168:Src/se_crypto_bootloader.c **** 
+1169:Src/se_crypto_bootloader.c ****     if (status == ECC_SUCCESS)
+1170:Src/se_crypto_bootloader.c ****     {
+1171:Src/se_crypto_bootloader.c ****       /* Import the signature values */
+1172:Src/se_crypto_bootloader.c ****       (void)ECDSAsetSignature(sign, E_ECDSA_SIGNATURE_R_VALUE, pSign_r, 32);
+1173:Src/se_crypto_bootloader.c ****       (void)ECDSAsetSignature(sign, E_ECDSA_SIGNATURE_S_VALUE, pSign_s, 32);
+1174:Src/se_crypto_bootloader.c **** 
+1175:Src/se_crypto_bootloader.c ****       /* Prepare the structure for the ECDSA signature verification */
+1176:Src/se_crypto_bootloader.c ****       verctx.pmEC = &EC_st;
+1177:Src/se_crypto_bootloader.c ****       verctx.pmPubKey = PubKey;
+1178:Src/se_crypto_bootloader.c **** 
+1179:Src/se_crypto_bootloader.c ****       /* Verify it */
+1180:Src/se_crypto_bootloader.c ****       status = ECDSAverify(MessageDigest, MessageDigestLength, sign, &verctx, &Crypto_Buffer);
+1181:Src/se_crypto_bootloader.c ****       if (status == SIGNATURE_VALID)
+1182:Src/se_crypto_bootloader.c ****       {
+1183:Src/se_crypto_bootloader.c ****         e_ret_status = SE_SUCCESS;
+1184:Src/se_crypto_bootloader.c ****       }
+1185:Src/se_crypto_bootloader.c ****       /* release resource ...*/
+1186:Src/se_crypto_bootloader.c ****       (void)ECDSAfreeSign(&sign, &Crypto_Buffer);
+1187:Src/se_crypto_bootloader.c ****       (void)ECCfreePoint(&PubKey, &Crypto_Buffer);
+1188:Src/se_crypto_bootloader.c ****       (void)ECCfreeEC(&EC_st, &Crypto_Buffer);
+1189:Src/se_crypto_bootloader.c ****     }
+1190:Src/se_crypto_bootloader.c ****   }
+1191:Src/se_crypto_bootloader.c **** #else
+1192:Src/se_crypto_bootloader.c **** #error "The current example does not support the selected crypto scheme."
+1193:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+1194:Src/se_crypto_bootloader.c **** 
+1195:Src/se_crypto_bootloader.c ****   /* Clean-up the key in RAM */
+1196:Src/se_crypto_bootloader.c **** #if (SECBOOT_CRYPTO_SCHEME == SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM)
+1197:Src/se_crypto_bootloader.c ****   /* Symmetric key */
+1198:Src/se_crypto_bootloader.c ****   SE_CLEAN_UP_FW_KEY();
+1199:Src/se_crypto_bootloader.c **** #else
+1200:Src/se_crypto_bootloader.c ****   /* ECC public key */
+ARM GAS  /tmp/ccxX10rW.s 			page 39
+
+
+1201:Src/se_crypto_bootloader.c ****   SE_CLEAN_UP_PUB_KEY();
+ 870              		.loc 1 1201 3 is_stmt 1 view .LVU246
+ 871              		.loc 1 1201 3 view .LVU247
+ 872 0042 4D4F     		ldr	r7, .L81+12
+ 873 0044 4D49     		ldr	r1, .L81+16
+ 874 0046 B868     		ldr	r0, [r7, #8]
+ 875 0048 FFF7FEFF 		bl	__aeabi_uidivmod
+ 876              	.LVL75:
+ 877 004c 4C4D     		ldr	r5, .L81+20
+ 878 004e 4022     		movs	r2, #64
+ 879 0050 3000     		movs	r0, r6
+ 880 0052 6918     		adds	r1, r5, r1
+ 881 0054 FFF7FEFF 		bl	memcpy
+ 882              	.LVL76:
+ 883              		.loc 1 1201 3 view .LVU248
+ 884 0058 B868     		ldr	r0, [r7, #8]
+ 885 005a 4849     		ldr	r1, .L81+16
+ 886 005c FFF7FEFF 		bl	__aeabi_uidivmod
+ 887              	.LVL77:
+ 888 0060 484E     		ldr	r6, .L81+24
+ 889 0062 7422     		movs	r2, #116
+ 890 0064 3000     		movs	r0, r6
+ 891 0066 6918     		adds	r1, r5, r1
+ 892 0068 FFF7FEFF 		bl	memcpy
+ 893              	.LVL78:
+ 894              		.loc 1 1201 3 discriminator 1 view .LVU249
+1202:Src/se_crypto_bootloader.c **** #endif /* SECBOOT_CRYPTO_SCHEME */
+1203:Src/se_crypto_bootloader.c **** 
+1204:Src/se_crypto_bootloader.c ****   /* Return status*/
+1205:Src/se_crypto_bootloader.c ****   return e_ret_status;
+ 895              		.loc 1 1205 3 view .LVU250
+ 896              	.L69:
+1206:Src/se_crypto_bootloader.c **** }
+ 897              		.loc 1 1206 1 is_stmt 0 view .LVU251
+ 898 006c 2000     		movs	r0, r4
+ 899 006e 2FB0     		add	sp, sp, #188
+ 900              		@ sp needed
+ 901 0070 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 902              	.LVL79:
+ 903              	.L72:
+ 904              	.LBB15:
+ 905              	.LBB14:
+ 320:Src/se_crypto_bootloader.c ****                                  InputMessage,
+ 906              		.loc 1 320 5 is_stmt 1 view .LVU252
+ 320:Src/se_crypto_bootloader.c ****                                  InputMessage,
+ 907              		.loc 1 320 20 is_stmt 0 view .LVU253
+ 908 0072 8022     		movs	r2, #128
+ 909 0074 2100     		movs	r1, r4
+ 910 0076 11A8     		add	r0, sp, #68
+ 911              	.LVL80:
+ 320:Src/se_crypto_bootloader.c ****                                  InputMessage,
+ 912              		.loc 1 320 20 view .LVU254
+ 913 0078 FFF7FEFF 		bl	SHA256_Append
+ 914              	.LVL81:
+ 324:Src/se_crypto_bootloader.c ****     {
+ 915              		.loc 1 324 5 is_stmt 1 view .LVU255
+ 324:Src/se_crypto_bootloader.c ****     {
+ARM GAS  /tmp/ccxX10rW.s 			page 40
+
+
+ 916              		.loc 1 324 8 is_stmt 0 view .LVU256
+ 917 007c 0028     		cmp	r0, #0
+ 918 007e DFD1     		bne	.L76
+ 327:Src/se_crypto_bootloader.c ****     }
+ 919              		.loc 1 327 7 is_stmt 1 view .LVU257
+ 327:Src/se_crypto_bootloader.c ****     }
+ 920              		.loc 1 327 22 is_stmt 0 view .LVU258
+ 921 0080 04AA     		add	r2, sp, #16
+ 922              	.LVL82:
+ 327:Src/se_crypto_bootloader.c ****     }
+ 923              		.loc 1 327 22 view .LVU259
+ 924 0082 09A9     		add	r1, sp, #36
+ 925              	.LVL83:
+ 327:Src/se_crypto_bootloader.c ****     }
+ 926              		.loc 1 327 22 view .LVU260
+ 927 0084 11A8     		add	r0, sp, #68
+ 928              	.LVL84:
+ 327:Src/se_crypto_bootloader.c ****     }
+ 929              		.loc 1 327 22 view .LVU261
+ 930 0086 FFF7FEFF 		bl	SHA256_Finish
+ 931              	.LVL85:
+ 331:Src/se_crypto_bootloader.c **** }
+ 932              		.loc 1 331 3 is_stmt 1 view .LVU262
+ 331:Src/se_crypto_bootloader.c **** }
+ 933              		.loc 1 331 3 is_stmt 0 view .LVU263
+ 934              	.LBE14:
+ 935              	.LBE15:
+1128:Src/se_crypto_bootloader.c ****   {
+ 936              		.loc 1 1128 3 is_stmt 1 view .LVU264
+1128:Src/se_crypto_bootloader.c ****   {
+ 937              		.loc 1 1128 6 is_stmt 0 view .LVU265
+ 938 008a 0028     		cmp	r0, #0
+ 939 008c D8D1     		bne	.L76
+1131:Src/se_crypto_bootloader.c ****     Crypto_Buffer.mUsed = 0;
+ 940              		.loc 1 1131 5 is_stmt 1 view .LVU266
+1131:Src/se_crypto_bootloader.c ****     Crypto_Buffer.mUsed = 0;
+ 941              		.loc 1 1131 25 is_stmt 0 view .LVU267
+ 942 008e 3E4B     		ldr	r3, .L81+28
+ 943 0090 05AD     		add	r5, sp, #20
+ 944 0092 0593     		str	r3, [sp, #20]
+1132:Src/se_crypto_bootloader.c ****     Crypto_Buffer.mSize = (int16_t) sizeof(preallocated_buffer);
+ 945              		.loc 1 1132 5 is_stmt 1 view .LVU268
+1133:Src/se_crypto_bootloader.c ****     EC_st.pmA = P_256_a;
+ 946              		.loc 1 1133 5 view .LVU269
+1133:Src/se_crypto_bootloader.c ****     EC_st.pmA = P_256_a;
+ 947              		.loc 1 1133 25 is_stmt 0 view .LVU270
+ 948 0094 8023     		movs	r3, #128
+ 949 0096 1B01     		lsls	r3, r3, #4
+ 950 0098 0693     		str	r3, [sp, #24]
+1134:Src/se_crypto_bootloader.c ****     EC_st.pmB = P_256_b;
+ 951              		.loc 1 1134 5 is_stmt 1 view .LVU271
+1134:Src/se_crypto_bootloader.c ****     EC_st.pmB = P_256_b;
+ 952              		.loc 1 1134 15 is_stmt 0 view .LVU272
+ 953 009a 3C4B     		ldr	r3, .L81+32
+1147:Src/se_crypto_bootloader.c **** 
+ 954              		.loc 1 1147 14 view .LVU273
+ 955 009c 2900     		movs	r1, r5
+ARM GAS  /tmp/ccxX10rW.s 			page 41
+
+
+1134:Src/se_crypto_bootloader.c ****     EC_st.pmB = P_256_b;
+ 956              		.loc 1 1134 15 view .LVU274
+ 957 009e 1193     		str	r3, [sp, #68]
+1135:Src/se_crypto_bootloader.c ****     EC_st.pmP = P_256_p;
+ 958              		.loc 1 1135 5 is_stmt 1 view .LVU275
+1135:Src/se_crypto_bootloader.c ****     EC_st.pmP = P_256_p;
+ 959              		.loc 1 1135 15 is_stmt 0 view .LVU276
+ 960 00a0 3B4B     		ldr	r3, .L81+36
+1147:Src/se_crypto_bootloader.c **** 
+ 961              		.loc 1 1147 14 view .LVU277
+ 962 00a2 11A8     		add	r0, sp, #68
+ 963              	.LVL86:
+1135:Src/se_crypto_bootloader.c ****     EC_st.pmP = P_256_p;
+ 964              		.loc 1 1135 15 view .LVU278
+ 965 00a4 1393     		str	r3, [sp, #76]
+1136:Src/se_crypto_bootloader.c ****     EC_st.pmN = P_256_n;
+ 966              		.loc 1 1136 5 is_stmt 1 view .LVU279
+1136:Src/se_crypto_bootloader.c ****     EC_st.pmN = P_256_n;
+ 967              		.loc 1 1136 15 is_stmt 0 view .LVU280
+ 968 00a6 3B4B     		ldr	r3, .L81+40
+1140:Src/se_crypto_bootloader.c ****     EC_st.mBsize = (int32_t)sizeof(P_256_b);
+ 969              		.loc 1 1140 18 view .LVU281
+ 970 00a8 1297     		str	r7, [sp, #72]
+1136:Src/se_crypto_bootloader.c ****     EC_st.pmN = P_256_n;
+ 971              		.loc 1 1136 15 view .LVU282
+ 972 00aa 1593     		str	r3, [sp, #84]
+1137:Src/se_crypto_bootloader.c ****     EC_st.pmGx = P_256_Gx;
+ 973              		.loc 1 1137 5 is_stmt 1 view .LVU283
+1137:Src/se_crypto_bootloader.c ****     EC_st.pmGx = P_256_Gx;
+ 974              		.loc 1 1137 15 is_stmt 0 view .LVU284
+ 975 00ac 3A4B     		ldr	r3, .L81+44
+1141:Src/se_crypto_bootloader.c ****     EC_st.mNsize = (int32_t)sizeof(P_256_n);
+ 976              		.loc 1 1141 18 view .LVU285
+ 977 00ae 1497     		str	r7, [sp, #80]
+1137:Src/se_crypto_bootloader.c ****     EC_st.pmGx = P_256_Gx;
+ 978              		.loc 1 1137 15 view .LVU286
+ 979 00b0 1793     		str	r3, [sp, #92]
+1138:Src/se_crypto_bootloader.c ****     EC_st.pmGy = P_256_Gy;
+ 980              		.loc 1 1138 5 is_stmt 1 view .LVU287
+1138:Src/se_crypto_bootloader.c ****     EC_st.pmGy = P_256_Gy;
+ 981              		.loc 1 1138 16 is_stmt 0 view .LVU288
+ 982 00b2 3A4B     		ldr	r3, .L81+48
+1142:Src/se_crypto_bootloader.c ****     EC_st.mPsize = (int32_t)sizeof(P_256_p);
+ 983              		.loc 1 1142 18 view .LVU289
+ 984 00b4 1897     		str	r7, [sp, #96]
+1138:Src/se_crypto_bootloader.c ****     EC_st.pmGy = P_256_Gy;
+ 985              		.loc 1 1138 16 view .LVU290
+ 986 00b6 1993     		str	r3, [sp, #100]
+1139:Src/se_crypto_bootloader.c ****     EC_st.mAsize = (int32_t)sizeof(P_256_a);
+ 987              		.loc 1 1139 5 is_stmt 1 view .LVU291
+1139:Src/se_crypto_bootloader.c ****     EC_st.mAsize = (int32_t)sizeof(P_256_a);
+ 988              		.loc 1 1139 16 is_stmt 0 view .LVU292
+ 989 00b8 394B     		ldr	r3, .L81+52
+1143:Src/se_crypto_bootloader.c ****     EC_st.mGxsize = (int32_t)sizeof(P_256_Gx);
+ 990              		.loc 1 1143 18 view .LVU293
+ 991 00ba 1697     		str	r7, [sp, #88]
+1139:Src/se_crypto_bootloader.c ****     EC_st.mAsize = (int32_t)sizeof(P_256_a);
+ARM GAS  /tmp/ccxX10rW.s 			page 42
+
+
+ 992              		.loc 1 1139 16 view .LVU294
+ 993 00bc 1B93     		str	r3, [sp, #108]
+1140:Src/se_crypto_bootloader.c ****     EC_st.mBsize = (int32_t)sizeof(P_256_b);
+ 994              		.loc 1 1140 5 is_stmt 1 view .LVU295
+1141:Src/se_crypto_bootloader.c ****     EC_st.mNsize = (int32_t)sizeof(P_256_n);
+ 995              		.loc 1 1141 5 view .LVU296
+1142:Src/se_crypto_bootloader.c ****     EC_st.mPsize = (int32_t)sizeof(P_256_p);
+ 996              		.loc 1 1142 5 view .LVU297
+1143:Src/se_crypto_bootloader.c ****     EC_st.mGxsize = (int32_t)sizeof(P_256_Gx);
+ 997              		.loc 1 1143 5 view .LVU298
+1144:Src/se_crypto_bootloader.c ****     EC_st.mGysize = (int32_t)sizeof(P_256_Gy);
+ 998              		.loc 1 1144 5 view .LVU299
+1144:Src/se_crypto_bootloader.c ****     EC_st.mGysize = (int32_t)sizeof(P_256_Gy);
+ 999              		.loc 1 1144 19 is_stmt 0 view .LVU300
+ 1000 00be 1A97     		str	r7, [sp, #104]
+1145:Src/se_crypto_bootloader.c **** 
+ 1001              		.loc 1 1145 5 is_stmt 1 view .LVU301
+1145:Src/se_crypto_bootloader.c **** 
+ 1002              		.loc 1 1145 19 is_stmt 0 view .LVU302
+ 1003 00c0 1C97     		str	r7, [sp, #112]
+1147:Src/se_crypto_bootloader.c **** 
+ 1004              		.loc 1 1147 5 is_stmt 1 view .LVU303
+1147:Src/se_crypto_bootloader.c **** 
+ 1005              		.loc 1 1147 14 is_stmt 0 view .LVU304
+ 1006 00c2 FFF7FEFF 		bl	ECCinitEC
+ 1007              	.LVL87:
+1149:Src/se_crypto_bootloader.c ****     {
+ 1008              		.loc 1 1149 5 is_stmt 1 view .LVU305
+1149:Src/se_crypto_bootloader.c ****     {
+ 1009              		.loc 1 1149 8 is_stmt 0 view .LVU306
+ 1010 00c6 0028     		cmp	r0, #0
+ 1011 00c8 BAD1     		bne	.L76
+1151:Src/se_crypto_bootloader.c ****     }
+ 1012              		.loc 1 1151 7 is_stmt 1 view .LVU307
+1151:Src/se_crypto_bootloader.c ****     }
+ 1013              		.loc 1 1151 16 is_stmt 0 view .LVU308
+ 1014 00ca 11A9     		add	r1, sp, #68
+ 1015 00cc 2A00     		movs	r2, r5
+ 1016 00ce 03A8     		add	r0, sp, #12
+ 1017              	.LVL88:
+1151:Src/se_crypto_bootloader.c ****     }
+ 1018              		.loc 1 1151 16 view .LVU309
+ 1019 00d0 FFF7FEFF 		bl	ECCinitPoint
+ 1020              	.LVL89:
+ 1021 00d4 011E     		subs	r1, r0, #0
+ 1022              	.LVL90:
+1154:Src/se_crypto_bootloader.c ****     {
+ 1023              		.loc 1 1154 5 is_stmt 1 view .LVU310
+1154:Src/se_crypto_bootloader.c ****     {
+ 1024              		.loc 1 1154 8 is_stmt 0 view .LVU311
+ 1025 00d6 B3D1     		bne	.L76
+1157:Src/se_crypto_bootloader.c ****       (void)ECCsetPointCoordinate(PubKey, E_ECC_POINT_COORDINATE_Y, pPub_y, 32);
+ 1026              		.loc 1 1157 7 is_stmt 1 view .LVU312
+1157:Src/se_crypto_bootloader.c ****       (void)ECCsetPointCoordinate(PubKey, E_ECC_POINT_COORDINATE_Y, pPub_y, 32);
+ 1027              		.loc 1 1157 13 is_stmt 0 view .LVU313
+ 1028 00d8 3B00     		movs	r3, r7
+ 1029 00da 3200     		movs	r2, r6
+ARM GAS  /tmp/ccxX10rW.s 			page 43
+
+
+ 1030 00dc 0398     		ldr	r0, [sp, #12]
+ 1031              	.LVL91:
+1157:Src/se_crypto_bootloader.c ****       (void)ECCsetPointCoordinate(PubKey, E_ECC_POINT_COORDINATE_Y, pPub_y, 32);
+ 1032              		.loc 1 1157 13 view .LVU314
+ 1033 00de FFF7FEFF 		bl	ECCsetPointCoordinate
+ 1034              	.LVL92:
+1158:Src/se_crypto_bootloader.c ****       /* Try to validate the Public Key. */
+ 1035              		.loc 1 1158 7 is_stmt 1 view .LVU315
+1158:Src/se_crypto_bootloader.c ****       /* Try to validate the Public Key. */
+ 1036              		.loc 1 1158 13 is_stmt 0 view .LVU316
+ 1037 00e2 0121     		movs	r1, #1
+ 1038 00e4 2F4A     		ldr	r2, .L81+56
+ 1039              	.LVL93:
+1158:Src/se_crypto_bootloader.c ****       /* Try to validate the Public Key. */
+ 1040              		.loc 1 1158 13 view .LVU317
+ 1041 00e6 3B00     		movs	r3, r7
+ 1042 00e8 0398     		ldr	r0, [sp, #12]
+ 1043 00ea FFF7FEFF 		bl	ECCsetPointCoordinate
+ 1044              	.LVL94:
+1160:Src/se_crypto_bootloader.c ****     }
+ 1045              		.loc 1 1160 7 is_stmt 1 view .LVU318
+1160:Src/se_crypto_bootloader.c ****     }
+ 1046              		.loc 1 1160 16 is_stmt 0 view .LVU319
+ 1047 00ee 2A00     		movs	r2, r5
+ 1048 00f0 0398     		ldr	r0, [sp, #12]
+ 1049 00f2 11A9     		add	r1, sp, #68
+ 1050 00f4 FFF7FEFF 		bl	ECCvalidatePubKey
+ 1051              	.LVL95:
+1163:Src/se_crypto_bootloader.c ****     {
+ 1052              		.loc 1 1163 5 is_stmt 1 view .LVU320
+1163:Src/se_crypto_bootloader.c ****     {
+ 1053              		.loc 1 1163 8 is_stmt 0 view .LVU321
+ 1054 00f8 0028     		cmp	r0, #0
+ 1055 00fa A1D1     		bne	.L76
+1166:Src/se_crypto_bootloader.c ****     }
+ 1056              		.loc 1 1166 7 is_stmt 1 view .LVU322
+1166:Src/se_crypto_bootloader.c ****     }
+ 1057              		.loc 1 1166 16 is_stmt 0 view .LVU323
+ 1058 00fc 11A9     		add	r1, sp, #68
+ 1059 00fe 2A00     		movs	r2, r5
+ 1060 0100 02A8     		add	r0, sp, #8
+ 1061              	.LVL96:
+1166:Src/se_crypto_bootloader.c ****     }
+ 1062              		.loc 1 1166 16 view .LVU324
+ 1063 0102 FFF7FEFF 		bl	ECDSAinitSign
+ 1064              	.LVL97:
+ 1065 0106 011E     		subs	r1, r0, #0
+ 1066              	.LVL98:
+1169:Src/se_crypto_bootloader.c ****     {
+ 1067              		.loc 1 1169 5 is_stmt 1 view .LVU325
+1169:Src/se_crypto_bootloader.c ****     {
+ 1068              		.loc 1 1169 8 is_stmt 0 view .LVU326
+ 1069 0108 9AD1     		bne	.L76
+1172:Src/se_crypto_bootloader.c ****       (void)ECDSAsetSignature(sign, E_ECDSA_SIGNATURE_S_VALUE, pSign_s, 32);
+ 1070              		.loc 1 1172 7 is_stmt 1 view .LVU327
+1112:Src/se_crypto_bootloader.c **** 
+ 1071              		.loc 1 1112 9 is_stmt 0 view .LVU328
+ARM GAS  /tmp/ccxX10rW.s 			page 44
+
+
+ 1072 010a 2200     		movs	r2, r4
+1172:Src/se_crypto_bootloader.c ****       (void)ECDSAsetSignature(sign, E_ECDSA_SIGNATURE_S_VALUE, pSign_s, 32);
+ 1073              		.loc 1 1172 13 view .LVU329
+ 1074 010c 3B00     		movs	r3, r7
+ 1075 010e 0298     		ldr	r0, [sp, #8]
+ 1076              	.LVL99:
+1112:Src/se_crypto_bootloader.c **** 
+ 1077              		.loc 1 1112 9 view .LVU330
+ 1078 0110 8032     		adds	r2, r2, #128
+1172:Src/se_crypto_bootloader.c ****       (void)ECDSAsetSignature(sign, E_ECDSA_SIGNATURE_S_VALUE, pSign_s, 32);
+ 1079              		.loc 1 1172 13 view .LVU331
+ 1080 0112 FFF7FEFF 		bl	ECDSAsetSignature
+ 1081              	.LVL100:
+1173:Src/se_crypto_bootloader.c **** 
+ 1082              		.loc 1 1173 7 is_stmt 1 view .LVU332
+1120:Src/se_crypto_bootloader.c **** 
+ 1083              		.loc 1 1120 11 is_stmt 0 view .LVU333
+ 1084 0116 2200     		movs	r2, r4
+1173:Src/se_crypto_bootloader.c **** 
+ 1085              		.loc 1 1173 13 view .LVU334
+ 1086 0118 3B00     		movs	r3, r7
+ 1087 011a 0121     		movs	r1, #1
+ 1088 011c 0298     		ldr	r0, [sp, #8]
+1120:Src/se_crypto_bootloader.c **** 
+ 1089              		.loc 1 1120 11 view .LVU335
+ 1090 011e A032     		adds	r2, r2, #160
+1173:Src/se_crypto_bootloader.c **** 
+ 1091              		.loc 1 1173 13 view .LVU336
+ 1092 0120 FFF7FEFF 		bl	ECDSAsetSignature
+ 1093              	.LVL101:
+1176:Src/se_crypto_bootloader.c ****       verctx.pmPubKey = PubKey;
+ 1094              		.loc 1 1176 7 is_stmt 1 view .LVU337
+1176:Src/se_crypto_bootloader.c ****       verctx.pmPubKey = PubKey;
+ 1095              		.loc 1 1176 19 is_stmt 0 view .LVU338
+ 1096 0124 11AB     		add	r3, sp, #68
+ 1097 0126 0893     		str	r3, [sp, #32]
+1177:Src/se_crypto_bootloader.c **** 
+ 1098              		.loc 1 1177 7 is_stmt 1 view .LVU339
+1177:Src/se_crypto_bootloader.c **** 
+ 1099              		.loc 1 1177 23 is_stmt 0 view .LVU340
+ 1100 0128 039B     		ldr	r3, [sp, #12]
+1180:Src/se_crypto_bootloader.c ****       if (status == SIGNATURE_VALID)
+ 1101              		.loc 1 1180 16 view .LVU341
+ 1102 012a 029A     		ldr	r2, [sp, #8]
+ 1103 012c 0499     		ldr	r1, [sp, #16]
+1177:Src/se_crypto_bootloader.c **** 
+ 1104              		.loc 1 1177 23 view .LVU342
+ 1105 012e 0793     		str	r3, [sp, #28]
+1180:Src/se_crypto_bootloader.c ****       if (status == SIGNATURE_VALID)
+ 1106              		.loc 1 1180 7 is_stmt 1 view .LVU343
+1180:Src/se_crypto_bootloader.c ****       if (status == SIGNATURE_VALID)
+ 1107              		.loc 1 1180 16 is_stmt 0 view .LVU344
+ 1108 0130 0095     		str	r5, [sp]
+ 1109 0132 07AB     		add	r3, sp, #28
+ 1110 0134 09A8     		add	r0, sp, #36
+ 1111 0136 FFF7FEFF 		bl	ECDSAverify
+ 1112              	.LVL102:
+ARM GAS  /tmp/ccxX10rW.s 			page 45
+
+
+1181:Src/se_crypto_bootloader.c ****       {
+ 1113              		.loc 1 1181 7 is_stmt 1 view .LVU345
+1104:Src/se_crypto_bootloader.c ****   /* Retrieve the ECC Public Key */
+ 1114              		.loc 1 1104 16 is_stmt 0 view .LVU346
+ 1115 013a 1B4B     		ldr	r3, .L81+60
+1186:Src/se_crypto_bootloader.c ****       (void)ECCfreePoint(&PubKey, &Crypto_Buffer);
+ 1116              		.loc 1 1186 13 view .LVU347
+ 1117 013c 2900     		movs	r1, r5
+1104:Src/se_crypto_bootloader.c ****   /* Retrieve the ECC Public Key */
+ 1118              		.loc 1 1104 16 view .LVU348
+ 1119 013e C418     		adds	r4, r0, r3
+ 1120              	.LVL103:
+1104:Src/se_crypto_bootloader.c ****   /* Retrieve the ECC Public Key */
+ 1121              		.loc 1 1104 16 view .LVU349
+ 1122 0140 6342     		rsbs	r3, r4, #0
+ 1123 0142 5C41     		adcs	r4, r4, r3
+ 1124 0144 194B     		ldr	r3, .L81+64
+ 1125 0146 6442     		rsbs	r4, r4, #0
+ 1126 0148 1C40     		ands	r4, r3
+ 1127 014a 0A4B     		ldr	r3, .L81+8
+1186:Src/se_crypto_bootloader.c ****       (void)ECCfreePoint(&PubKey, &Crypto_Buffer);
+ 1128              		.loc 1 1186 13 view .LVU350
+ 1129 014c 02A8     		add	r0, sp, #8
+ 1130              	.LVL104:
+1104:Src/se_crypto_bootloader.c ****   /* Retrieve the ECC Public Key */
+ 1131              		.loc 1 1104 16 view .LVU351
+ 1132 014e E418     		adds	r4, r4, r3
+ 1133              	.LVL105:
+1186:Src/se_crypto_bootloader.c ****       (void)ECCfreePoint(&PubKey, &Crypto_Buffer);
+ 1134              		.loc 1 1186 7 is_stmt 1 view .LVU352
+1186:Src/se_crypto_bootloader.c ****       (void)ECCfreePoint(&PubKey, &Crypto_Buffer);
+ 1135              		.loc 1 1186 13 is_stmt 0 view .LVU353
+ 1136 0150 FFF7FEFF 		bl	ECDSAfreeSign
+ 1137              	.LVL106:
+1187:Src/se_crypto_bootloader.c ****       (void)ECCfreeEC(&EC_st, &Crypto_Buffer);
+ 1138              		.loc 1 1187 7 is_stmt 1 view .LVU354
+1187:Src/se_crypto_bootloader.c ****       (void)ECCfreeEC(&EC_st, &Crypto_Buffer);
+ 1139              		.loc 1 1187 13 is_stmt 0 view .LVU355
+ 1140 0154 2900     		movs	r1, r5
+ 1141 0156 03A8     		add	r0, sp, #12
+ 1142 0158 FFF7FEFF 		bl	ECCfreePoint
+ 1143              	.LVL107:
+1188:Src/se_crypto_bootloader.c ****     }
+ 1144              		.loc 1 1188 7 is_stmt 1 view .LVU356
+1188:Src/se_crypto_bootloader.c ****     }
+ 1145              		.loc 1 1188 13 is_stmt 0 view .LVU357
+ 1146 015c 2900     		movs	r1, r5
+ 1147 015e 11A8     		add	r0, sp, #68
+ 1148 0160 FFF7FEFF 		bl	ECCfreeEC
+ 1149              	.LVL108:
+ 1150 0164 6DE7     		b	.L73
+ 1151              	.LVL109:
+ 1152              	.L79:
+1053:Src/se_crypto_bootloader.c ****   }
+ 1153              		.loc 1 1053 12 view .LVU358
+ 1154 0166 034C     		ldr	r4, .L81+8
+ 1155 0168 80E7     		b	.L69
+ARM GAS  /tmp/ccxX10rW.s 			page 46
+
+
+ 1156              	.L82:
+ 1157 016a C046     		.align	2
+ 1158              	.L81:
+ 1159 016c 00000000 		.word	.LC3
+ 1160 0170 00000000 		.word	m_aSE_PubKey.7
+ 1161 0174 99870100 		.word	100249
+ 1162 0178 10E000E0 		.word	-536813552
+ 1163 017c FF0F0000 		.word	4095
+ 1164 0180 00000000 		.word	__ICFEDIT_SE_Startup_region_ROM_start__
+ 1165 0184 00000000 		.word	m_SHA256ctx
+ 1166 0188 00000000 		.word	preallocated_buffer.6
+ 1167 018c 00000000 		.word	P_256_a.5
+ 1168 0190 00000000 		.word	P_256_b.4
+ 1169 0194 00000000 		.word	P_256_p.3
+ 1170 0198 00000000 		.word	P_256_n.2
+ 1171 019c 00000000 		.word	P_256_Gx.1
+ 1172 01a0 00000000 		.word	P_256_Gy.0
+ 1173 01a4 20000000 		.word	m_aSE_PubKey.7+32
+ 1174 01a8 15FCFFFF 		.word	-1003
+ 1175 01ac 76A91000 		.word	1091958
+ 1176              		.cfi_endproc
+ 1177              	.LFE193:
+ 1179              		.section	.rodata.P_256_Gy.0,"a"
+ 1180              		.align	2
+ 1183              	P_256_Gy.0:
+ 1184 0000 4FE342E2 		.ascii	"O\343B\342\376\032\177\233\216\347\353J|\017\236\026"
+ 1184      FE1A7F9B 
+ 1184      8EE7EB4A 
+ 1184      7C0F9E16 
+ 1185 0010 2BCE3357 		.ascii	"+\3163Wk1^\316\313\266@h7\277Q\365"
+ 1185      6B315ECE 
+ 1185      CBB64068 
+ 1185      37BF51F5 
+ 1186              		.section	.rodata.P_256_Gx.1,"a"
+ 1187              		.align	2
+ 1190              	P_256_Gx.1:
+ 1191 0000 6B17D1F2 		.ascii	"k\027\321\362\341,BG\370\274\346\345c\244@\362w\003"
+ 1191      E12C4247 
+ 1191      F8BCE6E5 
+ 1191      63A440F2 
+ 1191      7703
+ 1192 0012 7D812DEB 		.ascii	"}\201-\3533\240\364\2419E\330\230\302\226"
+ 1192      33A0F4A1 
+ 1192      3945D898 
+ 1192      C296
+ 1193              		.section	.rodata.P_256_n.2,"a"
+ 1194              		.align	2
+ 1197              	P_256_n.2:
+ 1198 0000 FFFFFFFF 		.ascii	"\377\377\377\377\000\000\000\000\377\377\377\377\377"
+ 1198      00000000 
+ 1198      FFFFFFFF 
+ 1198      FF
+ 1199 000d FFFFFFBC 		.ascii	"\377\377\377\274\346\372\255\247\027\236\204\363\271"
+ 1199      E6FAADA7 
+ 1199      179E84F3 
+ 1199      B9
+ 1200 001a CAC2FC63 		.ascii	"\312\302\374c%Q"
+ARM GAS  /tmp/ccxX10rW.s 			page 47
+
+
+ 1200      2551
+ 1201              		.section	.rodata.P_256_p.3,"a"
+ 1202              		.align	2
+ 1205              	P_256_p.3:
+ 1206 0000 FFFFFFFF 		.ascii	"\377\377\377\377\000\000\000\001\000\000\000\000\000"
+ 1206      00000001 
+ 1206      00000000 
+ 1206      00
+ 1207 000d 00000000 		.ascii	"\000\000\000\000\000\000\000\377\377\377\377\377\377"
+ 1207      000000FF 
+ 1207      FFFFFFFF 
+ 1207      FF
+ 1208 001a FFFFFFFF 		.ascii	"\377\377\377\377\377\377"
+ 1208      FFFF
+ 1209              		.section	.rodata.P_256_b.4,"a"
+ 1210              		.align	2
+ 1213              	P_256_b.4:
+ 1214 0000 5AC635D8 		.ascii	"Z\3065\330\252:\223\347\263\353\275Uv\230\206\274e\035"
+ 1214      AA3A93E7 
+ 1214      B3EBBD55 
+ 1214      769886BC 
+ 1214      651D
+ 1215 0012 06B0CC53 		.ascii	"\006\260\314S\260\366;\316<>'\322`K"
+ 1215      B0F63BCE 
+ 1215      3C3E27D2 
+ 1215      604B
+ 1216              		.section	.rodata.P_256_a.5,"a"
+ 1217              		.align	2
+ 1220              	P_256_a.5:
+ 1221 0000 FFFFFFFF 		.ascii	"\377\377\377\377\000\000\000\001\000\000\000\000\000"
+ 1221      00000001 
+ 1221      00000000 
+ 1221      00
+ 1222 000d 00000000 		.ascii	"\000\000\000\000\000\000\000\377\377\377\377\377\377"
+ 1222      000000FF 
+ 1222      FFFFFFFF 
+ 1222      FF
+ 1223 001a FFFFFFFF 		.ascii	"\377\377\377\377\377\374"
+ 1223      FFFC
+ 1224              		.section	.bss.preallocated_buffer.6,"aw",%nobits
+ 1227              	preallocated_buffer.6:
+ 1228 0000 00000000 		.space	2048
+ 1228      00000000 
+ 1228      00000000 
+ 1228      00000000 
+ 1228      00000000 
+ 1229              		.section	.bss.m_aSE_PubKey.7,"aw",%nobits
+ 1232              	m_aSE_PubKey.7:
+ 1233 0000 00000000 		.space	64
+ 1233      00000000 
+ 1233      00000000 
+ 1233      00000000 
+ 1233      00000000 
+ 1234              		.section	.bss.m_SHA256ctx,"aw",%nobits
+ 1235              		.align	2
+ 1238              	m_SHA256ctx:
+ 1239 0000 00000000 		.space	116
+ARM GAS  /tmp/ccxX10rW.s 			page 48
+
+
+ 1239      00000000 
+ 1239      00000000 
+ 1239      00000000 
+ 1239      00000000 
+ 1240              		.section	.bss.m_AESCBCctx,"aw",%nobits
+ 1241              		.align	2
+ 1244              	m_AESCBCctx:
+ 1245 0000 00000000 		.space	280
+ 1245      00000000 
+ 1245      00000000 
+ 1245      00000000 
+ 1245      00000000 
+ 1246              		.section	.bss.m_aSE_FirmwareKey,"aw",%nobits
+ 1249              	m_aSE_FirmwareKey:
+ 1250 0000 00000000 		.space	16
+ 1250      00000000 
+ 1250      00000000 
+ 1250      00000000 
+ 1251              		.text
+ 1252              	.Letext0:
+ 1253              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stddef.h"
+ 1254              		.file 3 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1255              		.file 4 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/Common/types.h"
+ 1256              		.file 5 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/Common/sk.h"
+ 1257              		.file 6 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/AES/Common/aes_c
+ 1258              		.file 7 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/HASH/Common/hash
+ 1259              		.file 8 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/HASH/SHA256/sha2
+ 1260              		.file 9 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/Common_ecc_rsa/M
+ 1261              		.file 10 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/ECC/ecc.h"
+ 1262              		.file 11 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Core/se_def_core.h"
+ 1263              		.file 12 "Inc/se_def_metadata.h"
+ 1264              		.file 13 "../../../../..//Drivers/CMSIS/Include/core_cm0plus.h"
+ 1265              		.file 14 "../../../../..//Middlewares/ST/STM32_Cryptographic/Fw_Crypto/STM32G0/Inc/AES/CBC/aes_cbc
+ 1266              		.file 15 "../../../../..//Middlewares/ST/STM32_Secure_Engine/Key/se_key.h"
+ 1267              		.file 16 "/usr/include/newlib/string.h"
+ 1268              		.file 17 "../Linker_Common/STM32CubeIDE/mapping_export.h"
+ 1269              		.file 18 "<built-in>"
+ARM GAS  /tmp/ccxX10rW.s 			page 49
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 se_crypto_bootloader.c
+     /tmp/ccxX10rW.s:19     .text.SE_CRYPTO_Encrypt_Init:00000000 $t
+     /tmp/ccxX10rW.s:25     .text.SE_CRYPTO_Encrypt_Init:00000000 SE_CRYPTO_Encrypt_Init
+     /tmp/ccxX10rW.s:44     .text.SE_CRYPTO_Encrypt_Init:00000004 $d
+     /tmp/ccxX10rW.s:49     .text.SE_CRYPTO_Header_Append:00000000 $t
+     /tmp/ccxX10rW.s:55     .text.SE_CRYPTO_Header_Append:00000000 SE_CRYPTO_Header_Append
+     /tmp/ccxX10rW.s:74     .text.SE_CRYPTO_Header_Append:00000004 $d
+     /tmp/ccxX10rW.s:79     .text.SE_CRYPTO_Encrypt_Append:00000000 $t
+     /tmp/ccxX10rW.s:85     .text.SE_CRYPTO_Encrypt_Append:00000000 SE_CRYPTO_Encrypt_Append
+     /tmp/ccxX10rW.s:105    .text.SE_CRYPTO_Encrypt_Append:00000004 $d
+     /tmp/ccxX10rW.s:111    .text.SE_CRYPTO_Encrypt_Finish:00000000 $t
+     /tmp/ccxX10rW.s:117    .text.SE_CRYPTO_Encrypt_Finish:00000000 SE_CRYPTO_Encrypt_Finish
+     /tmp/ccxX10rW.s:180    .text.SE_CRYPTO_Encrypt_Finish:00000034 $d
+     /tmp/ccxX10rW.s:1249   .bss.m_aSE_FirmwareKey:00000000 m_aSE_FirmwareKey
+     /tmp/ccxX10rW.s:1244   .bss.m_AESCBCctx:00000000 m_AESCBCctx
+     /tmp/ccxX10rW.s:193    .text.SE_CRYPTO_Decrypt_Init:00000000 $t
+     /tmp/ccxX10rW.s:199    .text.SE_CRYPTO_Decrypt_Init:00000000 SE_CRYPTO_Decrypt_Init
+     /tmp/ccxX10rW.s:297    .text.SE_CRYPTO_Decrypt_Init:0000003c $d
+     /tmp/ccxX10rW.s:306    .text.SE_CRYPTO_Decrypt_Append:00000000 $t
+     /tmp/ccxX10rW.s:312    .text.SE_CRYPTO_Decrypt_Append:00000000 SE_CRYPTO_Decrypt_Append
+     /tmp/ccxX10rW.s:389    .text.SE_CRYPTO_Decrypt_Append:00000030 $d
+     /tmp/ccxX10rW.s:396    .text.SE_CRYPTO_Decrypt_Finish:00000000 $t
+     /tmp/ccxX10rW.s:402    .text.SE_CRYPTO_Decrypt_Finish:00000000 SE_CRYPTO_Decrypt_Finish
+     /tmp/ccxX10rW.s:530    .text.SE_CRYPTO_Decrypt_Finish:00000080 $d
+     /tmp/ccxX10rW.s:542    .text.SE_CRYPTO_AuthenticateFW_Init:00000000 $t
+     /tmp/ccxX10rW.s:548    .text.SE_CRYPTO_AuthenticateFW_Init:00000000 SE_CRYPTO_AuthenticateFW_Init
+     /tmp/ccxX10rW.s:599    .text.SE_CRYPTO_AuthenticateFW_Init:00000020 $d
+     /tmp/ccxX10rW.s:1238   .bss.m_SHA256ctx:00000000 m_SHA256ctx
+     /tmp/ccxX10rW.s:606    .text.SE_CRYPTO_AuthenticateFW_Append:00000000 $t
+     /tmp/ccxX10rW.s:612    .text.SE_CRYPTO_AuthenticateFW_Append:00000000 SE_CRYPTO_AuthenticateFW_Append
+     /tmp/ccxX10rW.s:663    .text.SE_CRYPTO_AuthenticateFW_Append:00000020 $d
+     /tmp/ccxX10rW.s:670    .text.SE_CRYPTO_AuthenticateFW_Finish:00000000 $t
+     /tmp/ccxX10rW.s:676    .text.SE_CRYPTO_AuthenticateFW_Finish:00000000 SE_CRYPTO_AuthenticateFW_Finish
+     /tmp/ccxX10rW.s:722    .text.SE_CRYPTO_AuthenticateFW_Finish:00000020 $d
+     /tmp/ccxX10rW.s:729    .text.SE_CRYPTO_Authenticate_Metadata:00000000 $t
+     /tmp/ccxX10rW.s:735    .text.SE_CRYPTO_Authenticate_Metadata:00000000 SE_CRYPTO_Authenticate_Metadata
+     /tmp/ccxX10rW.s:1159   .text.SE_CRYPTO_Authenticate_Metadata:0000016c $d
+     /tmp/ccxX10rW.s:1232   .bss.m_aSE_PubKey.7:00000000 m_aSE_PubKey.7
+     /tmp/ccxX10rW.s:1227   .bss.preallocated_buffer.6:00000000 preallocated_buffer.6
+     /tmp/ccxX10rW.s:1220   .rodata.P_256_a.5:00000000 P_256_a.5
+     /tmp/ccxX10rW.s:1213   .rodata.P_256_b.4:00000000 P_256_b.4
+     /tmp/ccxX10rW.s:1205   .rodata.P_256_p.3:00000000 P_256_p.3
+     /tmp/ccxX10rW.s:1197   .rodata.P_256_n.2:00000000 P_256_n.2
+     /tmp/ccxX10rW.s:1190   .rodata.P_256_Gx.1:00000000 P_256_Gx.1
+     /tmp/ccxX10rW.s:1183   .rodata.P_256_Gy.0:00000000 P_256_Gy.0
+     /tmp/ccxX10rW.s:1180   .rodata.P_256_Gy.0:00000000 $d
+     /tmp/ccxX10rW.s:1187   .rodata.P_256_Gx.1:00000000 $d
+     /tmp/ccxX10rW.s:1194   .rodata.P_256_n.2:00000000 $d
+     /tmp/ccxX10rW.s:1202   .rodata.P_256_p.3:00000000 $d
+     /tmp/ccxX10rW.s:1210   .rodata.P_256_b.4:00000000 $d
+     /tmp/ccxX10rW.s:1217   .rodata.P_256_a.5:00000000 $d
+     /tmp/ccxX10rW.s:1228   .bss.preallocated_buffer.6:00000000 $d
+     /tmp/ccxX10rW.s:1233   .bss.m_aSE_PubKey.7:00000000 $d
+     /tmp/ccxX10rW.s:1235   .bss.m_SHA256ctx:00000000 $d
+     /tmp/ccxX10rW.s:1241   .bss.m_AESCBCctx:00000000 $d
+     /tmp/ccxX10rW.s:1250   .bss.m_aSE_FirmwareKey:00000000 $d
+ARM GAS  /tmp/ccxX10rW.s 			page 50
+
+
+                           .group:00000000 wm4.0.e310b2036dcc8a4d3b16f3fea9ebd0de
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.07bf1b8b16da454ae07478107717878b
+                           .group:00000000 wm4.ieeefp.h.77.fbf6f2f498a71d39a0aaf172d6680419
+                           .group:00000000 wm4.features.h.22.4e5514d51694f64cae235f84d9e565a5
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.c0958401bd0ce484d507ee19aacab817
+                           .group:00000000 wm4.reent.h.78.7f0775353a33c852a1479c008f68cd03
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.se_crypto_config.h.23.4877f252b7277cd509a204488365106b
+                           .group:00000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.config.h.82.80c7a4ed85766bc9e43c9b952b3d63e7
+                           .group:00000000 wm4.crypto.h.26.8de3bdce721cb685a2ea01f8cafd8a8f
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.macros.h.22.e3df62ab94285aefb5fa7fb6a08a233d
+                           .group:00000000 wm4.err_codes.h.46.205397828000242a36f81a030e1a5c0f
+                           .group:00000000 wm4.sk.h.22.c9b96eae516f1250623b28b2d3be7ae7
+                           .group:00000000 wm4.aes_low_level.h.21.f37cc973c4451a1729844f6018a685ac
+                           .group:00000000 wm4.aes_common.h.22.746c780b78d5413d6ef9cd682f41c128
+                           .group:00000000 wm4.aes_keywrap.h.21.f094f7aef55082a5f1c6dd3c1c791858
+                           .group:00000000 wm4.des_common.h.21.138ddc6e7cd73d0b9af19a6f298c684c
+                           .group:00000000 wm4.tdes_common.h.22.2655fda4899ccca4f3fb947d7cb688dc
+                           .group:00000000 wm4.md5.h.23.477f1d318eacb83cb36b6be53c148170
+                           .group:00000000 wm4.sha1.h.24.a0152df6718ca12275637d2e495942f8
+                           .group:00000000 wm4.sha224.h.22.b5c8e990311fb8284401f8b6fc57479e
+                           .group:00000000 wm4.sha256.h.24.690aad31db462fa0654e50ec1a0755b5
+                           .group:00000000 wm4.sha384.h.69.2a1294003b6a0e1510db308637e6e49b
+                           .group:00000000 wm4.sha512.h.68.3569ead0524f5368ebdcca677d53bc7f
+                           .group:00000000 wm4.bn.h.22.96e9e7a1bf8b3572035a373bc5644a08
+                           .group:00000000 wm4.monty.h.22.4296ce6d27f4495373509f6dbfe86716
+                           .group:00000000 wm4.drbg.h.22.8f58893a07ffd71c18535073a12858b8
+                           .group:00000000 wm4.rsa_low_level.h.21.8c9ff469157170dbb1ae4546f8d94ff0
+                           .group:00000000 wm4.chacha.h.23.54dea0c81b9d9634513154374bcc0987
+                           .group:00000000 wm4.se_def_core.h.21.4e4ed01aa34801a3fdac798922254e8b
+                           .group:00000000 wm4.se_def_metadata.h.21.a369c3bd60c6c7845829c566df071ec0
+                           .group:00000000 wm4.se_crypto_common.h.89.67bbcd87bb3f2c99237ee2f8c9b56058
+                           .group:00000000 wm4.app_sfu.h.52.55f63580740e4a8cb8213d7618f37604
+                           .group:00000000 wm4.mapping_export.h.21.690e455ff83f2d626567681d657ba5ab
+                           .group:00000000 wm4.sfu_fwimg_regions.h.41.fdbfe18d9222adf4f8312b4630fa88a0
+                           .group:00000000 wm4.stm32g0xx_hal_conf.h.21.2418b000d87b23231c37db35ad77d0ea
+                           .group:00000000 wm4.stm32g0xx.h.37.aadb526b10f0f4555648bb8fa7c96b30
+                           .group:00000000 wm4.stm32g071xx.h.36.9469a89bf1e6c2a2fe25d20581d0f58b
+                           .group:00000000 wm4.cmsis_version.h.32.0ac195c83bb4537824e6ad1c47474b79
+                           .group:00000000 wm4.core_cm0plus.h.66.bb83319bcb10b4c5f12c477f85f2aa51
+                           .group:00000000 wm4.cmsis_gcc.h.26.63926f8d3817e3a42e7f7ef2cd15156e
+                           .group:00000000 wm4.core_cm0plus.h.127.cfee784d07c850b645554dc8add78e69
+ARM GAS  /tmp/ccxX10rW.s 			page 51
+
+
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.stm32g071xx.h.155.9be12c2e48b47e8d66c20ceac374f1ee
+                           .group:00000000 wm4.stm32g0xx.h.154.7f8452780a6fe1b4b4d5bfbf416cea0c
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.2f8f7f94da7216ffa6187bf113829094
+                           .group:00000000 wm4.stm32g0xx_hal_def.h.57.b07413b80581d716119f3a7cf56f08e9
+                           .group:00000000 wm4.stm32g0xx_ll_rcc.h.20.b48ad5e6c80881ce9d548f86592ad1d8
+                           .group:00000000 wm4.stm32g0xx_hal_rcc.h.43.40a2deb1468b47dcb7de4a6adda92374
+                           .group:00000000 wm4.stm32g0xx_hal_rcc_ex.h.20.c2035e135ea57d6c1c2839329f24a562
+                           .group:00000000 wm4.stm32g0xx_hal_gpio.h.21.abd5f8c60de2afe2676b3cc6a4b2c068
+                           .group:00000000 wm4.stm32g0xx_hal_gpio_ex.h.21.c1a1c19cef6d6a2cf049535a12fe7f6a
+                           .group:00000000 wm4.stm32g0xx_hal_crc.h.21.8c2791752a3f5c79fed6a23e2361d260
+                           .group:00000000 wm4.stm32g0xx_hal_crc_ex.h.21.13b666a67e761630a3250514972d9a47
+                           .group:00000000 wm4.stm32g0xx_hal_flash.h.20.e512dd9a8958277cc7dd512f2312ae8a
+                           .group:00000000 wm4.stm32g0xx_hal_flash_ex.h.20.2a1daa1e7e7bd4a16651545fee4a1fbb
+                           .group:00000000 wm4.stm32g0xx_hal_flash.h.874.3e4bc5d8948716c644009bcc9a4f3f60
+                           .group:00000000 wm4.stm32g0xx_hal_pwr.h.21.7d5b107b2d1b54bfd27bcb92ed3281e0
+                           .group:00000000 wm4.stm32g0xx_hal_pwr_ex.h.21.01c718c420189d18e9ec3e46e6e9261f
+                           .group:00000000 wm4.stm32g0xx_hal.h.66.28db47a9e4ed9349693c6c0c6101689d
+                           .group:00000000 wm4.se_low_level.h.69.817001c691b349e6e02ccaa65ab75b6a
+
+UNDEFINED SYMBOLS
+__aeabi_uidivmod
+memcpy
+__ICFEDIT_SE_Startup_region_ROM_start__
+memcmp
+SE_ReadKey_1
+AES_CBC_Decrypt_Init
+AES_CBC_Decrypt_Append
+AES_CBC_Decrypt_Finish
+SHA256_Init
+SHA256_Append
+SHA256_Finish
+SE_ReadKey_1_Pub
+ECCinitEC
+ECCinitPoint
+ECCsetPointCoordinate
+ECCvalidatePubKey
+ECDSAinitSign
+ECDSAsetSignature
+ECDSAverify
+ECDSAfreeSign
+ECCfreePoint
+ECCfreeEC

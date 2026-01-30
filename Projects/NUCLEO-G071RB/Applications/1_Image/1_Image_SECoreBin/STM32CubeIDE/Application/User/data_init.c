@@ -19,7 +19,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stdint-gcc.h"
+#include <stdint.h>
 
 #ifndef vu32
 #	define vu32 volatile uint32_t
