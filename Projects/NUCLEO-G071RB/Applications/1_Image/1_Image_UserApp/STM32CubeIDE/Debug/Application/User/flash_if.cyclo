@@ -1,0 +1,13 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:306:19:FLASH_INT_If_Clear_Error	3
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:63:19:FLASH_If_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:121:19:FLASH_If_Read	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:140:19:FLASH_INT_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:151:19:FLASH_INT_If_Erase_Size	6
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:80:19:FLASH_If_Erase_Size	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:211:19:FLASH_INT_If_Write	7
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:100:19:FLASH_If_Write	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:269:19:FLASH_INT_If_Read	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:277:19:FLASH_EXT_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:285:19:FLASH_EXT_If_Erase_Size	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:290:19:FLASH_EXT_If_Write	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/flash_if.c:295:19:FLASH_EXT_If_Read	1

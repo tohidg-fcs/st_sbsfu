@@ -1,0 +1,4 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/test_protections.c:317:13:TEST_PROTECTIONS_CORRUPT_PrintMenu	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/test_protections.c:206:13:TEST_PROTECTIONS_PrintTestingMenu	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/test_protections.c:133:6:TEST_PROTECTIONS_RunMenu	80	static,ignoring_inline_asm
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/test_protections.c:463:6:HAL_RTCEx_Tamper2EventCallback	0	static

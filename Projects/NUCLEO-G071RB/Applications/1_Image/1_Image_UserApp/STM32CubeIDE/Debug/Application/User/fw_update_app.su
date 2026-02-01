@@ -1,0 +1,3 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/fw_update_app.c:69:6:FW_UPDATE_Run	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/fw_update_app.c:94:6:FW_UPDATE_MULTIPLE_RunMenu	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/fw_update_app.c:107:6:FW_VALIDATE_RunMenu	8	static

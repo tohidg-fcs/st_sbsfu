@@ -1,0 +1,10 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:78:20:COM_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:111:20:COM_DeInit	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:125:6:HAL_UART_MspInit	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:163:6:HAL_UART_MspDeInit	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:190:19:COM_Transmit	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:201:19:COM_Receive	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:211:19:COM_Flush	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:261:1:__io_putchar	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:275:26:Ymodem_HeaderPktRxCpltCallback	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/com.c:290:26:Ymodem_DataPktRxCpltCallback	1

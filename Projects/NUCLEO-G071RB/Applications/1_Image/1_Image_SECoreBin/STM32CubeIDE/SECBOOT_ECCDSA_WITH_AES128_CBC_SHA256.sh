@@ -42,14 +42,14 @@ cd "$1/../../../../../../Middlewares/ST/STM32_Secure_Engine/Utilities/KeysAndIma
 basedir=`pwd`
 cd "$current_directory"
 
-python --version >/dev/null 2>&1
+python3 --version >/dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo "Python installation missing. Refer to Utilities/KeysAndImages/readme.txt"
   exit 1
 fi
 
 prepareimage=$basedir/prepareimage.py
-cmd="python"
+cmd="python3"
 
 echo "$cmd $prepareimage" >> $1/output.txt
 # Make sure we have a Binary sub-folder in UserApp folder

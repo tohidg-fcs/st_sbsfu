@@ -1,0 +1,7 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:50:6:NMI_Handler	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:63:6:HardFault_Handler	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:77:6:SVC_Handler	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:87:6:PendSV_Handler	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:96:6:SysTick_Handler	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:113:6:FLASH_IRQHandler	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_UserApp/Src/stm32g0xx_it.c:123:6:RTC_TAMP_IRQHandler	1

@@ -805,17 +805,79 @@ mv OEM_KEY_COMPANY1_key_AES_CBC.bin ../../../Projects/NUCLEO-G071RB/Applications
 │                                                              │
 │  UserApp compilation: (regular C code, no special crypto)    │
 │    - Compiles application sources                           │
-│    - Generates UserApp.bin (unsigned)                       │
+│    - Generates UserApp.bin (unsigned, unencrypted)          │
 │                                                              │
-│  postbuild.sh (from SECoreBin, called by UserApp):          │
-│    - READS ECCKEY1.txt PRIVATE KEY                          │
-│    - Computes SHA256 hash of UserApp.bin                    │
-│    - Signs hash with PRIVATE KEY → Creates signature        │
-│    - Encrypts UserApp.bin with AES-CBC key                  │
-│    - Packages: header + encrypted firmware + signature      │
-│    - Generates UserApp.sfb (Secure Firmware Binary)         │
+│  UserApp Makefile post-build:                                │
+│    - Converts UserApp.elf → UserApp.bin                     │
+│    - Calls: "../../../1_Image_SECoreBin/STM32CubeIDE/      │
+│              postbuild.sh" "../" "UserApp.elf"              │
+│              "../UserApp.bin" "1" "1"                        │
+│                                                              │
+│  postbuild.sh (SYMLINK → SECBOOT_ECCDSA_WITH_AES128_CBC_    │
+│              SHA256.sh):                                     │
+│    ┌─────────────────────────────────────────────────┐     │
+│    │ Step 1: Encrypt UserApp.bin                     │     │
+│    │   python prepareimage.py enc \                  │     │
+│    │     -k OEM_KEY_COMPANY1_key_AES_CBC.bin \       │     │
+│    │     -i iv.bin \                                  │     │
+│    │     UserApp.bin UserApp.sfu                     │     │
+│    │   → Creates encrypted firmware (AES-128-CBC)    │     │
+│    ├─────────────────────────────────────────────────┤     │
+│    │ Step 2: Generate SHA256 hash                    │     │
+│    │   python prepareimage.py sha256 \               │     │
+│    │     UserApp.bin UserApp.sign                    │     │
+│    │   → Hash of ORIGINAL (unencrypted) binary       │     │
+│    ├─────────────────────────────────────────────────┤     │
+│    │ Step 3: Sign hash + pack firmware               │     │
+│    │   python prepareimage.py pack \                 │     │
+│    │     -m "SFU1" \          # Magic (slot 1)       │     │
+│    │     -k ECCKEY1.txt \     # PRIVATE KEY          │     │
+│    │     -r 28 \              # Rollback counter     │     │
+│    │     -v 1 \               # Version              │     │
+│    │     -i iv.bin \          # Init vector          │     │
+│    │     -f UserApp.sfu \     # Encrypted FW         │     │
+│    │     -t UserApp.sign \    # SHA256 hash          │     │
+│    │     UserApp.sfb \        # OUTPUT FILE          │     │
+│    │     -o 2048              # Offset               │     │
+│    │   → Signs hash with ECDSA P-256 private key     │     │
+│    │   → Packages: header + encrypted FW + signature │     │
+│    ├─────────────────────────────────────────────────┤     │
+│    │ Step 4: Generate firmware header                │     │
+│    │   python prepareimage.py header \               │     │
+│    │     -m "SFU1" -k ECCKEY1.txt ... \              │     │
+│    │     UserAppsfuh.bin                             │     │
+│    │   → Metadata for SBSFU verification             │     │
+│    ├─────────────────────────────────────────────────┤     │
+│    │ Step 5: Merge SBSFU + UserApp (optional)        │     │
+│    │   python prepareimage.py merge \                │     │
+│    │     -i UserAppsfuh.bin \                         │     │
+│    │     -s SBSFU.elf \                               │     │
+│    │     -u UserApp.elf \                             │     │
+│    │     SBSFU_UserApp.bin                            │     │
+│    │   → Combined binary for testing                 │     │
+│    ├─────────────────────────────────────────────────┤     │
+│    │ Step 6: Cleanup temp files                      │     │
+│    │   rm UserApp.sign UserApp.sfu UserAppsfuh.bin   │     │
+│    └─────────────────────────────────────────────────┘     │
+│                                                              │
+│  Final Output: UserApp.sfb                                   │
+│    ┌───────────────────────────────────────────┐           │
+│    │ Firmware Header (metadata)                │           │
+│    │  - Magic: "SFU1"                          │           │
+│    │  - Version: 1                             │           │
+│    │  - Firmware size                          │           │
+│    │  - SHA256 hash (32 bytes)                 │           │
+│    │  - ECDSA signature (64 bytes)             │           │
+│    │  - Rollback counter: 28                   │           │
+│    │  - IV (12 bytes)                          │           │
+│    ├───────────────────────────────────────────┤           │
+│    │ Encrypted Firmware (AES-128-CBC)          │           │
+│    │  - UserApp.bin encrypted                  │           │
+│    └───────────────────────────────────────────┘           │
 │                                                              │
 │  📍 PRIVATE KEY never leaves development machine             │
+│  📍 postbuild.sh is auto-created symlink based on crypto    │
+│     scheme in se_crypto_config.h                            │
 └────────────────────┬────────────────────────────────────────┘
                      │
                      ▼
@@ -823,14 +885,19 @@ mv OEM_KEY_COMPANY1_key_AES_CBC.bin ../../../Projects/NUCLEO-G071RB/Applications
 │ Runtime: Firmware Verification (on MCU)                      │
 │                                                              │
 │  When UserApp.sfb is uploaded to device:                     │
-│    1. SBSFU calls SE_Verify(firmware, signature)            │
-│    2. SE uses PUBLIC KEY (from se_key.o) to verify signature│
-│    3. If signature valid ✓:                                 │
-│       - SE decrypts firmware with AES key                   │
-│       - Checks SHA256 integrity                             │
-│       - SBSFU installs and boots UserApp                    │
-│    4. If signature invalid ✗:                               │
+│    1. SBSFU parses firmware header from UserApp.sfb         │
+│    2. Extracts encrypted firmware + signature               │
+│    3. Calls SE_Verify(firmware, signature)                  │
+│    4. SE uses PUBLIC KEY (from se_key.o) to verify ECDSA    │
+│    5. SE decrypts firmware with AES key (from se_key.o)     │
+│    6. SE computes SHA256 of decrypted firmware              │
+│    7. Compares computed hash with signed hash               │
+│    8. If signature valid ✓ AND hash matches ✓:             │
+│       - SBSFU installs firmware to active slot              │
+│       - Boots UserApp                                        │
+│    9. If signature invalid ✗ OR hash mismatch ✗:           │
 │       - Firmware rejected (prevents malicious code)         │
+│       - SBSFU refuses to install                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -859,6 +926,326 @@ If ECCKEY1.txt is lost or regenerated:
 2. Generate new keys with prepareimage.py keygen
 3. Rebuild SECoreBin, SBSFU, UserApp in order
 4. Flash new SBSFU.bin to device
+```
+
+---
+
+## UserApp Firmware Signing Process (Detailed)
+
+### Overview
+
+The UserApp project uses an **automated signing and encryption pipeline** that runs during the makefile post-build step. No manual intervention required!
+
+### Postbuild.sh Symlink Mechanism
+
+**Dynamic Script Selection:**
+```bash
+# During SECoreBin prebuild, postbuild.sh is created as a symlink
+# based on the crypto scheme in se_crypto_config.h
+
+$ ls -la 1_Image_SECoreBin/STM32CubeIDE/postbuild.sh
+lrwxr-xr-x postbuild.sh -> ./SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256.sh
+
+# Available crypto-specific scripts:
+# - SECBOOT_ECCDSA_WITHOUT_ENCRYPT_SHA256.sh      (ECDSA only, no encryption)
+# - SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256.sh      (ECDSA + AES-CBC - USED HERE)
+# - SECBOOT_AES128_GCM_AES128_GCM_AES128_GCM.sh  (AES-GCM for all operations)
+```
+
+**This ensures:**
+- ✅ Correct signing script automatically selected
+- ✅ Crypto scheme consistency between SECoreBin and UserApp
+- ✅ No manual script selection needed
+
+### UserApp Makefile Post-Build
+
+**From UserApp/STM32CubeIDE/Debug/makefile:**
+```makefile
+post-build:
+	arm-none-eabi-objcopy -O binary "UserApp.elf" "../UserApp.bin"
+	arm-none-eabi-size "UserApp.elf"
+	"../../../1_Image_SECoreBin/STM32CubeIDE/postbuild.sh" \
+	    "../" \                    # arg1: Build directory
+	    "UserApp.elf" \            # arg2: ELF file path
+	    "../UserApp.bin" \         # arg3: Binary file path
+	    "1" \                      # arg4: Firmware ID (slot 1)
+	    "1"                        # arg5: Firmware version
+```
+
+### Signing Script Workflow
+
+**Script:** `SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256.sh`
+
+**Input Files:**
+```
+UserApp.bin                                  ← Unencrypted, unsigned firmware
+../Binary/ECCKEY1.txt                        ← ECC P-256 private key
+../Binary/OEM_KEY_COMPANY1_key_AES_CBC.bin   ← AES-128 encryption key
+../Binary/iv.bin                             ← Initialization vector
+```
+
+**Process (5 Steps):**
+
+```bash
+# ================================================================
+# STEP 1: Encrypt Firmware with AES-128-CBC
+# ================================================================
+python prepareimage.py enc \
+  -k OEM_KEY_COMPANY1_key_AES_CBC.bin \
+  -i iv.bin \
+  UserApp.bin \
+  UserApp.sfu
+
+# Output: UserApp.sfu (encrypted firmware)
+# - AES-128-CBC mode (Cipher Block Chaining)
+# - 16-byte key
+# - 12-byte IV
+# - Padding to 16-byte blocks
+
+# ================================================================
+# STEP 2: Generate SHA256 Hash
+# ================================================================
+python prepareimage.py sha256 \
+  UserApp.bin \
+  UserApp.sign
+
+# Output: UserApp.sign (32-byte SHA256 hash)
+# - Hash of ORIGINAL (unencrypted) firmware
+# - Used for integrity verification
+# - Will be signed in next step
+
+# ================================================================
+# STEP 3: Sign Hash + Pack Firmware
+# ================================================================
+python prepareimage.py pack \
+  -m "SFU1" \              # Magic number (firmware slot identifier)
+  -k ECCKEY1.txt \         # ECC P-256 PRIVATE KEY (signs the hash)
+  -r 28 \                  # Rollback counter (anti-rollback protection)
+  -v 1 \                   # Firmware version
+  -i iv.bin \              # Initialization vector
+  -f UserApp.sfu \         # Encrypted firmware (from step 1)
+  -t UserApp.sign \        # SHA256 hash (from step 2)
+  UserApp.sfb \            # OUTPUT: Secure Firmware Binary
+  -o 2048                  # Header offset (2KB)
+
+# Output: UserApp.sfb (complete package)
+# Contains:
+#   - Firmware header (metadata + signature)
+#   - Encrypted firmware
+#   - ECDSA signature (64 bytes: R=32, S=32)
+
+# ================================================================
+# STEP 4: Generate Firmware Header (Metadata Only)
+# ================================================================
+python prepareimage.py header \
+  -m "SFU1" \
+  -k ECCKEY1.txt \
+  -r 28 \
+  -v 1 \
+  -i iv.bin \
+  -f UserApp.sfu \
+  -t UserApp.sign \
+  -o 2048 \
+  UserAppsfuh.bin
+
+# Output: UserAppsfuh.bin (header only)
+# Used for merged binary generation
+
+# ================================================================
+# STEP 5: Merge SBSFU + UserApp (Optional)
+# ================================================================
+python prepareimage.py merge \
+  -v 0 \                   # Verbose level
+  -e 1 \                   # Enable encryption flag
+  -i UserAppsfuh.bin \     # Firmware header
+  -s SBSFU.elf \           # SBSFU bootloader ELF
+  -u UserApp.elf \         # UserApp ELF
+  SBSFU_UserApp.bin        # Combined binary for testing
+
+# Output: SBSFU_UserApp.bin
+# Complete flash image: SBSFU + Header + UserApp
+# Can be flashed directly to 0x08000000 for quick testing
+
+# ================================================================
+# STEP 6: Cleanup Temporary Files
+# ================================================================
+rm UserApp.sign          # SHA256 hash (no longer needed)
+rm UserApp.sfu           # Encrypted firmware (already in .sfb)
+rm UserAppsfuh.bin       # Header-only file (already in .sfb)
+```
+
+### Output Files Structure
+
+**UserApp.sfb (Secure Firmware Binary) - MAIN OUTPUT:**
+
+```
+Offset    Size      Description
+═══════════════════════════════════════════════════════════
+0x0000    4 bytes   Magic: "SFU1" (0x53465531)
+0x0004    4 bytes   Header size
+0x0008    4 bytes   Firmware version (1)
+0x000C    4 bytes   Firmware size (bytes)
+0x0010    32 bytes  SHA256 hash of clear firmware
+0x0030    64 bytes  ECDSA signature (R=32 bytes, S=32 bytes)
+0x0070    4 bytes   Partial firmware offset
+0x0074    4 bytes   Partial firmware size
+0x0078    12 bytes  IV (initialization vector)
+0x0084    28 bytes  Rollback counter
+0x00A0    ...       Reserved/padding
+─────────────────────────────────────────────────────────
+0x0800    ...       Encrypted firmware (AES-128-CBC)
+          (size)    UserApp.bin encrypted
+═══════════════════════════════════════════════════════════
+```
+
+**SBSFU_UserApp.bin (Combined Binary) - OPTIONAL:**
+
+```
+Flash Address    Content
+═══════════════════════════════════════════════════
+0x08000000       SBSFU bootloader + Secure Engine
+                 (from SBSFU.elf, ~62KB)
+─────────────────────────────────────────────────
+0x08003000       UserApp firmware header
+                 (metadata + signature, ~2KB)
+─────────────────────────────────────────────────
+0x08003800       Encrypted UserApp firmware
+                 (from UserApp.bin, variable size)
+═══════════════════════════════════════════════════
+```
+
+### Verification on Device
+
+**When SBSFU receives UserApp.sfb:**
+
+```c
+// Pseudo-code of SBSFU verification process
+
+1. Parse firmware header from UserApp.sfb
+   - Extract magic "SFU1"
+   - Extract version, size, IV
+   - Extract SHA256 hash (32 bytes)
+   - Extract ECDSA signature (64 bytes)
+
+2. Verify firmware slot (magic == "SFU1")
+
+3. Check version (version >= current_version)
+   - Prevents rollback attacks
+
+4. Decrypt encrypted firmware
+   SE_Decrypt(UserApp.sfu, OEM_KEY_AES_CBC, IV)
+   → decrypted_firmware[]
+
+5. Compute SHA256 of decrypted firmware
+   SHA256(decrypted_firmware)
+   → computed_hash[32]
+
+6. Verify ECDSA signature
+   SE_ReadKey_1_Pub()                    // Get public key
+   → public_key
+   
+   ECDSA_Verify(
+       public_key,
+       computed_hash,                     // Hash we just computed
+       signature_from_header              // Signature from UserApp.sfb
+   )
+   → VALID or INVALID
+
+7. Decision:
+   if (signature == VALID && computed_hash == header_hash)
+   {
+       // Install firmware to active slot
+       Flash_Write(ACTIVE_SLOT_ADDRESS, decrypted_firmware);
+       
+       // Mark as valid
+       FW_Status = FW_VALID;
+       
+       // Boot UserApp
+       Jump_To_Application();
+   }
+   else
+   {
+       // Reject firmware
+       FW_Status = FW_INVALID;
+       
+       // Stay in SBSFU or boot existing valid firmware
+   }
+```
+
+### Security Features
+
+**Confidentiality (Encryption):**
+- ✅ AES-128-CBC encrypts firmware
+- ✅ Attacker cannot extract code even with firmware file
+- ✅ Decryption key stored in Secure Engine (MPU protected)
+
+**Integrity (Hashing):**
+- ✅ SHA256 ensures firmware not tampered
+- ✅ Any byte change invalidates hash
+- ✅ Hash computed on clear firmware before encryption
+
+**Authenticity (Signing):**
+- ✅ ECDSA signature proves firmware from trusted source
+- ✅ Only holder of private key can create valid signature
+- ✅ Public key verification in Secure Engine
+
+**Anti-Rollback:**
+- ✅ Version counter prevents downgrade attacks
+- ✅ Rollback counter stored in header
+- ✅ SBSFU rejects older versions
+
+### Key Files Reference
+
+**Keys Used by Signing Script:**
+
+| File | Type | Size | Purpose | Security Level |
+|------|------|------|---------|----------------|
+| `ECCKEY1.txt` | ECC P-256 Private Key | 227 bytes | Signs firmware hash | 🔒 TOP SECRET |
+| `OEM_KEY_COMPANY1_key_AES_CBC.bin` | AES-128 Key | 16 bytes | Encrypts firmware | 🔒 TOP SECRET |
+| `iv.bin` | Initialization Vector | 12 bytes | CBC mode nonce | 🔓 Can be public |
+
+**Generated Output Files:**
+
+| File | Description | Usage |
+|------|-------------|-------|
+| `UserApp.bin` | Unsigned, unencrypted binary | Intermediate (deleted) |
+| `UserApp.sfu` | Encrypted firmware only | Intermediate (cleaned up) |
+| `UserApp.sign` | SHA256 hash | Intermediate (cleaned up) |
+| `UserAppsfuh.bin` | Header with metadata | Intermediate (cleaned up) |
+| **`UserApp.sfb`** | **Signed, encrypted, complete** | **FLASH THIS!** |
+| `SBSFU_UserApp.bin` | Combined bootloader + app | Testing only |
+
+### Troubleshooting Signing Process
+
+**Problem: "Python module not found"**
+```bash
+# Install dependencies
+cd Middlewares/ST/STM32_Secure_Engine/Utilities/KeysAndImages
+pip3 install -r requirements.txt
+```
+
+**Problem: "ECCKEY1.txt not found"**
+```bash
+# Keys must exist before building UserApp
+ls -lh Projects/.../1_Image_SECoreBin/Binary/ECCKEY1.txt
+
+# If missing, generate keys (see "Cryptographic Keys Setup" section)
+```
+
+**Problem: "Signature verification failed on device"**
+```bash
+# Ensure same keys used for SECoreBin and UserApp
+# Rebuild all three projects in order:
+# 1. SECoreBin (embeds public key)
+# 2. SBSFU (includes SE with public key)
+# 3. UserApp (signs with matching private key)
+```
+
+**Problem: "postbuild.sh: command not found"**
+```bash
+# Fix permissions and CRLF issues (macOS)
+chmod +x Projects/.../1_Image_SECoreBin/STM32CubeIDE/postbuild.sh
+sed -i '' 's/\r$//' Projects/.../1_Image_SECoreBin/STM32CubeIDE/postbuild.sh
 ```
 
 ---
@@ -1075,18 +1462,49 @@ cd ../../1_Image_UserApp/STM32CubeIDE/Debug
 # 3.1 Clean build
 make clean
 
-# 3.2 Build UserApp
+# 3.2 Build UserApp (compiles + signs + encrypts automatically)
 make all -j4
 
+# What happens during build:
+# 1. Compiles all C sources → UserApp.elf
+# 2. Converts to binary → UserApp.bin
+# 3. Post-build runs automatically:
+#    - Calls ../../../1_Image_SECoreBin/STM32CubeIDE/postbuild.sh
+#    - postbuild.sh is a SYMLINK to SECBOOT_ECCDSA_WITH_AES128_CBC_SHA256.sh
+#    - Python script prepareimage.py:
+#      a) Encrypts UserApp.bin with AES-128-CBC → UserApp.sfu
+#      b) Computes SHA256 hash → UserApp.sign
+#      c) Signs hash with ECCKEY1.txt (ECDSA P-256)
+#      d) Packages header + encrypted FW + signature → UserApp.sfb
+#      e) Generates combined binary SBSFU_UserApp.bin (optional)
+#      f) Cleans up temporary files (UserApp.sfu, UserApp.sign)
+
 # Expected output:
-# Firmware successfully generated (UserApp.sfb)
+#    text    data     bss     dec     hex filename
+#   xxxxx     xxx    xxxx   xxxxx    xxxx UserApp.elf
+# Finished building: UserApp.bin
+# Finished building: UserApp.sfb
+# ✓ Firmware encrypted with AES-128-CBC
+# ✓ Firmware signed with ECDSA P-256
+# ✓ Secure firmware binary ready: UserApp.sfb
 
-# 3.3 Postbuild signs firmware
-# (Automatically runs, uses ECCKEY1.txt to sign)
-
-# Verify signed firmware
+# 3.3 Verify signed firmware exists
 ls -lh ../UserApp.sfb
 # Should exist with .sfb extension
+
+# 3.4 Verify output files
+ls -lh ../Binary/
+# Should contain:
+#   UserApp.sfb         → Signed + encrypted + header (ready to flash!)
+#   SBSFU_UserApp.bin   → Combined SBSFU + UserApp (for testing)
+
+# 3.5 Check what's inside UserApp.sfb
+file ../UserApp.sfb
+hexdump -C ../UserApp.sfb | head -n 20
+# First bytes should show:
+#   - Magic number "SFU1"
+#   - Version info
+#   - Followed by encrypted firmware data
 
 # ============================================================
 # STEP 4: Flash to Device

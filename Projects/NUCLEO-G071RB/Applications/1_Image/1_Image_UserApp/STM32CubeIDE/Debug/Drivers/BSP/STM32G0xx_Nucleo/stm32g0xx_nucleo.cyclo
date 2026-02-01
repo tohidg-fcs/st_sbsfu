@@ -1,0 +1,9 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:143:10:BSP_GetVersion	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:162:6:BSP_LED_Init	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:186:6:BSP_LED_DeInit	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:205:6:BSP_LED_On	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:217:6:BSP_LED_Off	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:229:6:BSP_LED_Toggle	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:253:6:BSP_PB_Init	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:292:6:BSP_PB_DeInit	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.c:307:10:BSP_PB_GetState	1
