@@ -1,0 +1,6 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_loader.c:730:24:SFU_LOADER_VerifyFwHeader	64	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_loader.c:61:17:SFU_LOADER_Init	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_loader.c:86:17:SFU_LOADER_DeInit	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_loader.c:103:17:SFU_LOADER_DownloadNewUserFw	80	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_loader.c:187:17:SFU_COM_YMODEM_HeaderPktRxCpltCallback	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_loader.c:220:17:SFU_COM_YMODEM_DataPktRxCpltCallback	56	static

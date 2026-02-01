@@ -1,0 +1,9 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:350:24:SFU_LL_FLASH_INT_Clear_Error	3
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:45:17:SFU_LL_FLASH_INT_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:57:17:SFU_LL_FLASH_INT_Erase_Size	8
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:129:17:SFU_LL_FLASH_INT_Write	15
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:242:17:SFU_LL_FLASH_INT_Read	6
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:301:17:SFU_LL_FLASH_INT_Compare	6
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:333:10:SFU_LL_FLASH_INT_GetPage	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:410:6:NMI_Handler	6
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_flash_int.c:479:6:HardFault_Handler	1

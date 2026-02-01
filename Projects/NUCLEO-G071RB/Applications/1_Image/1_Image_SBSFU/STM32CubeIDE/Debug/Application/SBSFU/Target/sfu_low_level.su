@@ -1,0 +1,16 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:60:17:SFU_LL_DeInit	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:95:17:SFU_LL_CRC_Config	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:75:17:SFU_LL_CRC_Init	16	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:45:17:SFU_LL_Init	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:163:10:SFU_LL_CRC_Calculate	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:175:17:SFU_LL_UART_Init	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:214:17:SFU_LL_UART_DeInit	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:238:17:SFU_LL_UART_Transmit	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:265:17:SFU_LL_UART_Receive	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:288:17:SFU_LL_UART_Flush	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:365:6:SFU_LL_RTC_MspInit	128	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:435:6:SFU_LL_RTC_MspDeInit	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:451:6:SFU_LL_UART_MspInit	56	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:491:6:SFU_LL_UART_MspDeInit	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:535:17:SFU_LL_BufferCheck_in_se_ram	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level.c:559:17:SFU_LL_Buffer_in_ram	0	static

@@ -1,0 +1,13 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:1140:17:SFU_LL_SECU_CheckProtectionPCROP	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:1220:17:SFU_LL_SECU_CheckProtectionSecUser.isra	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:254:17:SFU_LL_SECU_CheckApplyStaticProtections	72	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:540:6:SFU_LL_SECU_GetResetSources	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:589:6:SFU_LL_SECU_ClearResetSources	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:601:17:SFU_LL_SECU_IWDG_Refresh	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:818:17:SFU_LL_SECU_SetProtectionMPU	64	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:901:17:SFU_LL_SECU_SetProtectionMPU_SecUser	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:930:17:SFU_LL_SECU_SetProtectionDMA	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:1000:17:SFU_LL_SECU_SetProtectionDAP	32	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:1029:17:SFU_LL_SECU_SetProtectionANTI_TAMPER	56	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:384:17:SFU_LL_SECU_CheckApplyRuntimeProtections	16	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/Target/sfu_low_level_security.c:1321:17:SFU_LL_SECU_ActivateSecUser	24	static,ignoring_inline_asm

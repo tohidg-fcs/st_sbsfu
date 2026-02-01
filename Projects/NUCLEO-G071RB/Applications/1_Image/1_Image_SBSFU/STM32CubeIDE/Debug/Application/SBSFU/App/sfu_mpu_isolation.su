@@ -1,0 +1,5 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_mpu_isolation.c:175:6:SFU_MPU_SVC_Handler	32	static,ignoring_inline_asm
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_mpu_isolation.c:136:6:MPU_SVC_Handler	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_mpu_isolation.c:229:6:SFU_MPU_SysCall	0	static,ignoring_inline_asm
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_mpu_isolation.c:244:10:SFU_MPU_IsUnprivileged	0	static,ignoring_inline_asm
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_mpu_isolation.c:254:6:SFU_MPU_EnterUnprivilegedMode	0	static,ignoring_inline_asm

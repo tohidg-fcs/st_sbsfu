@@ -1,0 +1,5 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_common.c:82:6:SE_EnterSecureMode	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_common.c:96:6:SE_ExitSecureMode	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_common.c:123:10:SE_IsUnprivileged	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_common.c:136:6:SE_SysCall	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_common.c:155:6:SE_SVC_Handler	14

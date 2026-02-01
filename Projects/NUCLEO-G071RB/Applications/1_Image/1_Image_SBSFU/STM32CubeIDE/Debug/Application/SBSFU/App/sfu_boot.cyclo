@@ -1,0 +1,12 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:1085:13:SFU_BOOT_SM_HandleCriticalFailure	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:818:13:SFU_BOOT_SM_VerifyUserFwSignature	14
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:540:13:SFU_BOOT_SM_CheckUserFwStatus	10
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:730:13:SFU_BOOT_SM_DownloadNewUserFw	11
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:485:13:SFU_BOOT_SM_CheckNewFwToDownload	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:448:13:SFU_BOOT_SM_CheckStatusOnReset	7
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:346:24:SFU_BOOT_DeInit.isra	3
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:230:6:SFU_BOOT_ForceReboot	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:1101:13:SFU_BOOT_SM_RebootStateMachine	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:949:13:SFU_BOOT_SM_ExecuteUserFw	14
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:178:27:SFU_BOOT_RunSecureBootService	12
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SBSFU/SBSFU/App/sfu_boot.c:1344:6:HAL_RTCEx_Tamper2EventCallback	1
