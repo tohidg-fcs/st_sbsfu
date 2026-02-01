@@ -1,0 +1,11 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:359:16:SE_CRYPTO_Encrypt_Init	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:444:16:SE_CRYPTO_Header_Append	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:479:16:SE_CRYPTO_Encrypt_Append	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:516:16:SE_CRYPTO_Encrypt_Finish	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:556:16:SE_CRYPTO_Decrypt_Init	16	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:686:16:SE_CRYPTO_Decrypt_Append	16	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:749:16:SE_CRYPTO_Decrypt_Finish	32	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:809:16:SE_CRYPTO_AuthenticateFW_Init	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:862:16:SE_CRYPTO_AuthenticateFW_Append	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:907:16:SE_CRYPTO_AuthenticateFW_Finish	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/NUCLEO-G071RB/Applications/1_Image/1_Image_SECoreBin/Src/se_crypto_bootloader.c:945:16:SE_CRYPTO_Authenticate_Metadata	208	static

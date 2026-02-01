@@ -1,0 +1,5 @@
+../Application/User/data_init.c:34:6:LoopCopyDataInit	2
+../Application/User/data_init.c:54:6:LoopFillZerobss	2
+../Application/User/data_init.c:71:6:__gcc_data_init	1
+../Application/User/data_init.c:81:6:LoopCleanDataInit	2
+../Application/User/data_init.c:97:6:__gcc_clean_data	1
