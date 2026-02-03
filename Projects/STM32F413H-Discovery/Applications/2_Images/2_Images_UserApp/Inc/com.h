@@ -21,7 +21,8 @@
 #define COM_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @addtogroup USER_APP User App Example
@@ -37,63 +38,64 @@ extern "C" {
 #include <stdio.h>
 #include "stm32f4xx.h"
 
-/** @defgroup  COM_Exported_Constants Exported Constants
+    /** @defgroup  COM_Exported_Constants Exported Constants
   * @{
   */
-/** @defgroup COM_UART  UART Configuration
+    /** @defgroup COM_UART  UART Configuration
   * @{
   */
 
-#define COM_UART                                USART2
-#define COM_UART_CLK_ENABLE()                   __HAL_RCC_USART2_CLK_ENABLE()
-#define COM_UART_CLK_DISABLE()                  __HAL_RCC_USART2_CLK_DISABLE()
+#define COM_UART USART2
+#define COM_UART_CLK_ENABLE() __HAL_RCC_USART2_CLK_ENABLE()
+#define COM_UART_CLK_DISABLE() __HAL_RCC_USART2_CLK_DISABLE()
 
-#define COM_UART_TX_AF                          GPIO_AF7_USART2
-#define COM_UART_TX_GPIO_PORT                   GPIOA
-#define COM_UART_TX_PIN                         GPIO_PIN_2
-#define COM_UART_TX_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOA_CLK_ENABLE()
-#define COM_UART_TX_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOA_CLK_DISABLE()
+#define COM_UART_TX_AF GPIO_AF7_USART2
+#define COM_UART_TX_GPIO_PORT GPIOA
+#define COM_UART_TX_PIN GPIO_PIN_2
+#define COM_UART_TX_GPIO_CLK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
+#define COM_UART_TX_GPIO_CLK_DISABLE() __HAL_RCC_GPIOA_CLK_DISABLE()
 
-#define COM_UART_RX_AF                          GPIO_AF7_USART2
-#define COM_UART_RX_GPIO_PORT                   GPIOA
-#define COM_UART_RX_PIN                         GPIO_PIN_3
-#define COM_UART_RX_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOA_CLK_ENABLE()
-#define COM_UART_RX_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOA_CLK_DISABLE()
+#define COM_UART_RX_AF GPIO_AF7_USART2
+#define COM_UART_RX_GPIO_PORT GPIOA
+#define COM_UART_RX_PIN GPIO_PIN_3
+#define COM_UART_RX_GPIO_CLK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
+#define COM_UART_RX_GPIO_CLK_DISABLE() __HAL_RCC_GPIOA_CLK_DISABLE()
 
 /* Maximum Timeout values for flags waiting loops.
    You may modify these timeout values depending on CPU frequency and application
    conditions (interrupts routines ...). */
-#define COM_UART_TIMEOUT_MAX                   1000U
+#define COM_UART_TIMEOUT_MAX 1000U
 
-/**
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
-/** @addtogroup  COM_Exported_Functions
+    /** @addtogroup  COM_Exported_Functions
   * @{
   */
 
-HAL_StatusTypeDef  COM_Init(void);
-HAL_StatusTypeDef  COM_DeInit(void);
-HAL_StatusTypeDef  COM_Transmit(uint8_t *Data, uint16_t uDataLength, uint32_t uTimeout);
-HAL_StatusTypeDef  COM_Receive(uint8_t *Data, uint16_t uDataLength, uint32_t uTimeout);
-HAL_StatusTypeDef  COM_Flush(void);
+    HAL_StatusTypeDef COM_Init(void);
+    HAL_StatusTypeDef COM_DeInit(void);
+    HAL_StatusTypeDef COM_Transmit(uint8_t *Data, uint16_t uDataLength, uint32_t uTimeout);
+    HAL_StatusTypeDef COM_Receive(uint8_t *Data, uint16_t uDataLength, uint32_t uTimeout);
+    HAL_StatusTypeDef COM_Flush(void);
 
-HAL_StatusTypeDef Ymodem_HeaderPktRxCpltCallback(uint32_t uFileSize);
-HAL_StatusTypeDef Ymodem_DataPktRxCpltCallback(uint8_t *pData, uint32_t uFlashDestination, uint32_t uSize);
-/**
+    HAL_StatusTypeDef Ymodem_HeaderPktRxCpltCallback(uint32_t uFileSize);
+    HAL_StatusTypeDef Ymodem_DataPktRxCpltCallback(uint8_t *pData, uint32_t uFlashDestination,
+                                                   uint32_t uSize);
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
