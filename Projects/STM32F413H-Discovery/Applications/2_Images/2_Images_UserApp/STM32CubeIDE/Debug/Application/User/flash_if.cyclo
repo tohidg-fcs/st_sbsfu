@@ -1,0 +1,13 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:320:19:FLASH_INT_If_Clear_Error	3
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:73:19:FLASH_If_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:131:19:FLASH_If_Read	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:150:19:FLASH_INT_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:161:19:FLASH_INT_If_Erase_Size	7
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:90:19:FLASH_If_Erase_Size	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:226:19:FLASH_INT_If_Write	6
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:110:19:FLASH_If_Write	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:283:19:FLASH_INT_If_Read	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:291:19:FLASH_EXT_Init	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:299:19:FLASH_EXT_If_Erase_Size	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:304:19:FLASH_EXT_If_Write	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:309:19:FLASH_EXT_If_Read	1

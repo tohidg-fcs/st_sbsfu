@@ -1,0 +1,5 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/mpu.c:85:6:SVC_NVIC_SystemReset	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/mpu.c:96:6:SVC_MPU_Disable	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/mpu.c:143:6:HAL_APP_SVC_Handler	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/mpu.c:113:6:MPU_SVC_Handler	3
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/mpu.c:171:6:MPU_EnterUnprivilegedMode	1

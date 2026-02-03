@@ -1,0 +1,13 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:320:19:FLASH_INT_If_Clear_Error	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:73:19:FLASH_If_Init	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:131:19:FLASH_If_Read	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:150:19:FLASH_INT_Init	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:161:19:FLASH_INT_If_Erase_Size	48	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:90:19:FLASH_If_Erase_Size	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:226:19:FLASH_INT_If_Write	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:110:19:FLASH_If_Write	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:283:19:FLASH_INT_If_Read	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:291:19:FLASH_EXT_Init	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:299:19:FLASH_EXT_If_Erase_Size	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:304:19:FLASH_EXT_If_Write	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/flash_if.c:309:19:FLASH_EXT_If_Read	0	static

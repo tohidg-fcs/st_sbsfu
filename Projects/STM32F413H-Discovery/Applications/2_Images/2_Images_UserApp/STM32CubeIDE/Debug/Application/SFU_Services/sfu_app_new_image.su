@@ -1,0 +1,2 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/sfu_app_new_image.c:63:19:SFU_APP_InstallAtNextReset	16	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/sfu_app_new_image.c:89:6:SFU_APP_GetDownloadAreaInfo	0	static

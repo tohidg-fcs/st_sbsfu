@@ -1,0 +1,4 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/test_protections.c:384:13:TEST_PROTECTIONS_CORRUPT_PrintMenu	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/test_protections.c:211:13:TEST_PROTECTIONS_PrintTestingMenu	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/test_protections.c:133:6:TEST_PROTECTIONS_RunMenu	27
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_UserApp/Src/test_protections.c:530:6:HAL_RTCEx_Tamper1EventCallback	1
