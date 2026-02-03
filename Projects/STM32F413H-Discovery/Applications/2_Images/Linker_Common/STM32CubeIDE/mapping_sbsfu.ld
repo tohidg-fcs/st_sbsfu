@@ -3,8 +3,9 @@
 **
 **  File        : LinkerScript.ld
 **
-**  Abstract    : Linker script for STM32F413ZHTx Device with
-**                1536KByte FLASH, 320KByte RAM
+**  Abstract    : Linker script for STM32F411RETx Device with
+**                512KByte FLASH, 128KByte RAM
+**                (Ported from STM32F413ZHTx)
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -69,11 +70,11 @@ __ICFEDIT_SE_region_RAM_end__       = 0x20000FFF;
 
 /* SBSFU RAM1 region */
 __ICFEDIT_SB_region_RAM_start__     = __ICFEDIT_SE_region_RAM_end__ + 0x1;
-__ICFEDIT_SB_region_RAM_end__       = 0x2003FFEF;
+__ICFEDIT_SB_region_RAM_end__       = 0x2001FFEF;
 
 /* Shared RAM for Image State Handling */
 __ICFEDIT_SB_FWIMG_STATE_region_RAM_start__ = __ICFEDIT_SB_region_RAM_end__ + 1;
-__ICFEDIT_SB_FWIMG_STATE_region_RAM_end__   = 0x2003FFFF;
+__ICFEDIT_SB_FWIMG_STATE_region_RAM_end__   = 0x2001FFFF;
 
 SE_RAM_region_Length = __ICFEDIT_SE_region_RAM_end__ - __ICFEDIT_SE_region_RAM_stack_top__ + 1;
 SB_RAM_region_Length = __ICFEDIT_SB_region_RAM_end__ - __ICFEDIT_SB_region_RAM_start__ + 1;

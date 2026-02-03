@@ -1,0 +1,16 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:1292:13:SFU_BOOT_SM_HandleCriticalFailure	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:975:13:SFU_BOOT_SM_RollbackInstallPrevUserFw	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:1015:13:SFU_BOOT_SM_VerifyUserFwSignature	14
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:546:13:SFU_BOOT_SM_CheckUserFwStatus	14
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:765:13:SFU_BOOT_SM_DownloadNewUserFw	11
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:491:13:SFU_BOOT_SM_CheckNewFwToDownload	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:454:13:SFU_BOOT_SM_CheckStatusOnReset	7
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:349:24:SFU_BOOT_DeInit.isra	3
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:233:6:SFU_BOOT_ForceReboot	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:1308:13:SFU_BOOT_SM_RebootStateMachine	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:943:13:SFU_BOOT_SM_ResumeInstallNewUserFw	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:1146:13:SFU_BOOT_SM_ExecuteUserFw	14
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:853:13:SFU_BOOT_SM_InstallNewUserFw	9
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:181:27:SFU_BOOT_RunSecureBootService	12
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:1551:6:HAL_RTCEx_Tamper1EventCallback	1
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_boot.c:1563:6:MemManage_Handler	1

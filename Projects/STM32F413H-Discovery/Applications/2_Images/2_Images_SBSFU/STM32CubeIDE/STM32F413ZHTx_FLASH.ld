@@ -3,8 +3,9 @@
 **
 **  File        : LinkerScript.ld
 **
-**  Abstract    : Linker script for STM32F413ZHTx Device with
-**                1536KByte FLASH, 320KByte RAM
+**  Abstract    : Linker script for STM32F411RETx Device with
+**                512KByte FLASH, 128KByte RAM
+**                (Ported from STM32F413ZHTx)
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.

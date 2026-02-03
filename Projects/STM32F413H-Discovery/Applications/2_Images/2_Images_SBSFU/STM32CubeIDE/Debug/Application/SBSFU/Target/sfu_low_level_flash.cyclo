@@ -1,0 +1,7 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:32:17:SFU_LL_FLASH_Init	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:51:17:SFU_LL_FLASH_Erase_Size	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:73:17:SFU_LL_FLASH_Write	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:94:17:SFU_LL_FLASH_Read	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:116:17:SFU_LL_FLASH_Compare	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:134:17:SFU_LL_FLASH_Config_Exe	2
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_flash.c:157:10:SFU_LL_FLASH_GetSector	2

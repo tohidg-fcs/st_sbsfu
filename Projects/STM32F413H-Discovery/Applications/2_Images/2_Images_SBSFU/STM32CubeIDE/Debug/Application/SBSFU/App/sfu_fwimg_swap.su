@@ -1,0 +1,12 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:466:24:EraseSlotIndex	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:410:24:CleanMagicValue	56	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:1602:24:FirmwareToInstall.constprop	352	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:1154:24:DecryptImageInDwlSlot.constprop	1144	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:1381:25:FirmwareToResume.constprop	1016	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:583:24:SwapFirmwareImages.constprop	664	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:1887:27:SFU_IMG_CheckSwapImageHandling	32	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:2014:32:SFU_IMG_CheckPendingInstallation	16	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:2434:10:SFU_IMG_GetTrailerSize	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:2444:17:SFU_IMG_EraseDownloadedImg	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:2150:17:SFU_IMG_TriggerImageInstallation	96	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/App/sfu_fwimg_swap.c:2221:17:SFU_IMG_TriggerResumeInstallation	24	static

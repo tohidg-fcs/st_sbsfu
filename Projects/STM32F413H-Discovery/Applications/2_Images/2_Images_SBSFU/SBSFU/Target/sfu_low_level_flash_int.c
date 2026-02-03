@@ -28,14 +28,22 @@
 #include "sfu_error.h"
 
 /* Private defines -----------------------------------------------------------*/
-#define NB_PAGE_SECTOR_PER_ERASE  2U    /*!< Nb page erased per erase */
+#define NB_PAGE_SECTOR_PER_ERASE 2U /*!< Nb page erased per erase */
 
 /* Private variables ---------------------------------------------------------*/
-
-uint32_t FlashSectorsAddress[] = {0x08000000U, 0x08004000U, 0x08008000U, 0x0800C000U, 0x08010000U, 0x08020000U,
-                                  0x08040000U, 0x08060000U, 0x08080000U, 0x080A0000U, 0x080C0000U, 0x080E0000U,
-                                  0x08100000U, 0x08120000U, 0x08140000U, 0x08160000U, 0x08180000U
-                                 };
+/*
+ * STM32F411RET6 Flash Sector Organization (512 KB total):
+ * Sector 0:  16 KB  (0x08000000 - 0x08003FFF)
+ * Sector 1:  16 KB  (0x08004000 - 0x08007FFF)
+ * Sector 2:  16 KB  (0x08008000 - 0x0800BFFF)
+ * Sector 3:  16 KB  (0x0800C000 - 0x0800FFFF)
+ * Sector 4:  64 KB  (0x08010000 - 0x0801FFFF)
+ * Sector 5: 128 KB  (0x08020000 - 0x0803FFFF)
+ * Sector 6: 128 KB  (0x08040000 - 0x0805FFFF)
+ * Sector 7: 128 KB  (0x08060000 - 0x0807FFFF)
+ */
+uint32_t FlashSectorsAddress[] = {0x08000000U, 0x08004000U, 0x08008000U, 0x0800C000U, 0x08010000U,
+                                  0x08020000U, 0x08040000U, 0x08060000U, 0x08080000U};
 
 static SFU_ErrorStatus SFU_LL_FLASH_INT_Clear_Error(void);
 
@@ -47,7 +55,7 @@ static SFU_ErrorStatus SFU_LL_FLASH_INT_Clear_Error(void);
   */
 SFU_ErrorStatus SFU_LL_FLASH_INT_Init(void)
 {
-  return SFU_SUCCESS;
+    return SFU_SUCCESS;
 }
 
 /**
@@ -57,71 +65,74 @@ SFU_ErrorStatus SFU_LL_FLASH_INT_Init(void)
   * @param  Length: number of bytes
   * @retval SFU_ErrorStatus SFU_SUCCESS if successful, SFU_ERROR otherwise.
   */
-SFU_ErrorStatus SFU_LL_FLASH_INT_Erase_Size(SFU_FLASH_StatusTypeDef *pFlashStatus, uint8_t *pStart, uint32_t Length)
+SFU_ErrorStatus SFU_LL_FLASH_INT_Erase_Size(SFU_FLASH_StatusTypeDef *pFlashStatus, uint8_t *pStart,
+                                            uint32_t Length)
 {
-  uint32_t sector_error = 0U;
-  uint32_t start = (uint32_t)pStart;
-  FLASH_EraseInitTypeDef p_erase_init;
-  SFU_ErrorStatus e_ret_status = SFU_ERROR;
-  uint32_t first_sector;
-  uint32_t nb_sectors;
-  uint32_t chunk_nb_sectors;
-  uint32_t length = Length;
+    uint32_t sector_error = 0U;
+    uint32_t start = (uint32_t) pStart;
+    FLASH_EraseInitTypeDef p_erase_init;
+    SFU_ErrorStatus e_ret_status = SFU_ERROR;
+    uint32_t first_sector;
+    uint32_t nb_sectors;
+    uint32_t chunk_nb_sectors;
+    uint32_t length = Length;
 
-  /* Check the pointers allocation */
-  if (pFlashStatus == NULL)
-  {
-    return SFU_ERROR;
-  }
-
-  *pFlashStatus = SFU_FLASH_SUCCESS;
-
-  /* Clear error flags raised during previous operation */
-  e_ret_status = SFU_LL_FLASH_INT_Clear_Error();
-
-  if (e_ret_status == SFU_SUCCESS)
-  {
-    /* Unlock the Flash to enable the flash control register access *************/
-    if (HAL_FLASH_Unlock() == HAL_OK)
+    /* Check the pointers allocation */
+    if (pFlashStatus == NULL)
     {
-      first_sector = SFU_LL_FLASH_INT_GetSector(start);
-      /* Get the number of sectors to erase from 1st sector */
-      nb_sectors = SFU_LL_FLASH_INT_GetSector(start + length - 1U) - first_sector + 1U;
+        return SFU_ERROR;
+    }
 
-      /* Fill EraseInit structure*/
-      p_erase_init.TypeErase     = FLASH_TYPEERASE_SECTORS;
-      p_erase_init.VoltageRange  = FLASH_VOLTAGE_RANGE_3;
-      /* Erase flash per NB_PAGE_SECTOR_PER_ERASE to avoid watch-dog */
-      do
-      {
-        chunk_nb_sectors = (nb_sectors >= NB_PAGE_SECTOR_PER_ERASE) ? NB_PAGE_SECTOR_PER_ERASE : nb_sectors;
-        p_erase_init.Sector = first_sector;
-        p_erase_init.NbSectors = chunk_nb_sectors;
-        first_sector += chunk_nb_sectors;
-        nb_sectors -= chunk_nb_sectors;
-        if (HAL_FLASHEx_Erase(&p_erase_init, &sector_error) != HAL_OK)
+    *pFlashStatus = SFU_FLASH_SUCCESS;
+
+    /* Clear error flags raised during previous operation */
+    e_ret_status = SFU_LL_FLASH_INT_Clear_Error();
+
+    if (e_ret_status == SFU_SUCCESS)
+    {
+        /* Unlock the Flash to enable the flash control register access *************/
+        if (HAL_FLASH_Unlock() == HAL_OK)
         {
-          e_ret_status = SFU_ERROR;
-          *pFlashStatus = SFU_FLASH_ERR_ERASE;
-        }
-        SFU_LL_SECU_IWDG_Refresh(); /* calling this function which checks the compiler switch */
-      } while (nb_sectors > 0U);
+            first_sector = SFU_LL_FLASH_INT_GetSector(start);
+            /* Get the number of sectors to erase from 1st sector */
+            nb_sectors = SFU_LL_FLASH_INT_GetSector(start + length - 1U) - first_sector + 1U;
 
-      /* Lock the Flash to disable the flash control register access (recommended
+            /* Fill EraseInit structure*/
+            p_erase_init.TypeErase = FLASH_TYPEERASE_SECTORS;
+            p_erase_init.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+            /* Erase flash per NB_PAGE_SECTOR_PER_ERASE to avoid watch-dog */
+            do
+            {
+                chunk_nb_sectors = (nb_sectors >= NB_PAGE_SECTOR_PER_ERASE)
+                                       ? NB_PAGE_SECTOR_PER_ERASE
+                                       : nb_sectors;
+                p_erase_init.Sector = first_sector;
+                p_erase_init.NbSectors = chunk_nb_sectors;
+                first_sector += chunk_nb_sectors;
+                nb_sectors -= chunk_nb_sectors;
+                if (HAL_FLASHEx_Erase(&p_erase_init, &sector_error) != HAL_OK)
+                {
+                    e_ret_status = SFU_ERROR;
+                    *pFlashStatus = SFU_FLASH_ERR_ERASE;
+                }
+                SFU_LL_SECU_IWDG_Refresh(); /* calling this function which checks the compiler switch */
+            } while (nb_sectors > 0U);
+
+            /* Lock the Flash to disable the flash control register access (recommended
       to protect the FLASH memory against possible unwanted operation) *********/
-      if (HAL_FLASH_Lock() != HAL_OK)
-      {
-        e_ret_status = SFU_ERROR;
-        *pFlashStatus = SFU_FLASH_ERR_HAL;
-      }
+            if (HAL_FLASH_Lock() != HAL_OK)
+            {
+                e_ret_status = SFU_ERROR;
+                *pFlashStatus = SFU_FLASH_ERR_HAL;
+            }
+        }
+        else
+        {
+            *pFlashStatus = SFU_FLASH_ERR_HAL;
+        }
     }
-    else
-    {
-      *pFlashStatus = SFU_FLASH_ERR_HAL;
-    }
-  }
 
-  return e_ret_status;
+    return e_ret_status;
 }
 
 /**
@@ -133,105 +144,107 @@ SFU_ErrorStatus SFU_LL_FLASH_INT_Erase_Size(SFU_FLASH_StatusTypeDef *pFlashStatu
   * @param  Length: Length of data buffer in bytes. It has to be 1 byte aligned.
   * @retval SFU_ErrorStatus SFU_SUCCESS if successful, SFU_ERROR otherwise.
   */
-SFU_ErrorStatus SFU_LL_FLASH_INT_Write(SFU_FLASH_StatusTypeDef *pFlashStatus, uint8_t  *pDestination,
+SFU_ErrorStatus SFU_LL_FLASH_INT_Write(SFU_FLASH_StatusTypeDef *pFlashStatus, uint8_t *pDestination,
                                        const uint8_t *pSource, uint32_t Length)
 {
-  SFU_ErrorStatus e_ret_status = SFU_ERROR;
-  uint32_t i;
-  uint32_t inside_header = 0U;
-  uint32_t destination = (uint32_t)pDestination;
-  uint32_t source = (uint32_t)pSource;
+    SFU_ErrorStatus e_ret_status = SFU_ERROR;
+    uint32_t i;
+    uint32_t inside_header = 0U;
+    uint32_t destination = (uint32_t) pDestination;
+    uint32_t source = (uint32_t) pSource;
 
-  /* Check the pointers allocation */
-  if ((pFlashStatus == NULL) || (pSource == NULL))
-  {
-    return SFU_ERROR;
-  }
-
-  /* Is destination area inside 1 of the firmware image headers ? */
-  for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
-  {
-    if ((destination >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
-        ((destination + Length) <= (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+    /* Check the pointers allocation */
+    if ((pFlashStatus == NULL) || (pSource == NULL))
     {
-      inside_header = 1U;
+        return SFU_ERROR;
     }
-  }
 
-  /* Destination area part of 1 of the firmware image headers :
+    /* Is destination area inside 1 of the firmware image headers ? */
+    for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
+    {
+        if ((destination >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
+            ((destination + Length) <= (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+        {
+            inside_header = 1U;
+        }
+    }
+
+    /* Destination area part of 1 of the firmware image headers :
      writing operation should be executed inside secure environment */
-  if ((inside_header == 1U) && (Length != 0U))
-  {
-    /* SE Access */
-    SE_StatusTypeDef se_status;
-    SE_ErrorStatus se_ret_status = SE_SFU_IMG_Write(&se_status, (uint8_t *)destination, pSource, Length);
-    if (se_ret_status == SE_SUCCESS)
+    if ((inside_header == 1U) && (Length != 0U))
     {
-      e_ret_status = SFU_SUCCESS;
-      *pFlashStatus = SFU_FLASH_SUCCESS;
+        /* SE Access */
+        SE_StatusTypeDef se_status;
+        SE_ErrorStatus se_ret_status =
+            SE_SFU_IMG_Write(&se_status, (uint8_t *) destination, pSource, Length);
+        if (se_ret_status == SE_SUCCESS)
+        {
+            e_ret_status = SFU_SUCCESS;
+            *pFlashStatus = SFU_FLASH_SUCCESS;
+        }
+        else
+        {
+            e_ret_status = SFU_ERROR;
+            *pFlashStatus = SFU_FLASH_ERROR;
+        }
     }
+    /* Writing operation executed by SBSFU */
     else
     {
-      e_ret_status = SFU_ERROR;
-      *pFlashStatus = SFU_FLASH_ERROR;
-    }
-  }
-  /* Writing operation executed by SBSFU */
-  else
-  {
-    *pFlashStatus = SFU_FLASH_ERROR;
+        *pFlashStatus = SFU_FLASH_ERROR;
 
-    /* Clear error flags raised during previous operation */
-    e_ret_status = SFU_LL_FLASH_INT_Clear_Error();
+        /* Clear error flags raised during previous operation */
+        e_ret_status = SFU_LL_FLASH_INT_Clear_Error();
 
-    if (e_ret_status == SFU_SUCCESS)
-    {
-      /* Unlock the Flash to enable the flash control register access *************/
-      if (HAL_FLASH_Unlock() != HAL_OK)
-      {
-        *pFlashStatus = SFU_FLASH_ERR_HAL;
-
-      }
-      else
-      {
-        for (i = 0U; (i < Length) && (e_ret_status == SFU_SUCCESS); i += sizeof(SFU_LL_FLASH_write_t))
+        if (e_ret_status == SFU_SUCCESS)
         {
-          *pFlashStatus = SFU_FLASH_ERROR;
-          if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, destination, *((uint8_t *)(source + i))) == HAL_OK)
-          {
-            /* Check the written value */
-            if (*(uint8_t *)destination != *(uint8_t *)(source + i))
+            /* Unlock the Flash to enable the flash control register access *************/
+            if (HAL_FLASH_Unlock() != HAL_OK)
             {
-              /* Flash content doesn't match SRAM content */
-              *pFlashStatus = SFU_FLASH_ERR_WRITINGCTRL;
-              e_ret_status = SFU_ERROR;
+                *pFlashStatus = SFU_FLASH_ERR_HAL;
             }
             else
             {
-              /* Increment FLASH Destination address */
-              destination = destination + sizeof(SFU_LL_FLASH_write_t);
-              e_ret_status = SFU_SUCCESS;
-              *pFlashStatus = SFU_FLASH_SUCCESS;
-            }
-          }
-          else
-          {
-            /* Error occurred while writing data in Flash memory */
-            *pFlashStatus = SFU_FLASH_ERR_WRITING;
-            e_ret_status = SFU_ERROR;
-          }
-        }
-        /* Lock the Flash to disable the flash control register access (recommended
+                for (i = 0U; (i < Length) && (e_ret_status == SFU_SUCCESS);
+                     i += sizeof(SFU_LL_FLASH_write_t))
+                {
+                    *pFlashStatus = SFU_FLASH_ERROR;
+                    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, destination,
+                                          *((uint8_t *) (source + i))) == HAL_OK)
+                    {
+                        /* Check the written value */
+                        if (*(uint8_t *) destination != *(uint8_t *) (source + i))
+                        {
+                            /* Flash content doesn't match SRAM content */
+                            *pFlashStatus = SFU_FLASH_ERR_WRITINGCTRL;
+                            e_ret_status = SFU_ERROR;
+                        }
+                        else
+                        {
+                            /* Increment FLASH Destination address */
+                            destination = destination + sizeof(SFU_LL_FLASH_write_t);
+                            e_ret_status = SFU_SUCCESS;
+                            *pFlashStatus = SFU_FLASH_SUCCESS;
+                        }
+                    }
+                    else
+                    {
+                        /* Error occurred while writing data in Flash memory */
+                        *pFlashStatus = SFU_FLASH_ERR_WRITING;
+                        e_ret_status = SFU_ERROR;
+                    }
+                }
+                /* Lock the Flash to disable the flash control register access (recommended
         to protect the FLASH memory against possible unwanted operation) */
-        if (HAL_FLASH_Lock() != HAL_OK)
-        {
-          e_ret_status = SFU_ERROR;
-          *pFlashStatus = SFU_FLASH_ERR_HAL;
+                if (HAL_FLASH_Lock() != HAL_OK)
+                {
+                    e_ret_status = SFU_ERROR;
+                    *pFlashStatus = SFU_FLASH_ERR_HAL;
+                }
+            }
         }
-      }
     }
-  }
-  return e_ret_status;
+    return e_ret_status;
 }
 
 /**
@@ -241,43 +254,44 @@ SFU_ErrorStatus SFU_LL_FLASH_INT_Write(SFU_FLASH_StatusTypeDef *pFlashStatus, ui
   * @param  Length: number of bytes
   * @retval SFU_ErrorStatus SFU_SUCCESS if successful, SFU_ERROR otherwise.
   */
-SFU_ErrorStatus SFU_LL_FLASH_INT_Read(uint8_t *pDestination, const uint8_t *pSource, uint32_t Length)
+SFU_ErrorStatus SFU_LL_FLASH_INT_Read(uint8_t *pDestination, const uint8_t *pSource,
+                                      uint32_t Length)
 {
-  SFU_ErrorStatus e_ret_status = SFU_ERROR;
-  SE_ErrorStatus se_ret_status;
-  SE_StatusTypeDef se_status;
-  uint32_t i;
-  uint32_t inside_header = 0U;
-  uint32_t source = (uint32_t)pSource;
+    SFU_ErrorStatus e_ret_status = SFU_ERROR;
+    SE_ErrorStatus se_ret_status;
+    SE_StatusTypeDef se_status;
+    uint32_t i;
+    uint32_t inside_header = 0U;
+    uint32_t source = (uint32_t) pSource;
 
-  /* Is destination area inside 1 of the firmware image headers ? */
-  for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
-  {
-    if ((source >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
-        ((source + Length) <= (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+    /* Is destination area inside 1 of the firmware image headers ? */
+    for (i = 0U; i < SFU_NB_MAX_ACTIVE_IMAGE; i++)
     {
-      inside_header = 1U;
+        if ((source >= SlotHeaderAdd[SLOT_ACTIVE_1 + i]) &&
+            ((source + Length) <= (SlotHeaderAdd[SLOT_ACTIVE_1 + i] + SFU_IMG_IMAGE_OFFSET)))
+        {
+            inside_header = 1U;
+        }
     }
-  }
 
-  /* Destination area part of 1 of the firmware image headers :
+    /* Destination area part of 1 of the firmware image headers :
      reading operation should be executed inside secure environment */
-  if (inside_header == 1U)
-  {
-    /* SE Access */
-    se_ret_status = SE_SFU_IMG_Read(&se_status, pDestination, (uint8_t *)source, Length);
-    if (se_ret_status == SE_SUCCESS)
+    if (inside_header == 1U)
     {
-      e_ret_status = SFU_SUCCESS;
+        /* SE Access */
+        se_ret_status = SE_SFU_IMG_Read(&se_status, pDestination, (uint8_t *) source, Length);
+        if (se_ret_status == SE_SUCCESS)
+        {
+            e_ret_status = SFU_SUCCESS;
+        }
     }
-  }
-  /* Reading operation executed by SBSFU */
-  else
-  {
-    (void) memcpy(pDestination, (uint8_t *)source, Length);
-    e_ret_status = SFU_SUCCESS;
-  }
-  return e_ret_status;
+    /* Reading operation executed by SBSFU */
+    else
+    {
+        (void) memcpy(pDestination, (uint8_t *) source, Length);
+        e_ret_status = SFU_SUCCESS;
+    }
+    return e_ret_status;
 }
 
 /**
@@ -289,25 +303,26 @@ SFU_ErrorStatus SFU_LL_FLASH_INT_Read(uint8_t *pDestination, const uint8_t *pSou
   * @param  Length: number of bytes to be compared
   * @retval SFU_ErrorStatus SFU_SUCCESS if successful, SFU_ERROR otherwise.
   */
-SFU_ErrorStatus SFU_LL_FLASH_INT_Compare(const uint8_t *pFlash, const uint32_t Pattern1, const uint32_t Pattern2, uint32_t Length)
+SFU_ErrorStatus SFU_LL_FLASH_INT_Compare(const uint8_t *pFlash, const uint32_t Pattern1,
+                                         const uint32_t Pattern2, uint32_t Length)
 {
-  uint32_t flash = (uint32_t) pFlash;
-  uint32_t i;
+    uint32_t flash = (uint32_t) pFlash;
+    uint32_t i;
 
-  /* Comparison executed by SBSFU ==> flash area could not be located inside secured environment */
-  for ( i = 0U; i < Length; i += 4U)
-  {
-    if ((*(uint32_t *)(flash + i) != Pattern1) &&  (*(uint32_t *)(flash + i) != Pattern2))
+    /* Comparison executed by SBSFU ==> flash area could not be located inside secured environment */
+    for (i = 0U; i < Length; i += 4U)
     {
-      return SFU_ERROR;
+        if ((*(uint32_t *) (flash + i) != Pattern1) && (*(uint32_t *) (flash + i) != Pattern2))
+        {
+            return SFU_ERROR;
+        }
     }
-  }
-  /* Verify loop exit status */
-  if (i != Length)
-  {
-    return SFU_ERROR;
-  }
-  return SFU_SUCCESS;
+    /* Verify loop exit status */
+    if (i != Length)
+    {
+        return SFU_ERROR;
+    }
+    return SFU_SUCCESS;
 }
 
 /**
@@ -317,16 +332,14 @@ SFU_ErrorStatus SFU_LL_FLASH_INT_Compare(const uint8_t *pFlash, const uint32_t P
   */
 uint32_t SFU_LL_FLASH_INT_GetSector(uint32_t Add)
 {
-  uint32_t sector = 0U;
+    uint32_t sector = 0U;
 
-  while (Add >= FlashSectorsAddress[sector + 1U])
-  {
-    sector++;
-  }
-  return sector;
+    while (Add >= FlashSectorsAddress[sector + 1U])
+    {
+        sector++;
+    }
+    return sector;
 }
-
-
 
 
 /**
@@ -336,26 +349,24 @@ uint32_t SFU_LL_FLASH_INT_GetSector(uint32_t Add)
   */
 static SFU_ErrorStatus SFU_LL_FLASH_INT_Clear_Error(void)
 {
-  SFU_ErrorStatus e_ret_status = SFU_ERROR;
-
-  /* Unlock the Program memory */
-  if (HAL_FLASH_Unlock() == HAL_OK)
-  {
-
-    /* Clear all FLASH flags */
-    __HAL_FLASH_CLEAR_FLAG(FLASH_SR_WRPERR | FLASH_SR_PGAERR | FLASH_SR_PGPERR | FLASH_SR_PGSERR | FLASH_SR_RDERR);
+    SFU_ErrorStatus e_ret_status = SFU_ERROR;
 
     /* Unlock the Program memory */
-    if (HAL_FLASH_Lock() == HAL_OK)
+    if (HAL_FLASH_Unlock() == HAL_OK)
     {
-      e_ret_status = SFU_SUCCESS;
+        /* Clear all FLASH flags */
+        __HAL_FLASH_CLEAR_FLAG(FLASH_SR_WRPERR | FLASH_SR_PGAERR | FLASH_SR_PGPERR |
+                               FLASH_SR_PGSERR | FLASH_SR_RDERR);
+
+        /* Unlock the Program memory */
+        if (HAL_FLASH_Lock() == HAL_OK)
+        {
+            e_ret_status = SFU_SUCCESS;
+        }
     }
-  }
 
-  return e_ret_status;
-
+    return e_ret_status;
 }
-
 
 
 /*
@@ -364,12 +375,12 @@ static SFU_ErrorStatus SFU_LL_FLASH_INT_Clear_Error(void)
    position. Then compiler optimizations are customized to ensure that.
 */
 #if defined(__ICCARM__)
-#pragma optimize=none
+#pragma optimize = none
 #elif defined(__CC_ARM)
 #pragma O0
-#elif defined (__ARMCC_VERSION)
+#elif defined(__ARMCC_VERSION)
 __attribute__((optnone))
-#elif defined ( __GNUC__ )
+#elif defined(__GNUC__)
 __attribute__((optimize("O1")))
 #endif /* __ICCARM__ */
 
@@ -380,10 +391,10 @@ __attribute__((optimize("O1")))
   */
 void NMI_Handler(void)
 {
-  while (1 == 1)
-  {
-    ;
-  }
+    while (1 == 1)
+    {
+        ;
+    }
 }
 
 
@@ -394,5 +405,5 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-  SFU_EXCPT_IrqExceptionHandler(SFU_EXCPT_HARD_FAULT);
+    SFU_EXCPT_IrqExceptionHandler(SFU_EXCPT_HARD_FAULT);
 }

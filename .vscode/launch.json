@@ -1,0 +1,52 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug SBSFU Bootloader (OpenOCD)",
+            "cwd": "${workspaceFolder}",
+            "executable": "/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/STM32CubeIDE/Debug/SBSFU.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "serverpath": "/opt/homebrew/bin/openocd",
+            "loadFiles": [],
+            "preLaunchCommands": [
+                "monitor reset halt",
+                "monitor flash protect 0 0 last off"
+            ],
+            "postLaunchCommands": [
+                "monitor reset halt",
+                "load",
+                "monitor reset halt"
+            ],
+            "svdFile": "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/SVD/STM32F411.svd"
+        },
+        {
+            "name": "Debug SECoreBin (OpenOCD)",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SECoreBin/STM32CubeIDE/Debug/SECoreBin.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "serverpath": "/opt/homebrew/bin/openocd",
+            "preLaunchTask": "",
+            "postLaunchCommands": [
+                "monitor reset halt"
+            ],
+            "svdFile": "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/SVD/STM32F411.svd"
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+python3 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Utilities/KeysAndImages/prepareimage.py enc -k ../../../2_Images_SECoreBin/STM32CubeIDE/../Binary/OEM_KEY_COMPANY1_key_AES_CBC.bin -i ../../../2_Images_SECoreBin/STM32CubeIDE/../Binary/iv.bin ../UserApp.bin ..//../Binary/UserApp.sfu : failed

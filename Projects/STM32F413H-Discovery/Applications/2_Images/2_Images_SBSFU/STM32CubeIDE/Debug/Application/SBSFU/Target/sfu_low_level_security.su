@@ -1,0 +1,11 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:667:17:SFU_LL_SECU_CheckProtectionWRP	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:238:17:SFU_LL_SECU_CheckApplyStaticProtections	56	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:495:6:SFU_LL_SECU_GetResetSources	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:539:6:SFU_LL_SECU_ClearResetSources	0	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:551:17:SFU_LL_SECU_IWDG_Refresh	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:746:17:SFU_LL_SECU_SetProtectionMPU_UserApp	24	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:806:17:SFU_LL_SECU_SetProtectionMPU	56	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:891:17:SFU_LL_SECU_SetProtectionDMA	8	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:960:17:SFU_LL_SECU_SetProtectionDAP	32	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:989:17:SFU_LL_SECU_SetProtectionANTI_TAMPER	48	static
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Projects/STM32F413H-Discovery/Applications/2_Images/2_Images_SBSFU/SBSFU/Target/sfu_low_level_security.c:335:17:SFU_LL_SECU_CheckApplyRuntimeProtections	24	static

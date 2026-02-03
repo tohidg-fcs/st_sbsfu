@@ -1,0 +1,2 @@
+SE_APP_GetActiveFwInfo = 0x08008000;
+SE_APP_SVC_Handler = 0x08008048;

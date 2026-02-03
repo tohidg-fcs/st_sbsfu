@@ -3,8 +3,9 @@
 **
 **  File        : LinkerScript.ld
 **
-**  Abstract    : Linker script for STM32F413ZHTx Device with
-**                1536KByte FLASH, 320KByte RAM
+**  Abstract    : Linker script for STM32F411RETx Device with
+**                512KByte FLASH, 128KByte RAM
+**                (Ported from STM32F413ZHTx)
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -30,18 +31,18 @@
 
 /* Slots must be aligned on sector size */
 
-/* swap (128 kbytes) */
+/* swap (128 kbytes - Sector 5) */
 __ICFEDIT_SWAP_start__           = 0x08020000;
 __ICFEDIT_SWAP_end__             = 0x0803FFFF;
 
-/* Active slot #1 (640 kbytes) */
+/* Active slot #1 (128 kbytes - Sector 6) */
 __ICFEDIT_SLOT_Active_1_start__  = 0x08040000;
-__ICFEDIT_SLOT_Active_1_end__    = 0x080DFFFF;
+__ICFEDIT_SLOT_Active_1_end__    = 0x0805FFFF;
 __ICFEDIT_SLOT_Active_1_header__ = __ICFEDIT_SLOT_Active_1_start__;
 
-/* Dwl slot #1 (640 kbytes) */
-__ICFEDIT_SLOT_Dwl_1_start__     = 0x080E0000;
-__ICFEDIT_SLOT_Dwl_1_end__       = 0x0817FFFF;
+/* Dwl slot #1 (128 kbytes - Sector 7) */
+__ICFEDIT_SLOT_Dwl_1_start__     = 0x08060000;
+__ICFEDIT_SLOT_Dwl_1_end__       = 0x0807FFFF;
 
 
 /* Slots not configured */

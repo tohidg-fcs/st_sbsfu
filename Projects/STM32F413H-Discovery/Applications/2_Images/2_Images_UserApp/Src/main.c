@@ -178,7 +178,7 @@ static void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 200;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
-  RCC_OscInitStruct.PLL.PLLR = 2;
+  /* Note: STM32F411 does not have PLLR parameter (only F413/F446 series) */
   ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
   
   if(ret != HAL_OK)

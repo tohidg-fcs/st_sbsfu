@@ -1,0 +1,15 @@
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:86:16:SE_Init	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:122:16:SE_Startup	5
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:156:16:SE_LockRestrictServices	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:189:16:SE_CM0_Update	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:224:16:SE_ExtFlash_Decrypt_Init	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:261:16:SE_SFU_IMG_Read	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:305:16:SE_SFU_IMG_Write	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:343:16:SE_SFU_IMG_Erase	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:385:16:SE_Decrypt_Init	5
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:437:16:SE_Decrypt_Append	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:483:16:SE_Decrypt_Finish	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:529:16:SE_AuthenticateFW_Init	5
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:584:16:SE_AuthenticateFW_Append	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:631:16:SE_AuthenticateFW_Finish	4
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Core/se_interface_bootloader.c:677:16:SE_VerifyHeaderSignature	4
