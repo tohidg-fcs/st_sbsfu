@@ -12,7 +12,6 @@
 "./Application/User/syscalls.o"
 "./Application/User/test_protections.o"
 "./Application/User/ymodem.o"
-"./Drivers/BSP/STM32F413H-Discovery/stm32f413h_discovery.o"
 "./Drivers/CMSIS/system_stm32f4xx.o"
 "./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o"
 "./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o"

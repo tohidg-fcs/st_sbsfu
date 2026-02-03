@@ -43,8 +43,7 @@
 /* Private define ------------------------------------------------------------*/
 
 
-
-#define USER_APP_NBLINKS  ((uint8_t) 1U)
+#define USER_APP_NBLINKS ((uint8_t) 1U)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 uint8_t *pUserAppId;
@@ -64,13 +63,12 @@ void FW_APP_Run(void);
   */
 int main(void)
 {
-  uint32_t i = 0U;
-  /*  set example to const : this const changes in binary without rebuild */
-  pUserAppId = (uint8_t *)&UserAppId;
+    uint32_t i = 0U;
+    /*  set example to const : this const changes in binary without rebuild */
+    pUserAppId = (uint8_t *) &UserAppId;
 
 
-
-  /* STM32F4xx HAL library initialization:
+    /* STM32F4xx HAL library initialization:
   - Configure the Flash prefetch
   - Systick timer is configured by default as source of time base, but user
   can eventually implement his proper time base source (a general purpose
@@ -80,58 +78,59 @@ int main(void)
   - Set NVIC Group Priority to 4
   - Low Level Initialization
   */
-  HAL_Init();
+    HAL_Init();
 
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* Flash driver initialization*/
-  FLASH_If_Init();
+    /* Flash driver initialization*/
+    FLASH_If_Init();
 
-  /* Board BSP  Configuration-------------------------------------------------*/
+    /* Board BSP  Configuration-------------------------------------------------*/
 
-  /* LED Init*/
-  BSP_LED_Init(LED_GREEN);
-  for (i = 0U; i < USER_APP_NBLINKS; i++)
-  {
-    BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(100U);
-    BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(100U);
-    BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(100U);
-    BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(100U);
-  }
+    /* LED Init*/
+    BSP_LED_Init(LED_GREEN);
+    for (i = 0U; i < USER_APP_NBLINKS; i++)
+    {
+        BSP_LED_Toggle(LED_GREEN);
+        HAL_Delay(100U);
+        BSP_LED_Toggle(LED_GREEN);
+        HAL_Delay(100U);
+        BSP_LED_Toggle(LED_GREEN);
+        HAL_Delay(100U);
+        BSP_LED_Toggle(LED_GREEN);
+        HAL_Delay(100U);
+        }
 
-  /* If the SecureBoot configured the IWDG, UserApp must reload IWDG counter with value defined in the reload register*/
-  WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
+    /* If the SecureBoot configured the IWDG, UserApp must reload IWDG counter with value defined in the reload register*/
+    WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
 
-  /* Configure Communication module */
-  COM_Init();
+    /* Configure Communication module */
+    COM_Init();
 
-  /* Configure button */
-  BUTTON_INIT();
+    /* Configure button */
+    BUTTON_INIT();
 
-  printf("\r\n======================================================================");
-  printf("\r\n=              (C) COPYRIGHT 2017 STMicroelectronics                 =");
-  printf("\r\n=                                                                    =");
-  printf("\r\n=                          User App #%c                               =", *pUserAppId);
-  printf("\r\n======================================================================");
-  printf("\r\n\r\n");
+    printf("\r\n======================================================================");
+    printf("\r\n=              (C) COPYRIGHT 2017 STMicroelectronics                 =");
+    printf("\r\n=                                                                    =");
+    printf("\r\n=                          User App #%c                               =",
+           *pUserAppId);
+    printf("\r\n======================================================================");
+    printf("\r\n\r\n");
 
-  /* Warning : All clocks should be set before switching in unpriviledge mode
+    /* Warning : All clocks should be set before switching in unpriviledge mode
      because RCC access require privilege mode */
 
-  MPU_EnterUnprivilegedMode();
+    MPU_EnterUnprivilegedMode();
 
-  /* User App firmware runs*/
-  FW_APP_Run();
+    /* User App firmware runs*/
+    FW_APP_Run();
 
-  while (1U)
-  {}
-
+    while (1U)
+    {
+    }
 }
 
 /**
@@ -157,47 +156,54 @@ int main(void)
   */
 static void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  HAL_StatusTypeDef ret = HAL_OK;
+    RCC_ClkInitTypeDef RCC_ClkInitStruct;
+    RCC_OscInitTypeDef RCC_OscInitStruct;
+    HAL_StatusTypeDef ret = HAL_OK;
 
-  /* Enable Power Control clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
+    /* Enable Power Control clock */
+    __HAL_RCC_PWR_CLK_ENABLE();
 
-  /* The voltage scaling allows optimizing the power consumption when the device is 
+    /* The voltage scaling allows optimizing the power consumption when the device is 
      clocked below the maximum system frequency, to update the voltage scaling value 
      regarding system frequency refer to product datasheet.  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  /* Enable HSE Oscillator and activate PLL with HSE as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 200;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  /* Note: STM32F411 does not have PLLR parameter (only F413/F446 series) */
-  ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  
-  if(ret != HAL_OK)
-  {
-    while(1) { ; } 
-  }
+    /* Enable HSE Oscillator and activate PLL with HSE as source */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLM = 8;
+    RCC_OscInitStruct.PLL.PLLN = 200;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLQ = 7;
+    /* Note: STM32F411 does not have PLLR parameter (only F413/F446 series) */
+    ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 
+    if (ret != HAL_OK)
+    {
+        while (1)
+        {
+            ;
+        }
+    }
+
+    /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 
      clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;  
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;  
-  ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3);
-  if(ret != HAL_OK)
-  {
-    while(1) { ; }  
-  }
+    RCC_ClkInitStruct.ClockType =
+        (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3);
+    if (ret != HAL_OK)
+    {
+        while (1)
+        {
+            ;
+        }
+    }
 }
 
 
@@ -208,13 +214,13 @@ static void SystemClock_Config(void)
   */
 void FW_APP_PrintMainMenu(void)
 {
-  printf("\r\n=================== Main Menu ============================\r\n\n");
-  printf("  Download a new Fw Image ------------------------------- 1\r\n\n");
-  printf("  Test Protections -------------------------------------- 2\r\n\n");
-  printf("  Test SE User Code ------------------------------------- 3\r\n\n");
-  printf("  Multiple download ------------------------------------- 4\r\n\n");
-  printf("  Validate a FW Image------------------------------------ 5\r\n\n");
-  printf("  Selection :\r\n\n");
+    printf("\r\n=================== Main Menu ============================\r\n\n");
+    printf("  Download a new Fw Image ------------------------------- 1\r\n\n");
+    printf("  Test Protections -------------------------------------- 2\r\n\n");
+    printf("  Test SE User Code ------------------------------------- 3\r\n\n");
+    printf("  Multiple download ------------------------------------- 4\r\n\n");
+    printf("  Validate a FW Image------------------------------------ 5\r\n\n");
+    printf("  Selection :\r\n\n");
 }
 
 /**
@@ -224,55 +230,55 @@ void FW_APP_PrintMainMenu(void)
   */
 void FW_APP_Run(void)
 {
-  uint8_t key = 0U;
+    uint8_t key = 0U;
 
-  /* Print Main Menu message*/
-  FW_APP_PrintMainMenu();
+    /* Print Main Menu message*/
+    FW_APP_PrintMainMenu();
 
-  while (1U)
-  {
-    /* If the SecureBoot configured the IWDG, UserApp must reload IWDG counter with value defined in the reload
-       register */
-    WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
-
-    /* Clean the input path */
-    COM_Flush();
-
-    /* Receive key */
-    if (COM_Receive(&key, 1U, RX_TIMEOUT) == HAL_OK)
+    while (1U)
     {
-      switch (key)
-      {
-        case '1' :
-          FW_UPDATE_Run();
-          break;
-        case '2' :
-          TEST_PROTECTIONS_RunMenu();
-          break;
-        case '3' :
-          SE_USER_CODE_RunMenu();
-          break;
-        case '4' :
-          FW_UPDATE_MULTIPLE_RunMenu();
-          break;
-        case '5' :
-          FW_VALIDATE_RunMenu();
-          break;
-        default:
-          printf("Invalid Number !\r");
-          break;
-      }
+        /* If the SecureBoot configured the IWDG, UserApp must reload IWDG counter with value defined in the reload
+       register */
+        WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
 
-      /*Print Main Menu message*/
-      FW_APP_PrintMainMenu();
+        /* Clean the input path */
+        COM_Flush();
+
+        /* Receive key */
+        if (COM_Receive(&key, 1U, RX_TIMEOUT) == HAL_OK)
+        {
+            switch (key)
+            {
+            case '1':
+                FW_UPDATE_Run();
+                break;
+            case '2':
+                TEST_PROTECTIONS_RunMenu();
+                break;
+            case '3':
+                SE_USER_CODE_RunMenu();
+                break;
+            case '4':
+                FW_UPDATE_MULTIPLE_RunMenu();
+                break;
+            case '5':
+                FW_VALIDATE_RunMenu();
+                break;
+            default:
+                printf("Invalid Number !\r");
+                break;
+            }
+
+            /*Print Main Menu message*/
+            FW_APP_PrintMainMenu();
+        }
+
+        BSP_LED_Toggle(LED_GREEN);
     }
-
-    BSP_LED_Toggle(LED_GREEN);
-  }
 }
 
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 
 /**
   * @brief  Reports the name of the source file and the source line number
@@ -283,13 +289,13 @@ void FW_APP_Run(void)
   */
 void assert_failed(uint8_t *file, uint32_t line)
 {
-  /* User can add his own implementation to report the file name and line number,
+    /* User can add his own implementation to report the file name and line number,
    ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
-  /* Infinite loop */
-  while (1U)
-  {
-  }
+    /* Infinite loop */
+    while (1U)
+    {
+    }
 }
 #endif /* USE_FULL_ASSERT */
 

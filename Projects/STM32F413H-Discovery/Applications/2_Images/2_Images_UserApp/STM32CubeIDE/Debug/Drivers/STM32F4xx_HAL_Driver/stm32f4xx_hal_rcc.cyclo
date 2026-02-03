@@ -1,5 +1,5 @@
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c:200:26:HAL_RCC_DeInit	1
-/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c:219:26:HAL_RCC_OscConfig	60
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c:219:26:HAL_RCC_OscConfig	59
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c:775:6:HAL_RCC_MCOConfig	2
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c:841:6:HAL_RCC_EnableCSS	1
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c:850:6:HAL_RCC_DisableCSS	1

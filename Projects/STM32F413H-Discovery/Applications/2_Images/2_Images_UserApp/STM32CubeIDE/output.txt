@@ -1,1 +1,19 @@
-python3 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Middlewares/ST/STM32_Secure_Engine/Utilities/KeysAndImages/prepareimage.py enc -k ../../../2_Images_SECoreBin/STM32CubeIDE/../Binary/OEM_KEY_COMPANY1_key_AES_CBC.bin -i ../../../2_Images_SECoreBin/STM32CubeIDE/../Binary/iv.bin ../UserApp.bin ..//../Binary/UserApp.sfu : failed
+block size =16
+Magic: b'SFU1'!!
+Magic: b'SFU1'!!
+number of segment :5
+0x8040400
+0x8044c10
+0x8044cc0
+0x8044cd0
+number of segment :6
+0x8000198
+0x8004c80
+0x800875c
+0x800fee0
+0x800ff90
+Merging
+SBSFU Base = 0x8000000
+Writing header = 0x8040000
+APPLI Base = 0x8040200
+Writing to ..//../Binary/SBSFU_UserApp.bin 281808

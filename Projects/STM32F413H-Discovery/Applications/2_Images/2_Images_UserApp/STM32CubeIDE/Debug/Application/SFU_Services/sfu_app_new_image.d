@@ -6,7 +6,7 @@ Application/SFU_Services/sfu_app_new_image.o: \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
  ../../../../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
- ../../../../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f413xx.h \
+ ../../../../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h \
  ../../../../../../../Drivers/CMSIS/Include/core_cm4.h \
  ../../../../../../../Drivers/CMSIS/Include/cmsis_version.h \
  ../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h \
@@ -25,7 +25,6 @@ Application/SFU_Services/sfu_app_new_image.o: \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sram.h \
- ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_fsmc.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c_ex.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h \
@@ -35,7 +34,6 @@ Application/SFU_Services/sfu_app_new_image.o: \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_fmpi2c.h \
- ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_fmpi2c_ex.h \
  ../../Inc/com.h ../../../2_Images_SBSFU/SBSFU/App/sfu_def.h \
  ../../../Linker_Common/STM32CubeIDE/mapping_export.h \
  ../../../2_Images_SBSFU/SBSFU/App/app_sfu.h \
@@ -50,7 +48,7 @@ Application/SFU_Services/sfu_app_new_image.o: \
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h:
 ../../../../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
-../../../../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f413xx.h:
+../../../../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h:
 ../../../../../../../Drivers/CMSIS/Include/core_cm4.h:
 ../../../../../../../Drivers/CMSIS/Include/cmsis_version.h:
 ../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h:
@@ -69,7 +67,6 @@ Application/SFU_Services/sfu_app_new_image.o: \
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sram.h:
-../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_fsmc.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c_ex.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h:
@@ -79,7 +76,6 @@ Application/SFU_Services/sfu_app_new_image.o: \
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_fmpi2c.h:
-../../../../../../../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_fmpi2c_ex.h:
 ../../Inc/com.h:
 ../../../2_Images_SBSFU/SBSFU/App/sfu_def.h:
 ../../../Linker_Common/STM32CubeIDE/mapping_export.h:

@@ -1,5 +1,5 @@
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c:3370:13:UART_EndRxTransfer	5
-/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c:3731:13:UART_SetConfig	6
+/Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c:3731:13:UART_SetConfig	4
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c:3212:26:UART_WaitOnFlagUntilTimeout.constprop	9
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c:715:13:HAL_UART_MspInit	1
 /Users/tohid/stm32Projects/sbsfu/st_sbsfu/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c:357:19:HAL_UART_Init	3

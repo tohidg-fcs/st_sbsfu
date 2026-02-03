@@ -44,21 +44,21 @@ extern "C" {
   * @{
   */
 
-#define COM_UART                                USART6
-#define COM_UART_CLK_ENABLE()                   __HAL_RCC_USART6_CLK_ENABLE()
-#define COM_UART_CLK_DISABLE()                  __HAL_RCC_USART6_CLK_DISABLE()
+#define COM_UART                                USART2
+#define COM_UART_CLK_ENABLE()                   __HAL_RCC_USART2_CLK_ENABLE()
+#define COM_UART_CLK_DISABLE()                  __HAL_RCC_USART2_CLK_DISABLE()
 
-#define COM_UART_TX_AF                          GPIO_AF8_USART6
-#define COM_UART_TX_GPIO_PORT                   GPIOG
-#define COM_UART_TX_PIN                         GPIO_PIN_14
-#define COM_UART_TX_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOG_CLK_ENABLE()
-#define COM_UART_TX_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOG_CLK_DISABLE()
+#define COM_UART_TX_AF                          GPIO_AF7_USART2
+#define COM_UART_TX_GPIO_PORT                   GPIOA
+#define COM_UART_TX_PIN                         GPIO_PIN_2
+#define COM_UART_TX_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOA_CLK_ENABLE()
+#define COM_UART_TX_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOA_CLK_DISABLE()
 
-#define COM_UART_RX_AF                          GPIO_AF8_USART6
-#define COM_UART_RX_GPIO_PORT                   GPIOG
-#define COM_UART_RX_PIN                         GPIO_PIN_9
-#define COM_UART_RX_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOG_CLK_ENABLE()
-#define COM_UART_RX_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOG_CLK_DISABLE()
+#define COM_UART_RX_AF                          GPIO_AF7_USART2
+#define COM_UART_RX_GPIO_PORT                   GPIOA
+#define COM_UART_RX_PIN                         GPIO_PIN_3
+#define COM_UART_RX_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOA_CLK_ENABLE()
+#define COM_UART_RX_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOA_CLK_DISABLE()
 
 /* Maximum Timeout values for flags waiting loops.
    You may modify these timeout values depending on CPU frequency and application

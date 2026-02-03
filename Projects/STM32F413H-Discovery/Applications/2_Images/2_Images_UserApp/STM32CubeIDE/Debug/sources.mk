@@ -26,7 +26,6 @@ SUBDIRS := \
 Application/SFU_Services \
 Application/Startup \
 Application/User \
-Drivers/BSP/STM32F413H-Discovery \
 Drivers/CMSIS \
 Drivers/STM32F4xx_HAL_Driver \
 Middlewares/STM32_Secure_Engine \
